@@ -92,4 +92,23 @@ final class VocabularyStudyUITests: XCTestCase {
         replaceText(app.textFields["fieldTerm"], with: "")
         XCTAssertFalse(app.buttons["saveWord"].isEnabled)
     }
+
+    func testDeleteTopicAsksConfirmation() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        let topic = app.buttons["Test, 3 từ"]
+        XCTAssertTrue(topic.waitForExistence(timeout: 5))
+
+        topic.swipeLeft()
+        app.buttons["Delete"].tap()
+        XCTAssertTrue(app.staticTexts["Xoá \"Test\" và 3 từ bên trong. Không thể hoàn tác."].waitForExistence(timeout: 5))
+        app.otherElements["PopoverDismissRegion"].tap()  // iOS 26: huỷ bằng cách chạm ra ngoài popover
+        XCTAssertTrue(app.buttons["confirmDeleteTopic"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(topic.exists)
+
+        topic.swipeLeft()
+        app.buttons["Delete"].tap()
+        app.buttons.matching(identifier: "confirmDeleteTopic").firstMatch.tap()
+        XCTAssertTrue(topic.waitForNonExistence(timeout: 5))
+    }
 }

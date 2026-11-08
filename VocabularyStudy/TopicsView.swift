@@ -7,6 +7,7 @@ struct TopicsView: View {
     @State private var adding = false
     @State private var browsingDecks = false
     @State private var newName = ""
+    @State private var pendingDelete: Topic?
 
     var body: some View {
         NavigationStack {
@@ -16,7 +17,15 @@ struct TopicsView: View {
                         LabeledContent(topic.name, value: "\(topic.words.count) từ")
                     }
                 }
-                .onDelete { for i in $0 { context.delete(topics[i]) } }
+                .onDelete { pendingDelete = $0.first.map { topics[$0] } }
+            }
+            .confirmationDialog("Xoá chủ đề?", isPresented: Binding { pendingDelete != nil } set: { if !$0 { pendingDelete = nil } },
+                                titleVisibility: .visible, presenting: pendingDelete) { topic in
+                Button("Xoá", role: .destructive) { context.delete(topic) }
+                    .accessibilityIdentifier("confirmDeleteTopic")
+                Button("Huỷ", role: .cancel) {}
+            } message: { topic in
+                Text("Xoá \"\(topic.name)\" và \(topic.words.count) từ bên trong. Không thể hoàn tác.")
             }
             .overlay {
                 if topics.isEmpty {
