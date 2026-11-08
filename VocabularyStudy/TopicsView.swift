@@ -79,6 +79,7 @@ struct TopicDetailView: View {
     @State private var addingWord = false
     @State private var scanning = false
     @State private var studying = false
+    @State private var flashcards = false
 
     var body: some View {
         let words = topic.words.sorted { $0.createdAt < $1.createdAt }
@@ -86,13 +87,20 @@ struct TopicDetailView: View {
             Section {
                 Button("Học chủ đề này") { studying = true }
                     .disabled(Word.todayQueue(topic.words).isEmpty)
+                Button("Lật thẻ (không tính vào lịch ôn)") { flashcards = true }
+                    .disabled(words.isEmpty)
             }
             Section("\(words.count) từ") {
                 ForEach(words) { word in
                     VStack(alignment: .leading) {
                         HStack {
                             Text(word.term).bold()
+                            Text(word.ipa).foregroundStyle(.secondary)
                             Text(word.pos).italic().foregroundStyle(.secondary)
+                            Spacer()
+                            Button("Nghe", systemImage: "speaker.wave.2") { Speaker.say(word.term) }
+                                .labelStyle(.iconOnly)
+                                .buttonStyle(.borderless)
                         }
                         Text(word.meaning).foregroundStyle(.secondary)
                         if !word.example.isEmpty {
@@ -116,6 +124,7 @@ struct TopicDetailView: View {
         .sheet(isPresented: $addingWord) { AddWordView(topic: topic) }
         .sheet(isPresented: $scanning) { ScanView(topic: topic) }
         .fullScreenCover(isPresented: $studying) { StudyView(topic: topic) }
+        .fullScreenCover(isPresented: $flashcards) { FlashcardView(words: words) }
     }
 }
 
@@ -123,6 +132,7 @@ struct AddWordView: View {
     let topic: Topic
     @Environment(\.dismiss) private var dismiss
     @State private var term = ""
+    @State private var ipa = ""
     @State private var pos = ""
     @State private var meaning = ""
     @State private var example = ""
@@ -137,6 +147,9 @@ struct AddWordView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .focused($focused)
+                TextField("Phiên âm (không bắt buộc, vd: /ˈdʒɛnərəs/)", text: $ipa)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                 TextField("Từ loại (n, v, adj…)", text: $pos)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -145,9 +158,9 @@ struct AddWordView: View {
                     .textInputAutocapitalization(.sentences)
                 TextField("Nghĩa câu ví dụ (không bắt buộc)", text: $exampleMeaning, axis: .vertical)
                 Button("Thêm") {
-                    topic.words.append(Word(term: term.trimmingCharacters(in: .whitespaces), pos: pos,
+                    topic.words.append(Word(term: term.trimmingCharacters(in: .whitespaces), ipa: ipa, pos: pos,
                                             meaning: meaning, example: example, exampleMeaning: exampleMeaning))
-                    term = ""; pos = ""; meaning = ""; example = ""; exampleMeaning = ""
+                    term = ""; ipa = ""; pos = ""; meaning = ""; example = ""; exampleMeaning = ""
                     added += 1
                     focused = true
                 }

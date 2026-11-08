@@ -34,27 +34,8 @@ struct StudyView: View {
     private func card(_ word: Word) -> some View {
         VStack(spacing: 20) {
             Spacer()
-            Text(word.term).font(.largeTitle.bold()).multilineTextAlignment(.center)
-            Button("Nghe phát âm", systemImage: "speaker.wave.2.fill") { Speaker.say(word.term) }
-                .labelStyle(.iconOnly)
-                .font(.title)
-            if flipped {
-                if !word.pos.isEmpty { Text(word.pos).italic().foregroundStyle(.secondary) }
-                Text(word.meaning).font(.title2).multilineTextAlignment(.center)
-                if !word.example.isEmpty {
-                    Button { Speaker.say(word.example) } label: {
-                        Label(word.example, systemImage: "speaker.wave.1")
-                            .italic()
-                            .multilineTextAlignment(.leading)
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
-                    .padding(.top)
-                    if !word.exampleMeaning.isEmpty {
-                        Text(word.exampleMeaning).font(.callout).foregroundStyle(.secondary)
-                    }
-                }
-            }
+            WordFront(word: word)
+            if flipped { WordBack(word: word) }
             Spacer()
             if flipped {
                 HStack {
@@ -77,6 +58,100 @@ struct StudyView: View {
         if !remembered { queue.append(word) }  // quên thì học lại cuối buổi
         flipped = false
         Streak.record()
+    }
+}
+
+/// Mặt trước thẻ: từ, phiên âm, nút nghe.
+struct WordFront: View {
+    let word: Word
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(word.term).font(.largeTitle.bold()).multilineTextAlignment(.center)
+            if !word.ipa.isEmpty { Text(word.ipa).font(.title3).foregroundStyle(.secondary) }
+            Button("Nghe phát âm", systemImage: "speaker.wave.2.fill") { Speaker.say(word.term) }
+                .labelStyle(.iconOnly)
+                .font(.title)
+                .buttonStyle(.borderless)
+        }
+    }
+}
+
+/// Mặt sau thẻ: từ loại, nghĩa, câu ví dụ (chạm để nghe) và nghĩa câu ví dụ.
+struct WordBack: View {
+    let word: Word
+
+    var body: some View {
+        VStack(spacing: 8) {
+            if !word.pos.isEmpty { Text(word.pos).italic().foregroundStyle(.secondary) }
+            Text(word.meaning).font(.title2).multilineTextAlignment(.center)
+            if !word.example.isEmpty {
+                Button { Speaker.say(word.example) } label: {
+                    Label(word.example, systemImage: "speaker.wave.1")
+                        .italic()
+                        .multilineTextAlignment(.leading)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .padding(.top)
+                if !word.exampleMeaning.isEmpty {
+                    Text(word.exampleMeaning).font(.callout).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+}
+
+/// Lật thẻ tự do theo chủ đề: vuốt để chuyển, chạm để lật. Không ảnh hưởng lịch ôn.
+struct FlashcardView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var cards: [Word]
+    @State private var index = 0
+    @State private var flipped = false
+
+    init(words: [Word]) { _cards = State(initialValue: words) }
+
+    var body: some View {
+        NavigationStack {
+            TabView(selection: $index) {
+                ForEach(cards.indices, id: \.self) { i in
+                    card(cards[i], flipped: i == index && flipped).tag(i)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .navigationTitle("\(index + 1)/\(cards.count)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Đóng") { dismiss() } }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Trộn thẻ", systemImage: "shuffle") { cards.shuffle(); index = 0; flipped = false }
+                }
+            }
+            .onChange(of: index, initial: true) {
+                flipped = false
+                if cards.indices.contains(index) { Speaker.say(cards[index].term) }
+            }
+        }
+    }
+
+    private func card(_ word: Word, flipped: Bool) -> some View {
+        ZStack {
+            VStack(spacing: 16) {
+                WordFront(word: word)
+                Text("Chạm để lật").font(.caption).foregroundStyle(.tertiary)
+            }
+            .opacity(flipped ? 0 : 1)
+            WordBack(word: word)
+                .padding()
+                .opacity(flipped ? 1 : 0)
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 24))
+        .rotation3DEffect(.degrees(flipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+        .padding()
+        .contentShape(.rect)
+        .onTapGesture { withAnimation(.spring(duration: 0.4)) { self.flipped.toggle() } }
     }
 }
 

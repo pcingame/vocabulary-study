@@ -12,6 +12,7 @@ import UserNotifications
 
 @Model final class Word {
     var term: String
+    var ipa = ""
     var pos: String
     var meaning: String
     var example = ""
@@ -23,9 +24,10 @@ import UserNotifications
     var interval = 0       // số ngày tới lần ôn sau
     var ease = 2.5
 
-    init(term: String, pos: String, meaning: String, example: String = "", exampleMeaning: String = "",
+    init(term: String, ipa: String = "", pos: String, meaning: String, example: String = "", exampleMeaning: String = "",
          createdAt: Date = .now) {
         self.term = term
+        self.ipa = ipa
         self.pos = pos
         self.meaning = meaning
         self.example = example
