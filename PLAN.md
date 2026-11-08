@@ -27,22 +27,25 @@ Ký hiệu:
 # Tạo lại project sau khi sửa project.yml hoặc thêm/xoá file
 xcodegen generate
 
+# Máy có nhiều simulator trùng tên "iPhone 17 Pro" → chỉ định bằng id (xem: xcrun simctl list devices)
+SIM=8D060894-CC2B-4CE2-A4A6-52F02EB42E44
+
 # Toàn bộ test (unit + UI)
 xcodebuild test -project VocabularyStudy.xcodeproj -scheme VocabularyStudy \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -derivedDataPath build
+  -destination "id=$SIM" -derivedDataPath build
 
 # Chỉ unit test (nhanh, chạy liên tục khi đang code)
 xcodebuild test ... -only-testing:VocabularyStudyTests
 
-# Cài và mở app trên simulator đang bật
-xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/VocabularyStudy.app
-xcrun simctl launch booted com.doanthanhphuong.VocabularyStudy
+# Cài và mở app (dùng $SIM thay cho "booted" nếu đang bật nhiều simulator)
+xcrun simctl install $SIM build/Build/Products/Debug-iphonesimulator/VocabularyStudy.app
+xcrun simctl launch $SIM com.doanthanhphuong.VocabularyStudy
 
 # Chụp màn hình trong UI test (các chỗ gọi snapshot("tên")) ra thư mục trên Mac
 TEST_RUNNER_SNAPSHOT_DIR=/đường/dẫn xcodebuild test ... -only-testing:VocabularyStudyUITests
 
 # Xoá dữ liệu app trên simulator (thử như lần cài đầu)
-xcrun simctl uninstall booted com.doanthanhphuong.VocabularyStudy
+xcrun simctl uninstall $SIM com.doanthanhphuong.VocabularyStudy
 ```
 
 ### Định nghĩa "xong" cho mỗi phase
@@ -57,7 +60,7 @@ xcrun simctl uninstall booted com.doanthanhphuong.VocabularyStudy
 
 Hiện app chỉ có unit test. Muốn test luồng màn hình tự động thì cần UI test và cách khởi động app với dữ liệu sạch.
 
-### 0.1 Thêm target UI test · P0 · S
+### 0.1 Thêm target UI test · P0 · S ✅
 - **File**: `project.yml`, tạo `VocabularyStudyUITests/`.
 - **Các bước**:
   1. Thêm target `VocabularyStudyUITests` (`type: bundle.ui-testing`, phụ thuộc app).
@@ -66,20 +69,20 @@ Hiện app chỉ có unit test. Muốn test luồng màn hình tự động thì
 - **Test tự động**: `testAppLaunches`, kiểm tra app mở được và thấy đủ 3 tab "Hôm nay", "Chủ đề", "Ngữ pháp".
 - **Xong khi**: lệnh test chạy cả unit lẫn UI test, tất cả đều xanh.
 
-### 0.2 Chế độ khởi động cho test · P0 · M
+### 0.2 Chế độ khởi động cho test · P0 · M ✅
 - **File**: `VocabularyStudyApp.swift`, `Models.swift` (`Reminder`).
 - **Các bước**: khi app nhận launch argument `-ui-testing`:
-  - [ ] Dùng `ModelConfiguration(isStoredInMemoryOnly: true)`, để mỗi lần chạy test là dữ liệu sạch.
-  - [ ] Xoá `UserDefaults` của app (streak, điểm ngữ pháp, cài đặt).
-  - [ ] Không xin quyền thông báo, không đặt lịch nhắc.
-  - [ ] Tắt animation (`UIView.setAnimationsEnabled(false)`) cho test nhanh và ổn định.
-  - [ ] Nếu có thêm argument `-seed`, tạo sẵn 1 chủ đề "Test" gồm 3 từ có đủ IPA, ví dụ, nghĩa.
+  - [x] Dùng `ModelConfiguration(isStoredInMemoryOnly: true)`, để mỗi lần chạy test là dữ liệu sạch.
+  - [x] Xoá `UserDefaults` của app (streak, điểm ngữ pháp, cài đặt).
+  - [x] Không xin quyền thông báo, không đặt lịch nhắc.
+  - [x] Tắt animation (`UIView.setAnimationsEnabled(false)`) cho test nhanh và ổn định.
+  - [x] Nếu có thêm argument `-seed`, tạo sẵn 1 chủ đề "Test" gồm 3 từ có đủ IPA, ví dụ, nghĩa.
 - **Test tự động**: `testSeedCreatesTopic`, mở app với `-seed`, vào tab Chủ đề, thấy chủ đề "Test · 3 từ".
 - **Test tay**:
-  - [ ] Mở app bình thường (không có argument), thêm 1 chủ đề, tắt hẳn app rồi mở lại: chủ đề vẫn còn. Chế độ test không được ảnh hưởng dữ liệu thật.
+  - [x] Mở app bình thường (không có argument), thêm 1 chủ đề, tắt hẳn app rồi mở lại: chủ đề vẫn còn. Chế độ test không được ảnh hưởng dữ liệu thật.
 - **Xong khi**: UI test chạy trên dữ liệu sạch và không bật hộp thoại xin quyền.
 
-### 0.3 Accessibility identifier cho các nút chính · P0 · S
+### 0.3 Accessibility identifier cho các nút chính · P0 · S ✅
 - **File**: các View.
 - **Các bước**: gắn `.accessibilityIdentifier` cho những nút mà UI test cần bấm: `startStudy`, `revealAnswer`, `answerRemember`, `answerForget`, `addTopicMenu`, `addWordMenu`, `flashcardButton`, `settingsButton`.
 - **Test tự động**: `testStudyOneCard`:
@@ -95,7 +98,7 @@ Hiện app chỉ có unit test. Muốn test luồng màn hình tự động thì
 
 Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không mất dữ liệu và không bỏ lỡ nhắc học.
 
-### 1.1 Sửa từ · P0 · M
+### 1.1 Sửa từ · P0 · M ✅
 - **Vấn đề**: hiện chỉ thêm hoặc xoá được từ, gõ sai thì không sửa được.
 - **File**: `TopicsView.swift`.
 - **Các bước**:
@@ -104,14 +107,14 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   3. Bấm "Lưu" mới cập nhật vào từ. Bấm "Huỷ" thì không đổi gì.
   4. Sửa nội dung từ **không** làm reset tiến độ ôn (`interval`, `due`, `learnedAt`).
 - **Test tự động**:
-  - [ ] Unit `editKeepsSchedule`: tạo từ, trả lời Nhớ 2 lần, đổi nghĩa, kiểm tra `interval == 3` vẫn giữ nguyên.
-  - [ ] UI `testEditWord`: mở với `-seed` → vào chủ đề → chạm từ đầu tiên → đổi nghĩa thành "nghĩa mới" → Lưu → danh sách hiện "nghĩa mới".
-  - [ ] UI `testCancelEditKeepsWord`: sửa rồi bấm Huỷ, nghĩa cũ vẫn còn.
+  - [x] Unit `editKeepsSchedule`: tạo từ, trả lời Nhớ 2 lần, đổi nghĩa, kiểm tra `interval == 3` vẫn giữ nguyên.
+  - [x] UI `testEditWord`: mở với `-seed` → vào chủ đề → chạm từ đầu tiên → đổi nghĩa thành "nghĩa mới" → Lưu → danh sách hiện "nghĩa mới".
+  - [x] UI `testCancelEditKeepsWord`: sửa rồi bấm Huỷ, nghĩa cũ vẫn còn.
 - **Test tay**:
   - [ ] Sửa IPA, câu ví dụ, nghĩa câu ví dụ, rồi mở Flashcard xem đã đổi chưa.
-  - [ ] Xoá trắng ô "Từ" thì nút Lưu bị mờ.
+  - [x] Xoá trắng ô "Từ" thì nút Lưu bị mờ.
 
-### 1.2 Xác nhận khi xoá chủ đề · P0 · S
+### 1.2 Xác nhận khi xoá chủ đề · P0 · S ✅
 - **Vấn đề**: vuốt xoá chủ đề là mất luôn mọi từ bên trong mà không hỏi lại (`TopicsView.swift:19`).
 - **Các bước**: vuốt xoá → hiện `confirmationDialog` "Xoá chủ đề X và N từ? Không thể hoàn tác." → chỉ xoá khi bấm nút "Xoá" màu đỏ.
 - **Test tự động**: UI `testDeleteTopicAsksConfirmation`:
@@ -120,30 +123,30 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
 - **Test tay**:
   - [ ] Xoá một chủ đề TOEIC đang học trên lộ trình: app tự thêm lại bộ từ (đúng thiết kế), tiến độ cũ mất. Ghi chú hành vi này vào phần trợ giúp.
 
-### 1.3 Màn hình Cài đặt · P0 · L
+### 1.3 Màn hình Cài đặt · P0 · L ✅
 - **File**: tạo `SettingsView.swift`, sửa `Models.swift`, `TodayView.swift`, `StudyView.swift` (`Speaker`), `RoadmapView.swift`.
 - **Các bước**:
   1. Thêm nút bánh răng ở toolbar tab Hôm nay để mở Cài đặt.
   2. Các cài đặt, lưu bằng `@AppStorage`:
-     - [ ] Từ mới/ngày: Stepper 5–30, mặc định 15.
-     - [ ] Từ ôn/ngày: Stepper 10–100, mặc định 40.
-     - [ ] Giờ nhắc học (chuyển từ tab Hôm nay sang đây).
-     - [ ] Bật/tắt "Lộ trình tự thêm bộ từ TOEIC".
-     - [ ] Giọng đọc Mỹ (en-US) / Anh (en-GB), kèm nút nghe thử.
-     - [ ] Tốc độ đọc: Slider chậm ↔ bình thường.
-     - [ ] Nếu quyền thông báo đang tắt: hiện dòng "Bật thông báo" mở thẳng vào Settings của iOS.
+     - [x] Từ mới/ngày: Stepper 5–30, mặc định 15.
+     - [x] Từ ôn/ngày: Stepper 10–100, mặc định 40.
+     - [x] Giờ nhắc học (chuyển từ tab Hôm nay sang đây).
+     - [x] Bật/tắt "Lộ trình tự thêm bộ từ TOEIC".
+     - [x] Giọng đọc Mỹ (en-US) / Anh (en-GB), kèm nút nghe thử.
+     - [x] Tốc độ đọc: Slider chậm ↔ bình thường.
+     - [x] Nếu quyền thông báo đang tắt: hiện dòng "Bật thông báo" mở thẳng vào Settings của iOS.
   3. Đổi `Word.todayQueue(words, now:)` thành `todayQueue(words, newLimit:, reviewLimit:, now:)`, bỏ hằng số cố định.
   4. `Roadmap.prepare(..., enabled:)`: khi tắt thì không tự thêm bộ từ.
 - **Test tự động**:
-  - [ ] Unit `dailyQueueRespectsCustomLimits`: 30 từ đến hạn + 30 từ mới, giới hạn (5, 10) → hàng đợi có đúng 10 từ ôn + 5 từ mới.
-  - [ ] Unit `roadmapPrepareRespectsToggle`: dùng `ModelContainer` in-memory. `enabled: false` → không có chủ đề nào. `enabled: true` → có 1 chủ đề 20 từ.
-  - [ ] UI `testChangeNewWordLimit`: mở Cài đặt → giảm từ mới xuống 5 → quay lại → "Từ mới" hiện 5.
+  - [x] Unit `dailyQueueRespectsCustomLimits`: 30 từ đến hạn + 30 từ mới, giới hạn (5, 10) → hàng đợi có đúng 10 từ ôn + 5 từ mới.
+  - [x] Unit `roadmapPrepareRespectsToggle`: dùng `ModelContainer` in-memory. `enabled: false` → không có chủ đề nào. `enabled: true` → có 1 chủ đề 20 từ.
+  - [x] UI `testChangeNewWordLimit`: mở Cài đặt → giảm từ mới xuống 5 → quay lại → "Từ mới" hiện 5.
 - **Test tay**:
   - [ ] Đổi giọng Anh rồi nghe thử: khác rõ với giọng Mỹ.
   - [ ] Kéo tốc độ chậm: thẻ học đọc chậm theo.
   - [ ] Tắt lộ trình, xoá bộ từ của chặng: app không tự thêm lại.
 
-### 1.4 Cập nhật nội dung có sẵn cho bộ từ đã thêm · P0 · S
+### 1.4 Cập nhật nội dung có sẵn cho bộ từ đã thêm · P0 · S ✅
 - **Vấn đề**: bộ từ TOEIC thêm từ bản cũ không có IPA, câu ví dụ, nghĩa câu ví dụ.
 - **File**: `GrammarView.swift` (`Content`), `VocabularyStudyApp.swift`.
 - **Các bước**:
@@ -151,11 +154,11 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   2. Không ghi đè những ô người dùng đã sửa (ô không trống thì giữ nguyên).
   3. Gọi hàm này 1 lần mỗi khi mở app.
 - **Test tự động**:
-  - [ ] Unit `syncFillsMissingFields`: từ "agenda" thiếu IPA → sau sync có `/əˈdʒɛndə/`.
-  - [ ] Unit `syncKeepsUserEdits`: nghĩa câu ví dụ đã sửa thành "abc" → sau sync vẫn là "abc".
-  - [ ] Unit `syncIgnoresUserTopics`: chủ đề tự tạo, trùng một từ với bộ TOEIC → không bị đụng tới.
+  - [x] Unit `syncFillsMissingFields`: từ "agenda" thiếu IPA → sau sync có `/əˈdʒɛndə/`.
+  - [x] Unit `syncKeepsUserEdits`: nghĩa câu ví dụ đã sửa thành "abc" → sau sync vẫn là "abc".
+  - [x] Unit `syncIgnoresUserTopics`: chủ đề tự tạo, trùng một từ với bộ TOEIC → không bị đụng tới.
 
-### 1.5 Nhắc học chắc chắn · P0 · M
+### 1.5 Nhắc học chắc chắn · P0 · M ✅
 - **Vấn đề**: không mở app 30 ngày thì hết nhắc. Đây đúng lúc người dùng cần nhắc nhất.
 - **File**: `Models.swift` (`Reminder`), `VocabularyStudyApp.swift`.
 - **Các bước**:
@@ -165,15 +168,15 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   4. Lời nhắc ngày thứ 60 đổi nội dung thành "Lâu rồi bạn chưa học, quay lại giữ chuỗi nhé!".
   5. Chỉ đặt lịch khi đã có quyền thông báo. Việc xin quyền chuyển sang onboarding (1.6).
 - **Test tự động**:
-  - [ ] Unit `triggersSkipTodayWhenStudied`: `studiedToday = true` → lời nhắc đầu tiên là ngày mai.
-  - [ ] Unit `triggersSkipTodayWhenTimePassed`: 21:00, giờ nhắc 20:00 → không có lời nhắc hôm nay.
-  - [ ] Unit `triggersCountAndTime`: có đúng 60 lời nhắc, giờ/phút đúng với cài đặt.
+  - [x] Unit `triggersSkipTodayWhenStudied`: `studiedToday = true` → lời nhắc đầu tiên là ngày mai.
+  - [x] Unit `triggersSkipTodayWhenTimePassed`: 21:00, giờ nhắc 20:00 → không có lời nhắc hôm nay.
+  - [x] Unit `triggersCountAndTime`: có đúng 60 lời nhắc, giờ/phút đúng với cài đặt.
 - **Test tay**:
-  - [ ] Đặt giờ nhắc sau 2 phút, ra màn hình chính, chờ: thông báo hiện ra.
+  - [x] Đặt giờ nhắc sau 2 phút, ra màn hình chính, chờ: thông báo hiện ra.
   - [ ] Đặt giờ nhắc sau 2 phút, học 1 thẻ, ra màn hình chính, chờ: **không** có thông báo hôm nay.
   - [ ] Bấm vào thông báo: mở app ở tab Hôm nay.
 
-### 1.6 Onboarding và xin quyền thông báo · P0 · M
+### 1.6 Onboarding và xin quyền thông báo · P0 · M ✅
 - **Vấn đề**: hộp thoại xin quyền của hệ thống bật ngay khi mở lần đầu, người dùng dễ bấm "Don't Allow".
 - **File**: tạo `OnboardingView.swift`, sửa `VocabularyStudyApp.swift`.
 - **Các bước**: chỉ hiện lần đầu (`@AppStorage("onboarded")`), gồm 3 trang:
@@ -181,21 +184,21 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   2. Chọn số từ mới mỗi ngày: 10 / 15 / 20.
   3. Chọn giờ nhắc + giải thích lý do cần thông báo → nút "Bật nhắc học" mới xin quyền của hệ thống. Có thêm nút "Để sau".
 - **Test tự động**:
-  - [ ] UI `testOnboardingSavesChoice` (argument `-ui-testing -show-onboarding`): chọn 20 từ → hoàn tất → tab Hôm nay hiện "Từ mới 20" (bộ từ chặng 1 có đúng 20 từ), vào Cài đặt cũng thấy 20.
-  - [ ] UI `testOnboardingSkippedAfterDone`: không có `-show-onboarding` → vào thẳng tab Hôm nay.
+  - [x] UI `testOnboardingSavesChoice` (argument `-ui-testing -show-onboarding`): chọn 20 từ → hoàn tất → tab Hôm nay hiện "Từ mới 20" (bộ từ chặng 1 có đúng 20 từ), vào Cài đặt cũng thấy 20.
+  - [x] UI `testOnboardingSkippedAfterDone`: không có `-show-onboarding` → vào thẳng tab Hôm nay.
 - **Test tay**:
   - [ ] Cài mới, bấm "Để sau": app vẫn chạy bình thường, Cài đặt hiện dòng "Bật thông báo".
-  - [ ] Cài mới, bấm "Bật nhắc học" rồi "Allow": có lịch nhắc (thử như 1.5).
+  - [x] Cài mới, bấm "Bật nhắc học" rồi "Allow": có lịch nhắc (thử như 1.5).
 
-### 1.7 App icon và màu chủ đạo · P0 · S
+### 1.7 App icon và màu chủ đạo · P0 · S ✅
 - **File**: tạo `VocabularyStudy/Assets.xcassets` (`AppIcon`, `AccentColor`), sửa `project.yml` nếu cần.
 - **Các bước**:
   1. Icon 1024×1024, có bản sáng, tối và tinted của iOS 18. Ý tưởng: ngọn lửa + quyển sách, khớp với streak.
   2. Đặt `AccentColor` (cam, khớp ngọn lửa) và dùng thống nhất cho các nút chính.
 - **Test tay**:
   - [ ] Màn hình chính simulator hiện icon đúng ở cả chế độ sáng và tối.
-  - [ ] Build không có cảnh báo về asset.
-  - [ ] Tên hiển thị dưới icon là "Từ vựng".
+  - [x] Build không có cảnh báo về asset.
+  - [x] Tên hiển thị dưới icon là "Từ vựng".
 
 ### 1.8 Đưa app lên TestFlight · P0 · M
 - **Trạng thái**: đã có Apple Developer account. **Tạm hoãn**: hiện chỉ code và test trên simulator, làm việc này khi sẵn sàng thử trên máy thật.
@@ -216,7 +219,7 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
 
 ## Phase 2 — Học sâu hơn (P1)
 
-### 2.1 Ba mức trả lời: Quên / Khó / Dễ · P1 · M
+### 2.1 Ba mức trả lời: Quên / Khó / Dễ · P1 · M ✅
 - **File**: `Models.swift`, `StudyView.swift`.
 - **Quy tắc**:
 
@@ -227,14 +230,14 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   | Dễ | như "Nhớ" hiện tại (1 → 3 → × ease) | +0.1 (tối đa 3.0) |
 
 - **Test tự động**:
-  - [ ] Unit `gradeHard`: chuỗi trả lời Dễ, Dễ, Khó → interval lần lượt 1, 3, 4.
-  - [ ] Unit `gradeEaseBounds`: ease luôn nằm trong [1.3, 3.0] sau 50 lần trả lời ngẫu nhiên.
-  - [ ] Cập nhật `spacedRepetition` hiện có để dùng API mới.
-  - [ ] UI: `testStudyOneCard` dùng nút "Dễ".
+  - [x] Unit `gradeHard`: chuỗi trả lời Dễ, Dễ, Khó → interval lần lượt 1, 3, 4.
+  - [x] Unit `gradeEaseBounds`: ease luôn nằm trong [1.3, 3.0] sau 50 lần trả lời ngẫu nhiên.
+  - [x] Cập nhật `spacedRepetition` hiện có để dùng API mới.
+  - [x] UI: `testStudyOneCard` dùng nút "Dễ".
 - **Test tay**:
-  - [ ] 3 nút đủ lớn, dễ bấm bằng một tay.
+  - [x] 3 nút đủ lớn, dễ bấm bằng một tay.
 
-### 2.2 Chế độ gõ từ (đáp ứng "học rồi viết luôn") · P1 · L
+### 2.2 Chế độ gõ từ (đáp ứng "học rồi viết luôn") · P1 · L ✅
 - **File**: tạo `TypingView.swift`, sửa `TodayView.swift` (chọn chế độ học).
 - **Các bước**:
   1. Tab Hôm nay có lựa chọn chế độ: **Lật thẻ** / **Gõ từ** / **Nghe – gõ**. App nhớ lựa chọn lần trước.
@@ -243,37 +246,37 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   4. Kiểm tra đáp án bằng hàm `Answer.matches(input, term)`: không phân biệt hoa thường, bỏ khoảng trắng thừa, bỏ dấu (é = e).
   5. Gõ đúng thì tính là "Dễ". Gõ sai thì hiện đáp án đúng, tô những chữ gõ sai, tính là "Quên", và bắt gõ lại cho đúng mới được sang thẻ tiếp.
 - **Test tự động**:
-  - [ ] Unit `matchesIgnoresCaseSpaceAccent`: `" Resume "` khớp với `"résumé"`.
-  - [ ] Unit `matchesRejectsPartial`: `"in charge"` không khớp với `"in charge of"`.
-  - [ ] UI `testTypingCorrect` (`-seed`): chọn Gõ từ → gõ đúng → sang thẻ tiếp.
-  - [ ] UI `testTypingWrongShowsAnswer`: gõ sai → thấy đáp án đúng.
+  - [x] Unit `matchesIgnoresCaseSpaceAccent`: `" Resume "` khớp với `"résumé"`.
+  - [x] Unit `matchesRejectsPartial`: `"in charge"` không khớp với `"in charge of"`.
+  - [x] UI `testTypingCorrect` (`-seed`): chọn Gõ từ → gõ đúng → sang thẻ tiếp.
+  - [x] UI `testTypingWrongShowsAnswer`: gõ sai → thấy đáp án đúng.
 - **Test tay**:
-  - [ ] Bàn phím tự bật, không tự viết hoa, không tự sửa chính tả.
+  - [x] Bàn phím tự bật, không tự viết hoa, không tự sửa chính tả.
   - [ ] Nghe – gõ: nút nghe lại hoạt động, giọng và tốc độ theo Cài đặt.
 
-### 2.3 Trắc nghiệm nghĩa từ · P1 · M
+### 2.3 Trắc nghiệm nghĩa từ · P1 · M ✅
 - **Các bước**: hiện từ + IPA, chọn 1 trong 4 nghĩa. Đáp án nhiễu lấy từ cùng chủ đề, nếu không đủ thì lấy từ toàn bộ. Có ít hơn 4 từ thì không cho chọn chế độ này.
 - **Test tự động**:
-  - [ ] Unit `choicesContainAnswerAndAreUnique`: 4 lựa chọn, không trùng nhau, có đáp án đúng.
-  - [ ] Unit `choicesNilWhenPoolTooSmall`: chỉ có 3 từ → trả về nil.
+  - [x] Unit `choicesContainAnswerAndAreUnique`: 4 lựa chọn, không trùng nhau, có đáp án đúng.
+  - [x] Unit `choicesNilWhenPoolTooSmall`: chỉ có 3 từ → trả về nil.
 - **Test tay**:
   - [ ] Vị trí đáp án đúng thay đổi ngẫu nhiên giữa các lần.
 
-### 2.4 Mở rộng ngữ pháp và ôn câu sai · P1 · L
+### 2.4 Mở rộng ngữ pháp và ôn câu sai · P1 · L ✅
 - **File**: `toeic_grammar.json`, `GrammarView.swift`.
 - **Các bước**:
   1. Mỗi bài có 15–20 câu (nội dung cần người dùng hoặc giáo viên duyệt lại).
   2. Mỗi lần làm bài lấy ngẫu nhiên 8 câu. Đạt khi đúng ≥ 80% số câu đã làm.
   3. Lưu lại câu đã làm sai. Mỗi bài có nút "Ôn N câu sai", trả lời đúng thì câu đó ra khỏi danh sách.
 - **Test tự động**:
-  - [ ] Unit content: mỗi bài ≥ 15 câu, không trùng đề, đáp án nằm trong 4 lựa chọn (mở rộng test `bundledContentIsValid`).
-  - [ ] Unit `passedWithEightQuestions`: 7/8 đạt, 6/8 không đạt.
-  - [ ] Unit `wrongAnswersTracked`: sai câu 3 → có trong danh sách; ôn lại đúng → không còn.
+  - [x] Unit content: mỗi bài ≥ 15 câu, không trùng đề, đáp án nằm trong 4 lựa chọn (mở rộng test `bundledContentIsValid`).
+  - [x] Unit `passedWithEightQuestions`: 7/8 đạt, 6/8 không đạt.
+  - [x] Unit `wrongAnswersTracked`: sai câu 3 → có trong danh sách; ôn lại đúng → không còn.
 - **Test tay**:
   - [ ] Làm 2 lần liên tiếp thì ra bộ câu khác nhau.
   - [ ] Lộ trình mở chặng mới đúng khi bài đạt.
 
-### 2.5 Quét ảnh tốt hơn · P1 · M
+### 2.5 Quét ảnh tốt hơn · P1 · M ✅
 - **File**: `ScanView.swift`.
 - **Các bước**:
   1. Bỏ qua từ đã có trong chủ đề và từ bị trùng trong chính lần quét (so không phân biệt hoa thường).
@@ -281,44 +284,44 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   3. Thu nhỏ ảnh xuống cạnh dài ≤ 3000px trước khi chạy OCR.
   4. Hiện "Đã bỏ qua N từ trùng".
 - **Test tự động**:
-  - [ ] Unit `scanDedupesAgainstTopic`: chủ đề có "kind" → quét ra "Kind" bị loại.
-  - [ ] Unit `scanEnrichesFromContent`: quét ra "agenda" → có IPA và câu ví dụ.
-  - [ ] Unit `downscaleKeepsAspect`: ảnh 8000×6000 → 3000×2250.
-  - [ ] Giữ test `parseBookPage` hiện có.
+  - [x] Unit `scanDedupesAgainstTopic`: chủ đề có "kind" → quét ra "Kind" bị loại.
+  - [x] Unit `scanEnrichesFromContent`: quét ra "agenda" → có IPA và câu ví dụ.
+  - [x] Unit `downscaleKeepsAspect`: ảnh 8000×6000 → 3000×2250.
+  - [x] Giữ test `parseBookPage` hiện có.
 - **Test tay (iPhone thật)**:
   - [ ] Quét cùng một trang 2 lần: lần 2 báo bỏ qua toàn bộ, không thêm từ trùng.
-  - [ ] Ảnh 48MP quét không bị treo app, ra kết quả dưới 3 giây.
+  - [x] Ảnh 48MP quét không bị treo app, ra kết quả dưới 3 giây.
 
-### 2.6 Thống kê · P1 · L
+### 2.6 Thống kê · P1 · L ✅
 - **File**: tạo `StatsView.swift`, sửa `Models.swift`.
 - **Các bước**:
   1. Ghi số thẻ đã học mỗi ngày (`[ngày: số thẻ]`, lưu một key giống `GrammarScores`).
   2. Phân loại trạng thái từ: **mới** (chưa học), **đang học** (interval < 21 ngày), **đã thuộc** (interval ≥ 21 ngày).
   3. Màn hình thống kê gồm:
-     - [ ] 3 ô số theo trạng thái trên.
-     - [ ] Biểu đồ cột 30 ngày (Swift Charts).
-     - [ ] Lịch các ngày đã học dạng heatmap.
+     - [x] 3 ô số theo trạng thái trên.
+     - [x] Biểu đồ cột 30 ngày (Swift Charts).
+     - [x] Lịch các ngày đã học dạng heatmap.
 - **Test tự động**:
-  - [ ] Unit `dailyLogIncrements`: học 3 thẻ → hôm nay = 3. Sang ngày mới → ngày mới đếm lại từ 0.
-  - [ ] Unit `wordStatusThresholds`: interval 20 → đang học, interval 21 → đã thuộc.
+  - [x] Unit `dailyLogIncrements`: học 3 thẻ → hôm nay = 3. Sang ngày mới → ngày mới đếm lại từ 0.
+  - [x] Unit `wordStatusThresholds`: interval 20 → đang học, interval 21 → đã thuộc.
 - **Test tay**:
-  - [ ] Biểu đồ hiển thị đúng ở chế độ tối và với cỡ chữ lớn.
+  - [x] Biểu đồ hiển thị đúng ở chế độ tối và với cỡ chữ lớn.
 
-### 2.7 Badge và số từ trong thông báo · P1 · S
+### 2.7 Badge và số từ trong thông báo · P1 · S ✅
 - **Các bước**:
   1. Khi app vào nền, đặt badge = số từ đến hạn hôm nay (`setBadgeCount`).
   2. Nội dung thông báo hôm nay ghi "Có N từ cần ôn". Các ngày sau giữ câu chung.
 - **Test tự động**: unit `dueCountToday`.
 - **Test tay**:
-  - [ ] Badge trên icon đúng số. Học xong buổi → badge về 0.
+  - [x] Badge trên icon đúng số. Học xong buổi → badge về 0.
 
-### 2.8 Tìm và lọc từ · P1 · M
+### 2.8 Tìm và lọc từ · P1 · M ✅
 - **Các bước**:
   1. Tab Chủ đề có `.searchable`, tìm theo từ hoặc nghĩa trên toàn bộ từ đã lưu.
   2. Lọc theo trạng thái: mới / đang học / đã thuộc.
 - **Test tự động**:
-  - [ ] UI `testSearchFindsWord` (`-seed`): gõ một phần nghĩa → thấy đúng từ.
-  - [ ] Unit `searchMatchesMeaningWithoutAccents`: "hao phong" tìm được "hào phóng".
+  - [x] UI `testSearchFindsWord` (`-seed`): gõ một phần nghĩa → thấy đúng từ.
+  - [x] Unit `searchMatchesMeaningWithoutAccents`: "hao phong" tìm được "hào phóng".
 
 **Kết thúc Phase 2** → chạy Checklist hồi quy, gửi bản TestFlight mới.
 
@@ -480,14 +483,14 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 
 Chạy trên simulator sau khi đã xoá app và cài lại (giống lần cài đầu):
 
-- [ ] Lần đầu mở app: onboarding (từ Phase 1) → tab Hôm nay có chặng 1 và 15 từ mới.
+- [x] Lần đầu mở app: onboarding (từ Phase 1) → tab Hôm nay có chặng 1 và 15 từ mới.
 - [ ] Học hết thẻ hôm nay → tổng kết → streak = 1 → hết thẻ cần học.
 - [ ] Mở bài ngữ pháp của chặng, làm đạt → dấu ✓ ở tab Hôm nay và Ngữ pháp.
-- [ ] Tab Chủ đề: thêm bộ TOEIC khác, thêm chủ đề tự tạo, nhập tay 1 từ, sửa từ, xoá từ.
+- [x] Tab Chủ đề: thêm bộ TOEIC khác, thêm chủ đề tự tạo, nhập tay 1 từ, sửa từ, xoá từ.
 - [ ] Quét ảnh: chọn ảnh trang sách trong thư viện → kiểm tra lại → lưu → từ hiện trong chủ đề.
 - [ ] Flashcard: vuốt, lật, trộn, nghe.
 - [ ] Phát âm: nút nghe ở danh sách từ, trên thẻ, ở câu ví dụ.
 - [ ] Cài đặt: đổi giới hạn từ, giọng đọc, giờ nhắc. Tắt hẳn app rồi mở lại vẫn giữ.
-- [ ] Đặt giờ nhắc sau 2 phút → có thông báo.
-- [ ] Chế độ tối và cỡ chữ lớn: không vỡ bố cục ở 3 tab chính.
+- [x] Đặt giờ nhắc sau 2 phút → có thông báo.
+- [x] Chế độ tối và cỡ chữ lớn: không vỡ bố cục ở 3 tab chính.
 - [ ] Tắt hẳn app rồi mở lại: dữ liệu, streak, điểm ngữ pháp còn nguyên.
