@@ -486,7 +486,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 Chạy trên simulator sau khi đã xoá app và cài lại (giống lần cài đầu):
 
 - [x] Lần đầu mở app: onboarding (từ Phase 1) → tab Hôm nay có chặng 1 và 15 từ mới.
-- [ ] Học hết thẻ hôm nay → tổng kết → streak = 1 → hết thẻ cần học.
+- [x] Học hết thẻ hôm nay → tổng kết → streak = 1 → hết thẻ cần học.
 - [ ] Mở bài ngữ pháp của chặng, làm đạt → dấu ✓ ở tab Hôm nay và Ngữ pháp.
 - [x] Tab Chủ đề: thêm bộ TOEIC khác, thêm chủ đề tự tạo, nhập tay 1 từ, sửa từ, xoá từ.
 - [ ] Quét ảnh: chọn ảnh trang sách trong thư viện → kiểm tra lại → lưu → từ hiện trong chủ đề.
