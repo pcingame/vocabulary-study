@@ -24,7 +24,7 @@ struct SettingsView: View {
     @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = true
     @AppStorage(Settings.voiceKey) private var voice = Settings.defaultVoice
     @AppStorage(Settings.speechRateKey) private var speechRate = Settings.defaultSpeechRate
-    @State private var notificationsDenied = false
+    @State private var notificationStatus = UNAuthorizationStatus.authorized
 
     var body: some View {
         NavigationStack {
@@ -36,11 +36,17 @@ struct SettingsView: View {
                         .accessibilityIdentifier("reviewPerDayStepper")
                 }
                 Section {
-                    DatePicker("Giờ nhắc học", selection: reminderTime, displayedComponents: .hourAndMinute)
-                    if notificationsDenied {
-                        Button("Thông báo đang tắt — bật trong Cài đặt iOS") {
-                            if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                                UIApplication.shared.open(url)
+                    DatePicker("Giờ nhắc học", selection: Reminder.time($reminderMinutes), displayedComponents: .hourAndMinute)
+                    if notificationStatus != .authorized {
+                        Button("Bật thông báo") {
+                            Task {
+                                if notificationStatus == .notDetermined {
+                                    _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                                    await Reminder.schedule()
+                                    notificationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                                } else if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                                    await UIApplication.shared.open(url)
+                                }
                             }
                         }
                     }
@@ -75,17 +81,8 @@ struct SettingsView: View {
             .navigationTitle("Cài đặt")
             .toolbar { Button("Xong") { dismiss() }.accessibilityIdentifier("settingsDone") }
             .task {
-                notificationsDenied = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus == .denied
+                notificationStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
             }
-        }
-    }
-
-    private var reminderTime: Binding<Date> {
-        Binding {
-            Calendar.current.date(bySettingHour: reminderMinutes / 60, minute: reminderMinutes % 60, second: 0, of: .now)!
-        } set: {
-            let c = Calendar.current.dateComponents([.hour, .minute], from: $0)
-            reminderMinutes = c.hour! * 60 + c.minute!
         }
     }
 }

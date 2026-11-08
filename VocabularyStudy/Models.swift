@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 import SwiftData
 import UserNotifications
 
@@ -134,27 +134,38 @@ enum Reminder {
 
     /// Đặt lại toàn bộ lịch nhắc. Gọi khi mở app, khi học xong, khi đổi giờ nhắc và khi app vào nền,
     /// nên chỉ cần thỉnh thoảng mở app là không bao giờ hết nhắc.
+    /// Giờ nhắc (phút trong ngày) dạng Date cho DatePicker.
+    static func time(_ minutes: Binding<Int>) -> Binding<Date> {
+        Binding {
+            Calendar.current.date(bySettingHour: minutes.wrappedValue / 60, minute: minutes.wrappedValue % 60, second: 0, of: .now)!
+        } set: {
+            let c = Calendar.current.dateComponents([.hour, .minute], from: $0)
+            minutes.wrappedValue = c.hour! * 60 + c.minute!
+        }
+    }
+
     static func schedule() async {
         guard !LaunchFlags.uiTesting else { return }
         let center = UNUserNotificationCenter.current()
-        guard (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) == true else { return }
+        guard await center.notificationSettings().authorizationStatus == .authorized else { return }
         center.removeAllPendingNotificationRequests()
         let minutes = UserDefaults.standard.object(forKey: "reminderMinutes") as? Int ?? defaultMinutes
         let studiedToday = Streak.lastStudy.map { Calendar.current.isDateInToday($0) } ?? false
         let all = triggers(now: .now, minutes: minutes, studiedToday: studiedToday)
-        for (i, when) in all.enumerated() {
-            let content = UNMutableNotificationContent()
-            if i == all.count - 1 {
-                content.title = "Lâu rồi chưa học 🥲"
-                content.body = "Lâu rồi bạn chưa học, quay lại giữ chuỗi nhé!"
-            } else {
-                content.title = "Đến giờ học từ vựng 🔥"
-                content.body = "Ôn lại từ cũ và học từ mới để giữ chuỗi nhé!"
+        // Gửi cả loạt song song, không chờ từng cái, để iOS không kịp treo app giữa chừng.
+        await withTaskGroup { group in
+            for (i, when) in all.enumerated() {
+                let last = i == all.count - 1
+                group.addTask {
+                    let content = UNMutableNotificationContent()
+                    content.title = last ? "Lâu rồi chưa học 🥲" : "Đến giờ học từ vựng 🔥"
+                    content.body = last ? "Lâu rồi bạn chưa học, quay lại giữ chuỗi nhé!" : "Ôn lại từ cũ và học từ mới để giữ chuỗi nhé!"
+                    content.sound = .default
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: when, repeats: false)
+                    try? await UNUserNotificationCenter.current()
+                        .add(UNNotificationRequest(identifier: "remind-\(i)", content: content, trigger: trigger))
+                }
             }
-            content.sound = .default
-            let trigger = UNCalendarNotificationTrigger(dateMatching: when, repeats: false)
-            // Không await từng cái: gửi cả loạt ngay để không bị iOS treo app giữa chừng.
-            center.add(UNNotificationRequest(identifier: "remind-\(i)", content: content, trigger: trigger), withCompletionHandler: nil)
         }
     }
 }

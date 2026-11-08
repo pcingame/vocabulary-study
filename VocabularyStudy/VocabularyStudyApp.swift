@@ -4,11 +4,13 @@ import SwiftData
 @main
 struct VocabularyStudyApp: App {
     private let container: ModelContainer
+    @AppStorage("onboarded") private var onboarded = false
 
     init() {
         if LaunchFlags.uiTesting {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
             UIView.setAnimationsEnabled(false)
+            UserDefaults.standard.set(!LaunchFlags.showOnboarding, forKey: "onboarded")
         }
         container = try! ModelContainer(for: Topic.self, Word.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: LaunchFlags.uiTesting))
@@ -23,6 +25,7 @@ struct VocabularyStudyApp: App {
                 Tab("Chủ đề", systemImage: "books.vertical") { TopicsView() }
                 Tab("Ngữ pháp", systemImage: "text.book.closed") { GrammarView() }
             }
+            .fullScreenCover(isPresented: .constant(!onboarded)) { OnboardingView() }
         }
         .modelContainer(container)
     }
@@ -43,8 +46,9 @@ struct VocabularyStudyApp: App {
     }
 }
 
-/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test".
+/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu.
 enum LaunchFlags {
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("-ui-testing")
     static let seed = ProcessInfo.processInfo.arguments.contains("-seed")
+    static let showOnboarding = ProcessInfo.processInfo.arguments.contains("-show-onboarding")
 }

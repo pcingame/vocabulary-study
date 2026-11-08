@@ -129,4 +129,35 @@ final class VocabularyStudyUITests: XCTestCase {
         app.buttons["settingsDone"].tap()
         XCTAssertTrue(app.staticTexts["Từ mới, 5"].waitForExistence(timeout: 5))
     }
+
+    /// Trang của TabView được dựng sẵn khi chưa trượt vào, nên chờ nút bấm được rồi mới chạm.
+    private func tapWhenHittable(_ element: XCUIElement) {
+        let hittable = expectation(for: NSPredicate(format: "hittable == true"), evaluatedWith: element)
+        wait(for: [hittable], timeout: 5)
+        element.tap()
+    }
+
+    func testOnboardingSavesChoice() {
+        let app = launch(["-ui-testing", "-show-onboarding"])
+        XCTAssertTrue(app.buttons["onboardingNext1"].waitForExistence(timeout: 5))
+        snapshot("onboarding-1")
+        tapWhenHittable(app.buttons["onboardingNext1"])
+        let twenty = app.segmentedControls["onboardingNewPerDay"].buttons["20 từ"]
+        tapWhenHittable(twenty)
+        XCTAssertTrue(twenty.isSelected)
+        snapshot("onboarding-2")
+        tapWhenHittable(app.buttons["onboardingNext2"])
+        XCTAssertTrue(app.buttons["onboardingLater"].waitForExistence(timeout: 5))
+        snapshot("onboarding-3")
+        tapWhenHittable(app.buttons["onboardingLater"])
+        XCTAssertTrue(app.staticTexts["Từ mới, 20"].waitForExistence(timeout: 5))
+        app.buttons["settingsButton"].tap()
+        XCTAssertTrue(app.staticTexts["Từ mới: 20"].waitForExistence(timeout: 5))
+    }
+
+    func testOnboardingSkippedAfterDone() {
+        let app = launch(["-ui-testing"])
+        XCTAssertTrue(app.buttons["startStudy"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["onboardingNext1"].exists)
+    }
 }
