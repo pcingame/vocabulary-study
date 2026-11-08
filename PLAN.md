@@ -372,7 +372,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [x] Học 1 từ → thanh tiến độ của chủ đề đó tăng (UI `testTopicProgressUpdates`).
 
-### 3.5 Lộ trình dạng timeline · P1 · M
+### 3.5 Lộ trình dạng timeline · P1 · M ✅
 - **Các bước**:
   1. Vẽ đường dọc nối các chặng. Mỗi chặng là một nút tròn: đã xong ✓, đang học (nhấp nháy nhẹ), bị khoá 🔒.
   2. Chạm vào chặng để mở chi tiết.

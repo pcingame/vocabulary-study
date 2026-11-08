@@ -15,6 +15,7 @@ struct VocabularyStudyApp: App {
         container = try! ModelContainer(for: Topic.self, Word.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: LaunchFlags.uiTesting))
         if LaunchFlags.seed { Self.seed(container.mainContext) }
+        if LaunchFlags.stage1Done { Self.finishStage1(container.mainContext) }
         Content.sync((try? container.mainContext.fetch(FetchDescriptor<Topic>())) ?? [])
     }
 
@@ -28,6 +29,17 @@ struct VocabularyStudyApp: App {
             .fullScreenCover(isPresented: .constant(!onboarded)) { OnboardingView() }
         }
         .modelContainer(container)
+    }
+
+    /// Chặng 1 đã xong: học hết bộ từ và đạt bài ngữ pháp (để test lộ trình).
+    private static func finishStage1(_ context: ModelContext) {
+        let stage = Roadmap.stages[0]
+        Content.add(stage.deck, to: context)
+        let topic = try! context.fetch(FetchDescriptor<Topic>()).first { $0.name == stage.deck.name }!
+        for word in topic.words { word.answer(.easy) }
+        var scores = GrammarScores()
+        scores.record(stage.grammar, score: 8, of: 8)
+        UserDefaults.standard.set(scores.rawValue, forKey: "grammarScores")
     }
 
     /// Dữ liệu mẫu cho UI test.
@@ -46,9 +58,10 @@ struct VocabularyStudyApp: App {
     }
 }
 
-/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu.
+/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu; `-stage1-done` = chặng 1 đã xong.
 enum LaunchFlags {
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("-ui-testing")
     static let seed = ProcessInfo.processInfo.arguments.contains("-seed")
     static let showOnboarding = ProcessInfo.processInfo.arguments.contains("-show-onboarding")
+    static let stage1Done = ProcessInfo.processInfo.arguments.contains("-stage1-done")
 }

@@ -411,4 +411,19 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertEqual(row.value as? String, "Đã học 1, 0 từ đến hạn")
         snapshot("topics-progress")
     }
+
+    // MARK: - Lộ trình
+
+    func testRoadmapTimeline() {
+        let app = launch(["-ui-testing", "-stage1-done"])
+        let link = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Chặng 2/10'")).firstMatch
+        XCTAssertTrue(link.waitForExistence(timeout: 5))
+        link.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["Chặng 1: Văn phòng, đã xong"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["Chặng 2: Nhân sự & Tuyển dụng, đang học"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["Chặng 3: Họp & Giao tiếp, chưa mở"].exists)
+        snapshot("roadmap")
+        app.descendants(matching: .any)["stage-2"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Chặng 2"].waitForExistence(timeout: 5))
+    }
 }
