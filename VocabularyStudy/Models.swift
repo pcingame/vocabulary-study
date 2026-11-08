@@ -99,6 +99,7 @@ enum Reminder {
     /// Lên lịch nhắc cho 30 ngày tới, bỏ qua hôm nay nếu đã học.
     // ponytail: lịch 30 ngày đặt lại mỗi lần mở app; không mở app 30 ngày thì hết nhắc.
     static func schedule() async {
+        guard !LaunchFlags.uiTesting else { return }
         let center = UNUserNotificationCenter.current()
         guard (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) == true else { return }
         center.removeAllPendingNotificationRequests()
