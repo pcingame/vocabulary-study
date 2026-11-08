@@ -287,4 +287,27 @@ final class VocabularyStudyUITests: XCTestCase {
         right.tap()
         XCTAssertEqual(remainingCards(app), before.map { $0 - 1 })
     }
+
+    // MARK: - Ngữ pháp
+
+    func testGrammarQuizTracksMistakes() {
+        let app = launch(["-ui-testing"])
+        app.tabBars.buttons["Ngữ pháp"].tap()
+        app.staticTexts["Từ loại"].firstMatch.tap()
+        app.buttons["startQuiz"].tap()
+        var correct = 0
+        for i in 1...8 {
+            XCTAssertTrue(app.navigationBars["Câu \(i)/8"].waitForExistence(timeout: 5))
+            app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'A. '")).firstMatch.tap()
+            if app.images["checkmark.circle.fill"].exists && !app.images["xmark.circle.fill"].exists { correct += 1 }
+            if i == 1 { snapshot("grammar-answered") }
+            app.buttons[i < 8 ? "Câu tiếp" : "Xem kết quả"].tap()
+        }
+        XCTAssertTrue(app.staticTexts["\(correct)/8 câu đúng"].waitForExistence(timeout: 5))
+        app.buttons["Đóng"].tap()
+        if correct < 8 {
+            XCTAssertTrue(app.buttons["Ôn \(8 - correct) câu sai"].waitForExistence(timeout: 5))
+            snapshot("grammar-lesson")
+        }
+    }
 }

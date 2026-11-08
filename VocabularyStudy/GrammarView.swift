@@ -56,16 +56,41 @@ enum Content {
     }
 }
 
-/// Điểm cao nhất mỗi bài ngữ pháp, lưu chung một key để mọi màn hình cùng cập nhật.
+/// Điểm cao nhất (%) và các câu làm sai của mỗi bài ngữ pháp, lưu chung một key để mọi màn hình cùng cập nhật.
 struct GrammarScores: RawRepresentable {
-    var best: [String: Int] = [:]
+    var best: [String: Int] = [:]        // id bài → % đúng cao nhất
+    var wrong: [String: [String]] = [:]  // id bài → đề các câu đang sai
+
+    static let quizSize = 8
+
+    // Struct riêng để encode: nếu cho GrammarScores tự Codable thì Swift sẽ encode qua rawValue → lặp vô hạn.
+    private struct Stored: Codable { var best: [String: Int]; var wrong: [String: [String]] }
 
     init() {}
-    init?(rawValue: String) { best = (try? JSONDecoder().decode([String: Int].self, from: Data(rawValue.utf8))) ?? [:] }
-    var rawValue: String { String(decoding: try! JSONEncoder().encode(best), as: UTF8.self) }
+    init?(rawValue: String) {
+        guard let s = try? JSONDecoder().decode(Stored.self, from: Data(rawValue.utf8)) else { return }
+        best = s.best; wrong = s.wrong
+    }
+    var rawValue: String { String(decoding: try! JSONEncoder().encode(Stored(best: best, wrong: wrong)), as: UTF8.self) }
 
     /// Đạt khi đúng từ 80% trở lên.
-    func passed(_ topic: GrammarTopic) -> Bool { (best[topic.id] ?? 0) * 5 >= topic.questions.count * 4 }
+    func passed(_ topic: GrammarTopic) -> Bool { (best[topic.id] ?? 0) >= 80 }
+
+    mutating func record(_ topic: GrammarTopic, score: Int, of total: Int) {
+        best[topic.id] = max(best[topic.id] ?? 0, score * 100 / max(1, total))
+    }
+
+    /// Sai thì thêm vào danh sách ôn, đúng thì bỏ ra.
+    mutating func answered(_ q: Question, in topic: GrammarTopic, correct: Bool) {
+        var list = wrong[topic.id, default: []].filter { $0 != q.q }
+        if !correct { list.append(q.q) }
+        wrong[topic.id] = list.isEmpty ? nil : list
+    }
+
+    func mistakes(_ topic: GrammarTopic) -> [Question] {
+        let list = Set(wrong[topic.id] ?? [])
+        return topic.questions.filter { list.contains($0.q) }
+    }
 }
 
 struct GrammarView: View {
@@ -88,7 +113,7 @@ struct BestScore: View {
 
     var body: some View {
         if let best = scores.best[topic.id] {
-            Label("\(best)/\(topic.questions.count)", systemImage: scores.passed(topic) ? "checkmark.circle.fill" : "circle")
+            Label("\(best)%", systemImage: scores.passed(topic) ? "checkmark.circle.fill" : "circle")
                 .foregroundStyle(scores.passed(topic) ? .green : .secondary)
         }
     }
@@ -96,7 +121,10 @@ struct BestScore: View {
 
 struct GrammarLessonView: View {
     let topic: GrammarTopic
-    @State private var quizzing = false
+    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @State private var quiz: QuizKind?
+
+    enum QuizKind: Identifiable { case random, mistakes; var id: Self { self } }
 
     var body: some View {
         ScrollView {
@@ -107,44 +135,64 @@ struct GrammarLessonView: View {
                 .padding()
         }
         .safeAreaInset(edge: .bottom) {
-            Button { quizzing = true } label: {
-                Text("Làm \(topic.questions.count) câu bài tập").frame(maxWidth: .infinity)
+            VStack {
+                let wrong = scores.mistakes(topic).count
+                if wrong > 0 {
+                    Button { quiz = .mistakes } label: { Text("Ôn \(wrong) câu sai").frame(maxWidth: .infinity) }
+                        .buttonStyle(.bordered)
+                        .accessibilityIdentifier("reviewMistakes")
+                }
+                Button { quiz = .random } label: {
+                    Text("Làm \(min(GrammarScores.quizSize, topic.questions.count)) câu bài tập").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("startQuiz")
             }
-            .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .padding()
         }
         .navigationTitle(topic.name)
-        .fullScreenCover(isPresented: $quizzing) { QuizView(topic: topic) }
+        .fullScreenCover(item: $quiz) { QuizView(topic: topic, reviewing: $0 == .mistakes) }
     }
 }
 
+/// Làm bài: ngẫu nhiên 8 câu (tính điểm), hoặc ôn các câu đang sai (không tính điểm).
 struct QuizView: View {
     let topic: GrammarTopic
+    let reviewing: Bool
     @Environment(\.dismiss) private var dismiss
+    @State private var questions: [Question] = []
     @State private var index = 0
     @State private var picked: Int?
     @State private var score = 0
     @AppStorage("grammarScores") private var scores = GrammarScores()
 
-    private var count: Int { topic.questions.count }
+    private var count: Int { questions.count }
+
+    private func start() {
+        questions = reviewing ? scores.mistakes(topic) : Array(topic.questions.shuffled().prefix(GrammarScores.quizSize))
+        index = 0; score = 0; picked = nil
+    }
 
     var body: some View {
         NavigationStack {
             Group {
-                if index < count {
-                    question(topic.questions[index])
+                if questions.isEmpty {
+                    Color.clear  // chờ start() trong onAppear
+                } else if index < count {
+                    question(questions[index])
                 } else {
                     ContentUnavailableView {
                         Label("\(score)/\(count) câu đúng", systemImage: score == count ? "star.fill" : "checkmark.seal")
                     } actions: {
-                        Button("Làm lại") { index = 0; score = 0 }
+                        if !reviewing { Button("Làm lại") { start() } }
                     }
                 }
             }
             .navigationTitle(index < count ? "Câu \(index + 1)/\(count)" : topic.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() } }
+            .onAppear { if questions.isEmpty { start() } }
         }
     }
 
@@ -157,6 +205,7 @@ struct QuizView: View {
                         guard picked == nil else { return }
                         picked = i
                         if i == q.answer { score += 1 }
+                        scores.answered(q, in: topic, correct: i == q.answer)
                     } label: {
                         HStack {
                             Text("\(String(UnicodeScalar(UInt8(65 + i)))). \(q.options[i])")
@@ -179,7 +228,7 @@ struct QuizView: View {
                     Button {
                         picked = nil
                         index += 1
-                        if index == count { scores.best[topic.id] = max(scores.best[topic.id] ?? 0, score) }
+                        if index == count && !reviewing { scores.record(topic, score: score, of: count) }
                     } label: {
                         Text(index + 1 < count ? "Câu tiếp" : "Xem kết quả").frame(maxWidth: .infinity)
                     }

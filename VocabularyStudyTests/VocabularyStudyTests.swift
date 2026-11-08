@@ -72,7 +72,8 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     }
     #expect(Set(Content.grammar.map(\.id)).count == Content.grammar.count)
     for topic in Content.grammar {
-        #expect(!topic.questions.isEmpty)
+        #expect(topic.questions.count >= 15, "\(topic.id)")
+        #expect(Set(topic.questions.map(\.q)).count == topic.questions.count, "trùng đề: \(topic.id)")
         for q in topic.questions { #expect(q.options.count == 4 && q.options.indices.contains(q.answer), "\(q.q)") }
     }
 }
@@ -82,10 +83,9 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     #expect(Set(Roadmap.stages.map(\.deck.name)).count == 10)
     #expect(Set(Roadmap.stages.map(\.grammar.id)).count == 10)
 
-    let topic = Roadmap.stages[0].grammar  // 6 câu: đạt khi đúng ≥ 5
+    let topic = Roadmap.stages[0].grammar
     var scores = GrammarScores()
-    scores.best[topic.id] = 4; #expect(!scores.passed(topic))
-    scores.best[topic.id] = 5; #expect(scores.passed(topic))
+    scores.record(topic, score: 6, of: 8); #expect(!scores.passed(topic))
     #expect(Roadmap.current(topics: [], scores: scores)?.number == 1)  // chưa có từ vựng → vẫn ở chặng 1
 }
 
@@ -233,4 +233,24 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(Answer.choices(for: words[0], pool: words, fallback: words) == nil)
     let extra = Word(term: "d", pos: "", meaning: "nghĩa d")
     #expect(Answer.choices(for: words[0], pool: words, fallback: [extra]) != nil)  // thiếu thì lấy thêm từ ngoài chủ đề
+}
+
+@Test func passedWithEightQuestions() {
+    let topic = Content.grammar[0]
+    var scores = GrammarScores()
+    scores.record(topic, score: 6, of: 8); #expect(!scores.passed(topic))
+    scores.record(topic, score: 7, of: 8); #expect(scores.passed(topic))
+    scores.record(topic, score: 2, of: 8); #expect(scores.passed(topic))  // giữ điểm cao nhất
+    #expect(GrammarScores(rawValue: scores.rawValue)?.best == scores.best)
+}
+
+@Test func wrongAnswersTracked() {
+    let topic = Content.grammar[0], q = topic.questions[2]
+    var scores = GrammarScores()
+    scores.answered(q, in: topic, correct: false)
+    scores.answered(q, in: topic, correct: false)  // sai lại không bị nhân đôi
+    #expect(scores.mistakes(topic) == [q])
+    #expect(GrammarScores(rawValue: scores.rawValue)?.mistakes(topic) == [q])
+    scores.answered(q, in: topic, correct: true)
+    #expect(scores.mistakes(topic).isEmpty)
 }
