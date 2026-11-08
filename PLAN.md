@@ -394,12 +394,14 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Hiệu ứng đúng/sai rõ ràng. Có Reduce Motion thì chỉ đổi màu.
 
-### 3.8 Accessibility, Dark Mode, Dynamic Type · P1 · M
+### 3.8 Accessibility, Dark Mode, Dynamic Type · P1 · M ✅
 - **Các bước**:
   1. Nhãn VoiceOver cho mọi nút chỉ có icon.
   2. Kiểm tra bằng Accessibility Inspector (Xcode → Open Developer Tool).
   3. Sửa các chỗ bị cắt chữ.
-- **Test tự động**: UI `testLargeTextSmoke`: chạy luồng học 1 thẻ với argument `-UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityXL`.
+- **Test tự động**:
+  - [x] UI `testLargeTextSmoke`: chạy luồng học 1 thẻ với argument `-UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityXL`.
+  - [x] UI `testAccessibilityAudit`: `performAccessibilityAudit()` trên Hôm nay, Học, Chủ đề, Chi tiết chủ đề, Ngữ pháp (thay cho Accessibility Inspector).
 - **Test tay**:
   - [ ] Bật VoiceOver và học được 1 thẻ chỉ bằng thao tác VoiceOver.
 

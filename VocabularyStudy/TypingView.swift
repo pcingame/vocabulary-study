@@ -68,7 +68,7 @@ struct ChoiceCard: View {
 
     private func color(_ choice: String) -> Color {
         guard let picked else { return .accentColor }
-        return choice == word.meaning ? .green : choice == picked ? .red : .gray
+        return choice == word.meaning ? .easy : choice == picked ? .forgot : .gray
     }
 }
 

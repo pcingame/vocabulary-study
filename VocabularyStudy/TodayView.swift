@@ -15,6 +15,7 @@ struct TodayView: View {
     @AppStorage("studyMode") private var mode = StudyMode.flip
     @State private var studying = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showingSettings = false
 
     var body: some View {
@@ -25,7 +26,10 @@ struct TodayView: View {
         NavigationStack {
             List {
                 Section {
-                    HStack {
+                    // Chữ rất to thì xếp dọc để "ngày liên tiếp" không bị bẻ từng chữ.
+                    let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 12))
+                                                              : AnyLayout(HStackLayout())
+                    layout {
                         VStack(alignment: .leading, spacing: 2) {
                             Image(systemName: "flame.fill")
                                 .font(.system(size: 44))
@@ -37,7 +41,7 @@ struct TodayView: View {
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel("\(days) ngày liên tiếp")
                         .accessibilityIdentifier("streak")
-                        Spacer()
+                        Spacer(minLength: 0)
                         ProgressRing(done: done, total: done + queue.count)
                     }
                     .padding(.vertical, 8)
@@ -52,11 +56,15 @@ struct TodayView: View {
                     .pickerStyle(.segmented)
                     .accessibilityIdentifier("studyModePicker")
                     Button { studying = true } label: {
-                        Label("Bắt đầu học · \(mode.title)", systemImage: "play.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
+                        VStack(spacing: 2) {
+                            Label("Bắt đầu học", systemImage: "play.fill").font(.headline)
+                            Text(mode.title).font(.caption)
+                        }
+                        .fixedSize(horizontal: false, vertical: true)  // chữ to thì nút cao lên, không cắt chữ
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.roundedRectangle(radius: 14))  // hình viên thuốc cắt mép khi chữ nhiều dòng
                     .controlSize(.large)
                     .disabled(queue.isEmpty)
                     .accessibilityIdentifier("startStudy")
@@ -102,8 +110,11 @@ struct ProgressRing: View {
                 Text("\(done)/\(total)").font(.headline).monospacedDigit().contentTransition(.numericText())
                 Text("thẻ").font(.caption2).foregroundStyle(.secondary)
             }
+            .lineLimit(1)
+            .minimumScaleFactor(0.4)  // vòng có giới hạn kích thước, chữ to thì thu nhỏ cho vừa
+            .padding(14)
         }
-        .frame(width: size, height: size)
+        .frame(width: min(size, 130), height: min(size, 130))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Hôm nay đã học \(done) trên \(total) thẻ")
         .accessibilityIdentifier("todayProgress")

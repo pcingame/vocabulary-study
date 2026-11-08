@@ -149,9 +149,13 @@ struct TopicDetailView: View {
                         .accessibilityHint("Chạm để sửa")
                         .accessibilityIdentifier("word-\(word.term)")
                         Spacer()
-                        Button("Nghe", systemImage: "speaker.wave.2") { Speaker.say(word.term) }
-                            .labelStyle(.iconOnly)
-                            .buttonStyle(.borderless)
+                        Button { Speaker.say(word.term) } label: {
+                            Image(systemName: "speaker.wave.2")
+                                .frame(width: 44, height: 44)  // vùng chạm tối thiểu 44pt
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(.borderless)
+                        .accessibilityLabel("Nghe \(word.term)")
                     }
                     .contentShape(.rect)
                     .onTapGesture { editing = word }  // chạm để sửa; nút nghe vẫn bấm riêng được

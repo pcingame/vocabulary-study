@@ -67,7 +67,7 @@ struct StudyView: View {
             FlipCard(word: word, flipped: flipped)
                 .overlay {
                     RoundedRectangle(cornerRadius: 24)
-                        .fill(drag > 0 ? Color.green : .red)
+                        .fill(drag > 0 ? Color.easy : .forgot)
                         .opacity(min(0.35, abs(drag) / 300))
                         .allowsHitTesting(false)
                 }
@@ -83,11 +83,11 @@ struct StudyView: View {
                             : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .opacity))
             if flipped {
                 HStack {
-                    Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.red)
+                    Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.forgot)
                         .accessibilityIdentifier("answerForget")
-                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.orange)
+                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.accentColor)
                         .accessibilityIdentifier("answerHard")
-                    Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.tint(.green)
+                    Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.tint(.easy)
                         .accessibilityIdentifier("answerEasy")
                 }
             } else {
@@ -130,6 +130,12 @@ struct StudyView: View {
     }
 }
 
+extension Color {
+    // Đậm hơn .red/.green để chữ trắng trên nút đạt tương phản 4.5:1.
+    static let forgot = Color(red: 0.73, green: 0.11, blue: 0.11)
+    static let easy = Color(red: 0.08, green: 0.50, blue: 0.24)
+}
+
 /// Kết quả một buổi học. Mỗi từ tính theo lần trả lời đầu tiên; từ quên nhiều lần chỉ ghi 1 lần.
 struct SessionSummary {
     private var first: [ObjectIdentifier: Word.Grade] = [:]
@@ -161,9 +167,9 @@ struct SummaryView: View {
                 Text("Xong rồi! 🎉").font(.title.bold())
                 Text("Đã học \(summary.wordCount) từ").font(.title3)
                 HStack {
-                    stat("Dễ", summary.count(.easy), .green)
-                    stat("Khó", summary.count(.hard), .orange)
-                    stat("Quên", summary.count(.forgot), .red)
+                    stat("Dễ", summary.count(.easy), .easy)
+                    stat("Khó", summary.count(.hard), .accentColor)
+                    stat("Quên", summary.count(.forgot), .forgot)
                 }
                 Label("Chuỗi: \(after) ngày" + (after > streakBefore ? " (+\(after - streakBefore))" : ""), systemImage: "flame.fill")
                     .font(.headline)
@@ -347,5 +353,13 @@ struct FlipCard: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 24))
         .rotation3DEffect(.degrees(flipped && !reduceMotion ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+        // Cả thẻ là 1 phần tử cho VoiceOver, chỉ đọc mặt đang hiện (mặt úp vẫn nằm trong cây view nên phải gộp).
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(flipped ? [word.term, word.pos, word.meaning, word.example].filter { !$0.isEmpty }.joined(separator: ", ")
+                                    : [word.term, word.ipa].filter { !$0.isEmpty }.joined(separator: ", "))
+        .accessibilityHint(flipped ? "" : "Chạm hai lần để lật")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction(named: "Nghe phát âm") { Speaker.say(word.term) }
+        .accessibilityAction(named: "Nghe câu ví dụ") { Speaker.say(word.example) }
     }
 }

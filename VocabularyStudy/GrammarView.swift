@@ -108,6 +108,7 @@ struct GrammarView: View {
                 NavigationLink(value: topic) {
                     LabeledContent(topic.name) { BestScore(topic: topic) }
                 }
+                .accessibilityLabel(topic.name)  // không có dòng này VoiceOver đọc trống khi chưa có điểm
             }
             .navigationTitle("Ngữ pháp TOEIC")
             .navigationDestination(for: GrammarTopic.self) { GrammarLessonView(topic: $0) }
