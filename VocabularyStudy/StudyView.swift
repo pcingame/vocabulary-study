@@ -12,7 +12,9 @@ struct StudyView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            // Color.clear giữ cho view luôn có nội dung, nếu không onAppear không chạy khi hàng đợi còn rỗng.
+            ZStack {
+                Color.clear
                 if let word = queue.first {
                     card(word)
                 } else if loaded {
@@ -22,7 +24,7 @@ struct StudyView: View {
             }
             .navigationTitle(queue.isEmpty ? "" : "Còn \(queue.count) thẻ")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { Button("Đóng") { dismiss() } }
+            .toolbar { Button("Đóng") { dismiss() }.accessibilityIdentifier("studyClose") }
             .onAppear {
                 guard !loaded else { return }
                 queue = Word.todayQueue(topic?.words ?? allWords)
@@ -40,10 +42,13 @@ struct StudyView: View {
             if flipped {
                 HStack {
                     Button { answer(false) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.red)
+                        .accessibilityIdentifier("answerForget")
                     Button { answer(true) } label: { Text("Nhớ").frame(maxWidth: .infinity) }.tint(.green)
+                        .accessibilityIdentifier("answerRemember")
                 }
             } else {
                 Button { flipped = true } label: { Text("Xem nghĩa").frame(maxWidth: .infinity) }
+                    .accessibilityIdentifier("revealAnswer")
             }
         }
         .buttonStyle(.borderedProminent)

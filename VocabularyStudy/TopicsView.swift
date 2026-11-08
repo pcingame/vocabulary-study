@@ -31,6 +31,7 @@ struct TopicsView: View {
                     Button("Bộ từ TOEIC có sẵn", systemImage: "star") { browsingDecks = true }
                     Button("Chủ đề mới", systemImage: "folder.badge.plus") { adding = true }
                 }
+                .accessibilityIdentifier("addTopicMenu")
             }
             .sheet(isPresented: $browsingDecks) { DecksView() }
             .alert("Chủ đề mới", isPresented: $adding) {
@@ -89,6 +90,7 @@ struct TopicDetailView: View {
                     .disabled(Word.todayQueue(topic.words).isEmpty)
                 Button("Lật thẻ (không tính vào lịch ôn)") { flashcards = true }
                     .disabled(words.isEmpty)
+                    .accessibilityIdentifier("flashcardButton")
             }
             Section("\(words.count) từ") {
                 ForEach(words) { word in
@@ -120,6 +122,7 @@ struct TopicDetailView: View {
                 Button("Quét ảnh sách", systemImage: "camera") { scanning = true }
                 Button("Nhập tay", systemImage: "square.and.pencil") { addingWord = true }
             }
+            .accessibilityIdentifier("addWordMenu")
         }
         .sheet(isPresented: $addingWord) { AddWordView(topic: topic) }
         .sheet(isPresented: $scanning) { ScanView(topic: topic) }

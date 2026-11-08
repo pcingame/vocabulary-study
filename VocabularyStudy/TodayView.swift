@@ -26,6 +26,7 @@ struct TodayView: View {
                     LabeledContent("Từ mới", value: "\(newCount)")
                     Button("Bắt đầu học") { studying = true }
                         .disabled(queue.isEmpty)
+                        .accessibilityIdentifier("startStudy")
                 }
                 RoadmapSection(topics: topics, scores: scores)
                 Section {
