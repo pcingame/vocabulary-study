@@ -5,6 +5,7 @@ struct TopicsView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \Topic.createdAt) private var topics: [Topic]
     @State private var adding = false
+    @State private var browsingDecks = false
     @State private var newName = ""
 
     var body: some View {
@@ -20,12 +21,18 @@ struct TopicsView: View {
             .overlay {
                 if topics.isEmpty {
                     ContentUnavailableView("Chưa có chủ đề", systemImage: "books.vertical",
-                                           description: Text("Bấm + để tạo chủ đề đầu tiên."))
+                                           description: Text("Bấm + để tạo chủ đề hoặc thêm bộ từ TOEIC có sẵn."))
                 }
             }
             .navigationTitle("Chủ đề")
             .navigationDestination(for: Topic.self) { TopicDetailView(topic: $0) }
-            .toolbar { Button("Thêm chủ đề", systemImage: "plus") { adding = true } }
+            .toolbar {
+                Menu("Thêm chủ đề", systemImage: "plus") {
+                    Button("Bộ từ TOEIC có sẵn", systemImage: "star") { browsingDecks = true }
+                    Button("Chủ đề mới", systemImage: "folder.badge.plus") { adding = true }
+                }
+            }
+            .sheet(isPresented: $browsingDecks) { DecksView() }
             .alert("Chủ đề mới", isPresented: $adding) {
                 TextField("Ví dụ: Lòng tốt", text: $newName)
                 Button("Huỷ", role: .cancel) { newName = "" }
@@ -35,6 +42,42 @@ struct TopicsView: View {
                     newName = ""
                 }
             }
+        }
+    }
+}
+
+struct DecksView: View {
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    @Query private var topics: [Topic]
+
+    var body: some View {
+        NavigationStack {
+            List(Content.vocab, id: \.name) { deck in
+                let added = topics.contains { $0.name == deck.name }
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(deck.name)
+                        Text(deck.words.prefix(4).map { $0[0] }.joined(separator: ", ") + "…")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button(added ? "Đã thêm" : "Thêm \(deck.words.count) từ") { add(deck) }
+                        .buttonStyle(.bordered)
+                        .disabled(added)
+                }
+            }
+            .navigationTitle("Bộ từ TOEIC")
+            .toolbar { Button("Xong") { dismiss() } }
+        }
+    }
+
+    private func add(_ deck: VocabDeck) {
+        let topic = Topic(name: deck.name)
+        context.insert(topic)
+        let now = Date.now
+        for (i, w) in deck.words.enumerated() {
+            topic.words.append(Word(term: w[0], pos: w[1], meaning: w[2], createdAt: now.addingTimeInterval(Double(i) / 1000)))
         }
     }
 }

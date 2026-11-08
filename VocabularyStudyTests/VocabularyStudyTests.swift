@@ -59,3 +59,15 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
         Draft(term: "fair", pos: "adj", meaning: "công bằng"),
     ])
 }
+
+@Test func bundledContentIsValid() {
+    #expect(Content.vocab.count == 10)
+    for deck in Content.vocab {
+        for w in deck.words { #expect(w.count == 3 && !w[0].isEmpty && !w[2].isEmpty, "\(deck.name): \(w)") }
+    }
+    #expect(Set(Content.grammar.map(\.id)).count == Content.grammar.count)
+    for topic in Content.grammar {
+        #expect(!topic.questions.isEmpty)
+        for q in topic.questions { #expect(q.options.count == 4 && q.options.indices.contains(q.answer), "\(q.q)") }
+    }
+}
