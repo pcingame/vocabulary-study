@@ -9,6 +9,8 @@ struct StudyView: View {
     @State private var queue: [Word] = []
     @State private var loaded = false
     @State private var flipped = false
+    @State private var answeredCount = 0  // đổi id thẻ gõ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
+    @AppStorage("studyMode") private var mode = StudyMode.flip
 
     var body: some View {
         NavigationStack {
@@ -16,7 +18,11 @@ struct StudyView: View {
             ZStack {
                 Color.clear
                 if let word = queue.first {
-                    card(word)
+                    if mode == .flip {
+                        card(word)
+                    } else {
+                        TypingCard(word: word, listening: mode == .listening) { answer($0) }.id(answeredCount)
+                    }
                 } else if loaded {
                     ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
                                            description: Text("Hẹn gặp lại ngày mai."))
@@ -62,7 +68,8 @@ struct StudyView: View {
     private func answer(_ grade: Word.Grade) {
         let word = queue.removeFirst()
         word.answer(grade)
-        if grade == .forgot { queue.append(word) }  // quên thì học lại cuối buổi
+        if grade == .forgot { queue.append(word) }
+        answeredCount += 1  // quên thì học lại cuối buổi
         flipped = false
         Streak.record()
     }

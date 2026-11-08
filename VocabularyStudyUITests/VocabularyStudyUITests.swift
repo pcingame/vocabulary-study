@@ -239,4 +239,40 @@ final class VocabularyStudyUITests: XCTestCase {
             snapshot("dark-large-\(tab)")
         }
     }
+
+    // MARK: - Gõ từ
+
+    private func startTyping(_ app: XCUIApplication) -> XCUIElement {
+        app.segmentedControls["studyModePicker"].buttons["Gõ từ"].tap()
+        app.buttons["startStudy"].tap()
+        let field = app.textFields["typingField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["tử tế"].exists)  // thẻ đầu là "kind"
+        return field
+    }
+
+    func testTypingCorrect() {
+        let app = launch(["-ui-testing", "-seed"])
+        let field = startTyping(app)
+        let before = remainingCards(app)
+        field.typeText("Kind")
+        app.buttons["typingCheck"].tap()
+        XCTAssertTrue(app.staticTexts["kiên nhẫn"].waitForExistence(timeout: 5))  // sang thẻ "patient"
+        XCTAssertEqual(remainingCards(app), before.map { $0 - 1 })
+    }
+
+    func testTypingWrongShowsAnswer() {
+        let app = launch(["-ui-testing", "-seed"])
+        let field = startTyping(app)
+        let before = remainingCards(app)
+        field.typeText("kidn")
+        app.buttons["typingCheck"].tap()
+        XCTAssertTrue(app.staticTexts["correctAnswer"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["correctAnswer"].label, "kind")
+        snapshot("typing-wrong")
+        field.typeText("kind")
+        app.buttons["typingCheck"].tap()
+        XCTAssertTrue(app.staticTexts["kiên nhẫn"].waitForExistence(timeout: 5))
+        XCTAssertEqual(remainingCards(app), before)  // quên → thẻ quay lại cuối hàng
+    }
 }

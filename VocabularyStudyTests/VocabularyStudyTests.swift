@@ -208,3 +208,13 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     for i in 0..<20 { w.answer(.easy, now: day(50 + i)) }
     #expect(w.ease == 3.0)
 }
+
+@Test func matchesIgnoresCaseSpaceAccent() {
+    #expect(Answer.matches(" Resume ", "résumé"))
+    #expect(Answer.matches("in  charge   of", "in charge of"))
+    #expect(!Answer.matches("kid", "kind"))
+}
+
+@Test func matchesRejectsPartial() {
+    #expect(!Answer.matches("in charge", "in charge of"))
+}

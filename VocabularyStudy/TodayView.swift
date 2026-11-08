@@ -12,6 +12,7 @@ struct TodayView: View {
     @AppStorage(Settings.newPerDayKey) private var newPerDay = Settings.defaultNewPerDay
     @AppStorage(Settings.reviewPerDayKey) private var reviewPerDay = Settings.defaultReviewPerDay
     @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = true
+    @AppStorage("studyMode") private var mode = StudyMode.flip
     @State private var studying = false
     @State private var showingSettings = false
 
@@ -28,6 +29,11 @@ struct TodayView: View {
                 Section {
                     LabeledContent("Từ cần ôn", value: "\(queue.count - newCount)")
                     LabeledContent("Từ mới", value: "\(newCount)")
+                    Picker("Cách học", selection: $mode) {
+                        ForEach(StudyMode.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityIdentifier("studyModePicker")
                     Button("Bắt đầu học") { studying = true }
                         .disabled(queue.isEmpty)
                         .accessibilityIdentifier("startStudy")
