@@ -9,6 +9,21 @@ struct Draft: Identifiable, Equatable {
     var meaning: String
 
     static func == (a: Draft, b: Draft) -> Bool { (a.term, a.pos, a.meaning) == (b.term, b.pos, b.meaning) }
+
+    /// Bỏ từ đã có (trong chủ đề hoặc đã quét trước đó) và từ trùng trong chính lần quét, không phân biệt hoa thường.
+    static func dedupe(_ found: [Draft], existing: [String]) -> (kept: [Draft], skipped: Int) {
+        var seen = Set(existing.map(Answer.normalize))
+        let kept = found.filter { seen.insert(Answer.normalize($0.term)).inserted }
+        return (kept, found.count - kept.count)
+    }
+
+    /// Tạo từ; nếu có trong bộ TOEIC thì tự điền phiên âm và câu ví dụ.
+    func makeWord(createdAt: Date) -> Word {
+        let t = term.trimmingCharacters(in: .whitespaces)
+        let row = Content.vocab.lazy.flatMap(\.words).first { Answer.normalize($0[0]) == Answer.normalize(t) }
+        return Word(term: t, ipa: row?[1] ?? "", pos: pos, meaning: meaning,
+                    example: row?[4] ?? "", exampleMeaning: row?[5] ?? "", createdAt: createdAt)
+    }
 }
 
 struct ScanView: View {
@@ -73,8 +88,10 @@ struct ScanView: View {
         defer { busy = false }
         do {
             let found = try await OCR.words(from: data)
-            drafts += found
-            message = found.isEmpty ? "Không tìm thấy từ nào, thử chụp thẳng và rõ hơn." : "Tìm thấy \(found.count) từ."
+            let (kept, skipped) = Draft.dedupe(found, existing: topic.words.map(\.term) + drafts.map(\.term))
+            drafts += kept
+            message = found.isEmpty ? "Không tìm thấy từ nào, thử chụp thẳng và rõ hơn."
+                : "Tìm thấy \(kept.count) từ mới." + (skipped > 0 ? " Đã bỏ qua \(skipped) từ trùng." : "")
         } catch {
             message = "Không đọc được ảnh: \(error.localizedDescription)"
         }
@@ -84,15 +101,30 @@ struct ScanView: View {
         let now = Date.now
         for (i, d) in drafts.enumerated() where !d.term.trimmingCharacters(in: .whitespaces).isEmpty {
             // createdAt tăng dần để giữ đúng thứ tự trong sách khi học
-            topic.words.append(Word(term: d.term.trimmingCharacters(in: .whitespaces), pos: d.pos,
-                                    meaning: d.meaning, createdAt: now.addingTimeInterval(Double(i) / 1000)))
+            topic.words.append(d.makeWord(createdAt: now.addingTimeInterval(Double(i) / 1000)))
         }
         dismiss()
     }
 }
 
 enum OCR {
-    static func words(from image: Data) async throws -> [Draft] {
+    static let maxSide = 3000.0
+
+    /// Kích thước sau khi thu nhỏ để cạnh dài ≤ `maxSide` (ảnh 48MP làm OCR chậm và tốn RAM).
+    static func downscaledSize(_ size: CGSize, maxSide: Double = maxSide) -> CGSize {
+        let scale = min(1, maxSide / max(size.width, size.height))
+        return CGSize(width: (size.width * scale).rounded(), height: (size.height * scale).rounded())
+    }
+
+    static func words(from data: Data) async throws -> [Draft] {
+        var image = data
+        if let ui = UIImage(data: data), ui.size != downscaledSize(ui.size) {
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            let size = downscaledSize(ui.size)
+            image = UIGraphicsImageRenderer(size: size, format: format)
+                .jpegData(withCompressionQuality: 0.9) { _ in ui.draw(in: CGRect(origin: .zero, size: size)) }
+        }
         var request = RecognizeTextRequest()
         request.recognitionLanguages = [Locale.Language(identifier: "vi-VN"), Locale.Language(identifier: "en-US")]
         let observations = try await request.perform(on: image)

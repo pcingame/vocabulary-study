@@ -254,3 +254,23 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     scores.answered(q, in: topic, correct: true)
     #expect(scores.mistakes(topic).isEmpty)
 }
+
+@Test func scanDedupesAgainstTopic() {
+    let found = [Draft(term: "Kind", pos: "adj", meaning: "tử tế"),
+                 Draft(term: "fair", pos: "adj", meaning: "công bằng"),
+                 Draft(term: "FAIR ", pos: "adj", meaning: "công bằng")]
+    let (kept, skipped) = Draft.dedupe(found, existing: ["kind"])
+    #expect(kept.map(\.term) == ["fair"] && skipped == 2)
+}
+
+@Test func scanEnrichesFromContent() {
+    let w = Draft(term: "Agenda ", pos: "n", meaning: "chương trình họp").makeWord(createdAt: .now)
+    #expect(w.term == "Agenda" && w.meaning == "chương trình họp")  // giữ nghĩa trong sách
+    #expect(w.ipa == "/əˈdʒɛndə/" && w.example.contains("agenda") && !w.exampleMeaning.isEmpty)
+    #expect(Draft(term: "zzz", pos: "", meaning: "x").makeWord(createdAt: .now).ipa.isEmpty)
+}
+
+@Test func downscaleKeepsAspect() {
+    #expect(OCR.downscaledSize(CGSize(width: 8000, height: 6000)) == CGSize(width: 3000, height: 2250))
+    #expect(OCR.downscaledSize(CGSize(width: 1200, height: 1600)) == CGSize(width: 1200, height: 1600))
+}
