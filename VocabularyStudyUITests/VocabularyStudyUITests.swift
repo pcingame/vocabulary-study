@@ -160,4 +160,81 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.buttons["startStudy"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["onboardingNext1"].exists)
     }
+
+    // MARK: - Checklist hồi quy (PLAN mục 6)
+
+    /// Học hết thẻ hôm nay → màn kết thúc → streak = 1 → không còn thẻ.
+    func testRegressionStudyWholeDay() {
+        let app = launch(["-ui-testing", "-seed"])
+        XCTAssertTrue(app.staticTexts["Từ mới, 15"].waitForExistence(timeout: 5))
+        app.buttons["startStudy"].tap()
+        let done = app.staticTexts["Hẹn gặp lại ngày mai."]
+        for _ in 0..<40 where !done.exists {
+            XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
+            app.buttons["revealAnswer"].tap()
+            app.buttons["answerRemember"].tap()
+        }
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        app.buttons["studyClose"].tap()
+        XCTAssertTrue(app.staticTexts["1 ngày liên tiếp"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Từ mới, 0"].exists)
+    }
+
+    /// Thêm bộ TOEIC, tạo chủ đề, nhập tay 1 từ, xoá từ, mở flashcard.
+    func testRegressionTopics() {
+        let app = launch(["-ui-testing"])
+        app.tabBars.buttons["Chủ đề"].tap()
+
+        app.buttons["addTopicMenu"].tap()
+        app.buttons["Bộ từ TOEIC có sẵn"].tap()
+        let addDeck = app.buttons["Thêm 20 từ"].firstMatch
+        XCTAssertTrue(addDeck.waitForExistence(timeout: 5))
+        addDeck.tap()
+        app.buttons["Xong"].tap()
+
+        app.buttons["addTopicMenu"].tap()
+        app.buttons["Chủ đề mới"].tap()
+        let name = app.alerts.textFields.firstMatch
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.typeText("Sách")
+        app.alerts.buttons["Thêm"].tap()
+
+        let topic = app.buttons["Sách, 0 từ"]
+        XCTAssertTrue(topic.waitForExistence(timeout: 5))
+        topic.tap()
+        app.buttons["addWordMenu"].tap()
+        app.buttons["Nhập tay"].tap()
+        let term = app.textFields["fieldTerm"]
+        XCTAssertTrue(term.waitForExistence(timeout: 5))
+        term.tap(); term.typeText("generous")
+        app.textFields["fieldMeaning"].tap(); app.textFields["fieldMeaning"].typeText("hào phóng")
+        app.buttons["Thêm"].tap()
+        app.buttons["Xong"].tap()
+
+        let row = app.buttons["word-generous"]
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        app.buttons["flashcardButton"].tap()
+        let flip = app.staticTexts["Chạm để lật"]
+        XCTAssertTrue(flip.waitForExistence(timeout: 5))
+        flip.tap()
+        XCTAssertTrue(app.staticTexts["hào phóng"].waitForExistence(timeout: 5))
+        app.buttons["Đóng"].tap()
+
+        row.swipeLeft()
+        app.buttons["Delete"].firstMatch.tap()
+        XCTAssertFalse(row.waitForExistence(timeout: 2))
+    }
+
+    /// Chụp 3 tab ở chế độ tối + cỡ chữ lớn để xem bố cục (xem ảnh bằng TEST_RUNNER_SNAPSHOT_DIR).
+    func testRegressionDarkLargeText() {
+        let app = launch(["-ui-testing", "-seed", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityL"])
+        XCUIDevice.shared.appearance = .dark
+        defer { XCUIDevice.shared.appearance = .light }
+        XCTAssertTrue(app.buttons["startStudy"].waitForExistence(timeout: 5))
+        snapshot("dark-large-today")
+        for tab in ["Chủ đề", "Ngữ pháp"] {
+            app.tabBars.buttons[tab].tap()
+            snapshot("dark-large-\(tab)")
+        }
+    }
 }
