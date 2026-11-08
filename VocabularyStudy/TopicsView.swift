@@ -8,16 +8,43 @@ struct TopicsView: View {
     @State private var browsingDecks = false
     @State private var newName = ""
     @State private var pendingDelete: Topic?
+    @Query private var words: [Word]
+    @State private var query = ""
+    @State private var status: Word.Status?
+    @State private var searching = false
 
     var body: some View {
         NavigationStack {
             List {
-                ForEach(topics) { topic in
-                    NavigationLink(value: topic) {
-                        LabeledContent(topic.name, value: "\(topic.words.count) từ")
+                if query.isEmpty && status == nil {
+                    ForEach(topics) { topic in
+                        NavigationLink(value: topic) {
+                            LabeledContent(topic.name, value: "\(topic.words.count) từ")
+                        }
+                    }
+                    .onDelete { pendingDelete = $0.first.map { topics[$0] } }
+                } else {
+                    let found = Word.search(words, query: query, status: status)
+                    Section("\(found.count) từ") {
+                        ForEach(found) { word in
+                            NavigationLink(value: word.topic) {
+                                VStack(alignment: .leading) {
+                                    Text(word.term).bold()
+                                    Text("\(word.meaning) · \(word.topic?.name ?? "")").font(.caption).foregroundStyle(.secondary)
+                                }
+                            }
+                            .accessibilityIdentifier("result-\(word.term)")
+                        }
                     }
                 }
-                .onDelete { pendingDelete = $0.first.map { topics[$0] } }
+            }
+            .searchable(text: $query, isPresented: $searching, prompt: "Tìm từ hoặc nghĩa")
+            .onChange(of: searching) { if !searching { status = nil } }  // đóng ô tìm thì bỏ lọc, về danh sách chủ đề
+            .searchScopes($status, activation: .onSearchPresentation) {
+                Text("Tất cả").tag(Word.Status?.none)
+                Text("Mới").tag(Word.Status?.some(.new))
+                Text("Đang học").tag(Word.Status?.some(.learning))
+                Text("Đã thuộc").tag(Word.Status?.some(.mastered))
             }
             .confirmationDialog("Xoá chủ đề?", isPresented: Binding { pendingDelete != nil } set: { if !$0 { pendingDelete = nil } },
                                 titleVisibility: .visible, presenting: pendingDelete) { topic in

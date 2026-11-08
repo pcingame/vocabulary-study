@@ -6,9 +6,10 @@ enum StudyMode: String, CaseIterable {
 }
 
 enum Answer {
-    /// Bỏ hoa thường, dấu (é = e) và khoảng trắng thừa.
+    /// Bỏ hoa thường, dấu (é = e, đ = d) và khoảng trắng thừa.
     static func normalize(_ s: String) -> String {
         s.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+            .replacingOccurrences(of: "đ", with: "d")
             .split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 

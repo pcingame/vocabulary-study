@@ -330,4 +330,32 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["2, Đang học"].exists)  // ô số được gộp thành 1 phần tử
         snapshot("stats")
     }
+
+    // MARK: - Tìm từ
+
+    func testSearchFindsWord() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        search.typeText("kien nhan")
+        XCTAssertTrue(app.buttons["result-patient"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["result-kind"].exists)
+        snapshot("search")
+        app.buttons["result-patient"].tap()
+        XCTAssertTrue(app.buttons["word-patient"].waitForExistence(timeout: 5))  // mở đúng chủ đề "Test"
+    }
+
+    func testFilterResetsWhenSearchClosed() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        app.buttons["Đã thuộc"].tap()
+        XCTAssertTrue(app.staticTexts["0 từ"].waitForExistence(timeout: 5))
+        app.buttons["Close"].firstMatch.tap()
+        XCTAssertTrue(app.buttons["Test, 3 từ"].waitForExistence(timeout: 5))
+    }
 }

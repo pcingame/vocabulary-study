@@ -61,6 +61,16 @@ import UserNotifications
             : Calendar.current.date(byAdding: .day, value: interval, to: Calendar.current.startOfDay(for: now))!
     }
 
+    /// Tìm theo từ hoặc nghĩa (không cần gõ dấu), lọc theo trạng thái nếu có.
+    static func search(_ words: [Word], query: String, status: Status?) -> [Word] {
+        let q = Answer.normalize(query)
+        return words.filter { w in
+            (status == nil || w.status == status)
+                && (q.isEmpty || Answer.normalize(w.term).contains(q) || Answer.normalize(w.meaning).contains(q))
+        }
+        .sorted { $0.term.localizedCaseInsensitiveCompare($1.term) == .orderedAscending }
+    }
+
     /// Từ cần ôn (tối đa `reviewLimit`) + từ mới (tối đa `newLimit`/ngày, tính cả từ mới đã học trong ngày).
     static func todayQueue(_ words: [Word], newLimit: Int = Settings.newPerDay, reviewLimit: Int = Settings.reviewPerDay,
                            now: Date = .now) -> [Word] {

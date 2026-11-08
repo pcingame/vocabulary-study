@@ -298,3 +298,15 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(!Reminder.message(isToday: true, isLast: false, dueToday: 0).body.contains("Có 0"))
     #expect(Reminder.message(isToday: false, isLast: true, dueToday: nil).title.contains("Lâu rồi"))
 }
+
+@Test func searchMatchesMeaningWithoutAccents() {
+    let words = [Word(term: "generous", pos: "adj", meaning: "hào phóng"),
+                 Word(term: "deadline", pos: "n", meaning: "hạn chót"),
+                 Word(term: "budget", pos: "n", meaning: "ngân sách, dự toán")]
+    #expect(Word.search(words, query: "hao phong", status: nil).map(\.term) == ["generous"])
+    #expect(Word.search(words, query: "du toan", status: nil).map(\.term) == ["budget"])  // đ = d
+    #expect(Word.search(words, query: "DEAD", status: nil).map(\.term) == ["deadline"])
+    words[1].answer(.easy, now: day(0))
+    #expect(Word.search(words, query: "", status: .learning).map(\.term) == ["deadline"])
+    #expect(Word.search(words, query: "", status: .new).map(\.term) == ["budget", "generous"])
+}
