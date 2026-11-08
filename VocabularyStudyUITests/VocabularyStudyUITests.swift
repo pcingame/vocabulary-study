@@ -234,6 +234,10 @@ final class VocabularyStudyUITests: XCTestCase {
         defer { XCUIDevice.shared.appearance = .light }
         XCTAssertTrue(app.buttons["startStudy"].waitForExistence(timeout: 5))
         snapshot("dark-large-today")
+        app.buttons["statsButton"].tap()
+        XCTAssertTrue(app.otherElements["statsChart"].waitForExistence(timeout: 5))
+        snapshot("dark-large-stats")
+        app.navigationBars.buttons.firstMatch.tap()  // quay lại
         for tab in ["Chủ đề", "Ngữ pháp"] {
             app.tabBars.buttons[tab].tap()
             snapshot("dark-large-\(tab)")
@@ -309,5 +313,21 @@ final class VocabularyStudyUITests: XCTestCase {
             XCTAssertTrue(app.buttons["Ôn \(8 - correct) câu sai"].waitForExistence(timeout: 5))
             snapshot("grammar-lesson")
         }
+    }
+
+    // MARK: - Thống kê
+
+    func testStatsAfterStudy() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.buttons["startStudy"].tap()
+        for _ in 0..<2 {
+            app.buttons["revealAnswer"].tap()
+            app.buttons["answerEasy"].tap()
+        }
+        app.buttons["studyClose"].tap()
+        app.buttons["statsButton"].tap()
+        XCTAssertTrue(app.staticTexts["Đang học"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["2, Đang học"].exists)  // ô số được gộp thành 1 phần tử
+        snapshot("stats")
     }
 }

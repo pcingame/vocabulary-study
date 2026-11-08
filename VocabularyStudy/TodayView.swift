@@ -46,6 +46,8 @@ struct TodayView: View {
             }
             .navigationTitle("Hôm nay")
             .toolbar {
+                NavigationLink { StatsView() } label: { Label("Thống kê", systemImage: "chart.bar") }
+                    .accessibilityIdentifier("statsButton")
                 Button("Cài đặt", systemImage: "gearshape") { showingSettings = true }
                     .accessibilityIdentifier("settingsButton")
             }

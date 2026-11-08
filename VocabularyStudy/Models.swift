@@ -37,6 +37,11 @@ import UserNotifications
 
     enum Grade { case forgot, hard, easy }
 
+    enum Status: CaseIterable { case new, learning, mastered }
+
+    /// Mới: chưa học. Đang học: ôn cách nhau dưới 21 ngày. Đã thuộc: từ 21 ngày.
+    var status: Status { learnedAt == nil ? .new : interval < 21 ? .learning : .mastered }
+
     /// Lặp lại ngắt quãng (SM-2 rút gọn).
     /// Dễ: 1 → 3 → × ease ngày, ease +0.1. Khó: × 1.2 (ít nhất 1 ngày), ease −0.15. Quên: học lại ngay, ease −0.2.
     func answer(_ grade: Grade, now: Date = .now) {
@@ -122,6 +127,25 @@ enum Streak {
         d.set(now.timeIntervalSince1970, forKey: "lastStudy")
         Task { await Reminder.schedule() }
     }
+}
+
+/// Số thẻ đã học mỗi ngày, lưu trong UserDefaults dạng ["yyyy-MM-dd": số thẻ].
+enum StudyLog {
+    static let key = "studyLog"
+
+    /// Ngày theo giờ máy (không dùng ISO8601 vì nó tính theo GMT, lệch ngày ở Việt Nam).
+    static func day(_ date: Date) -> String {
+        let c = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", c.year!, c.month!, c.day!)
+    }
+
+    static func increment(_ log: [String: Int], now: Date) -> [String: Int] {
+        log.merging([day(now): 1], uniquingKeysWith: +)
+    }
+
+    static var counts: [String: Int] { UserDefaults.standard.dictionary(forKey: key) as? [String: Int] ?? [:] }
+
+    static func record(now: Date = .now) { UserDefaults.standard.set(increment(counts, now: now), forKey: key) }
 }
 
 enum Reminder {

@@ -274,3 +274,20 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(OCR.downscaledSize(CGSize(width: 8000, height: 6000)) == CGSize(width: 3000, height: 2250))
     #expect(OCR.downscaledSize(CGSize(width: 1200, height: 1600)) == CGSize(width: 1200, height: 1600))
 }
+
+@Test func dailyLogIncrements() {
+    var log: [String: Int] = [:]
+    for _ in 0..<3 { log = StudyLog.increment(log, now: at(9)) }
+    #expect(log[StudyLog.day(at(9))] == 3)
+    log = StudyLog.increment(log, now: at(9).addingTimeInterval(86_400))
+    #expect(log[StudyLog.day(at(9).addingTimeInterval(86_400))] == 1)
+    #expect(StudyLog.day(at(23)) == StudyLog.day(at(0)))  // cùng ngày theo giờ máy
+}
+
+@Test func wordStatusThresholds() {
+    let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
+    #expect(w.status == .new)
+    w.answer(.easy, now: day(0))
+    w.interval = 20; #expect(w.status == .learning)
+    w.interval = 21; #expect(w.status == .mastered)
+}

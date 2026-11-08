@@ -78,6 +78,7 @@ struct StudyView: View {
         answeredCount += 1  // quên thì học lại cuối buổi
         flipped = false
         Streak.record()
+        StudyLog.record()
     }
 }
 
