@@ -167,7 +167,8 @@ struct FlashcardView: View {
         try? AVAudioSession.sharedInstance().setCategory(.playback)  // vẫn đọc khi bật chế độ im lặng
         synth.stopSpeaking(at: .immediate)
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = AVSpeechSynthesisVoice(language: Settings.voice)
+        utterance.rate = Float(Settings.speechRate)
         synth.speak(utterance)
     }
 }

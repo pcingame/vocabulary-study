@@ -10,6 +10,12 @@ final class VocabularyStudyUITests: XCTestCase {
         return app
     }
 
+    /// Lưu ảnh màn hình ra máy Mac khi chạy với TEST_RUNNER_SNAPSHOT_DIR=<thư mục> (để xem giao diện). Bình thường không làm gì.
+    private func snapshot(_ name: String) {
+        guard let dir = ProcessInfo.processInfo.environment["SNAPSHOT_DIR"] else { return }
+        try? XCUIScreen.main.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: dir).appendingPathComponent("\(name).png"))
+    }
+
     func testAppLaunches() {
         let app = launch(["-ui-testing"])
         for tab in ["Hôm nay", "Chủ đề", "Ngữ pháp"] {
@@ -110,5 +116,17 @@ final class VocabularyStudyUITests: XCTestCase {
         app.buttons["Delete"].tap()
         app.buttons.matching(identifier: "confirmDeleteTopic").firstMatch.tap()
         XCTAssertTrue(topic.waitForNonExistence(timeout: 5))
+    }
+
+    func testChangeNewWordLimit() {
+        let app = launch(["-ui-testing", "-seed"])
+        XCTAssertTrue(app.staticTexts["Từ mới, 15"].waitForExistence(timeout: 5))
+        app.buttons["settingsButton"].tap()
+        let minus = app.steppers["newPerDayStepper"].buttons.element(boundBy: 0)  // nút giảm
+        XCTAssertTrue(minus.waitForExistence(timeout: 5))
+        snapshot("settings")
+        for _ in 0..<10 { minus.tap() }
+        app.buttons["settingsDone"].tap()
+        XCTAssertTrue(app.staticTexts["Từ mới, 5"].waitForExistence(timeout: 5))
     }
 }

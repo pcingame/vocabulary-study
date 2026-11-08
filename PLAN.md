@@ -38,6 +38,9 @@ xcodebuild test ... -only-testing:VocabularyStudyTests
 xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/VocabularyStudy.app
 xcrun simctl launch booted com.doanthanhphuong.VocabularyStudy
 
+# Chụp màn hình trong UI test (các chỗ gọi snapshot("tên")) ra thư mục trên Mac
+TEST_RUNNER_SNAPSHOT_DIR=/đường/dẫn xcodebuild test ... -only-testing:VocabularyStudyUITests
+
 # Xoá dữ liệu app trên simulator (thử như lần cài đầu)
 xcrun simctl uninstall booted com.doanthanhphuong.VocabularyStudy
 ```

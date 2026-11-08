@@ -50,8 +50,8 @@ enum Roadmap {
     }
 
     /// Tự thêm bộ từ của chặng hiện tại vào lịch học, để mỗi ngày chỉ cần bấm "Bắt đầu học".
-    static func prepare(topics: [Topic], scores: GrammarScores, context: ModelContext) {
-        if let stage = current(topics: topics, scores: scores), topic(stage, in: topics) == nil {
+    static func prepare(topics: [Topic], scores: GrammarScores, context: ModelContext, enabled: Bool) {
+        if enabled, let stage = current(topics: topics, scores: scores), topic(stage, in: topics) == nil {
             Content.add(stage.deck, to: context)
         }
     }
@@ -97,7 +97,7 @@ struct RoadmapView: View {
         let current = Roadmap.current(topics: topics, scores: scores)?.number ?? .max
         List {
             Section {
-                Text("Mỗi chặng gồm 1 chủ đề từ vựng và 1 bài ngữ pháp. Học hết từ của chặng (mỗi ngày tối đa \(Word.newPerDay) từ mới, app tự xếp lịch ôn) và làm bài ngữ pháp đạt từ 80% để mở chặng tiếp theo.")
+                Text("Mỗi chặng gồm 1 chủ đề từ vựng và 1 bài ngữ pháp. Học hết từ của chặng (mỗi ngày tối đa \(Settings.newPerDay) từ mới, app tự xếp lịch ôn) và làm bài ngữ pháp đạt từ 80% để mở chặng tiếp theo.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }

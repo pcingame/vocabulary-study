@@ -35,9 +35,6 @@ import UserNotifications
         self.createdAt = createdAt
     }
 
-    static let newPerDay = 15
-    static let reviewPerDay = 40
-
     /// Lặp lại ngắt quãng (SM-2 rút gọn): nhớ → 1, 3, rồi nhân `ease` ngày; quên → học lại ngay.
     func answer(remembered: Bool, now: Date = .now) {
         if learnedAt == nil { learnedAt = now }
@@ -51,13 +48,14 @@ import UserNotifications
         }
     }
 
-    /// Từ cần ôn (tối đa 40) + từ mới (tối đa 15/ngày, tính cả từ mới đã học trong ngày).
-    static func todayQueue(_ words: [Word], now: Date = .now) -> [Word] {
+    /// Từ cần ôn (tối đa `reviewLimit`) + từ mới (tối đa `newLimit`/ngày, tính cả từ mới đã học trong ngày).
+    static func todayQueue(_ words: [Word], newLimit: Int = Settings.newPerDay, reviewLimit: Int = Settings.reviewPerDay,
+                           now: Date = .now) -> [Word] {
         let today = Calendar.current.startOfDay(for: now)
         let newToday = words.filter { ($0.learnedAt ?? .distantPast) >= today }.count
         let reviews = words.filter { $0.learnedAt != nil && $0.due <= now }.sorted { $0.due < $1.due }
         let fresh = words.filter { $0.learnedAt == nil }.sorted { $0.createdAt < $1.createdAt }
-        return Array(reviews.prefix(reviewPerDay)) + Array(fresh.prefix(max(0, newPerDay - newToday)))
+        return Array(reviews.prefix(reviewLimit)) + Array(fresh.prefix(max(0, newLimit - newToday)))
     }
 }
 

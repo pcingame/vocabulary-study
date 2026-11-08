@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import Testing
 @testable import VocabularyStudy
 
@@ -21,9 +22,9 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     let words = (0..<30).map { Word(term: "w\($0)", pos: "", meaning: "", createdAt: day(-1).addingTimeInterval(Double($0))) }
     words[0].answer(remembered: true, now: now)   // từ mới đã học hôm nay
     words[1].answer(remembered: true, now: day(-5)) // đến hạn ôn
-    let q = Word.todayQueue(words, now: now)
+    let q = Word.todayQueue(words, newLimit: 15, reviewLimit: 40, now: now)
     #expect(q.first === words[1])
-    #expect(q.count == 1 + (Word.newPerDay - 1))
+    #expect(q.count == 1 + (15 - 1))
     #expect(q[1] === words[2])  // từ mới theo thứ tự thêm vào
 }
 
@@ -107,4 +108,27 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     #expect(!f.isValid)
     f.term = "kind"
     #expect(f.isValid && f.makeWord().term == "kind")
+}
+
+@Test func dailyQueueRespectsCustomLimits() {
+    let now = day(0)
+    let due = (0..<30).map { i -> Word in
+        let w = Word(term: "d\(i)", pos: "", meaning: "")
+        w.answer(remembered: true, now: day(-5))  // đến hạn từ day(-4)
+        return w
+    }
+    let fresh = (0..<30).map { Word(term: "n\($0)", pos: "", meaning: "") }
+    let q = Word.todayQueue(due + fresh, newLimit: 5, reviewLimit: 10, now: now)
+    #expect(q.filter { $0.learnedAt != nil }.count == 10)
+    #expect(q.filter { $0.learnedAt == nil }.count == 5)
+}
+
+@MainActor @Test func roadmapPrepareRespectsToggle() throws {
+    let container = try ModelContainer(for: Topic.self, Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    let context = container.mainContext
+    Roadmap.prepare(topics: [], scores: GrammarScores(), context: context, enabled: false)
+    #expect(try context.fetch(FetchDescriptor<Topic>()).isEmpty)
+    Roadmap.prepare(topics: [], scores: GrammarScores(), context: context, enabled: true)
+    let topics = try context.fetch(FetchDescriptor<Topic>())
+    #expect(topics.count == 1 && topics[0].words.count == 20)
 }
