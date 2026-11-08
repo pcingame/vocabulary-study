@@ -53,7 +53,7 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showingSettings) { SettingsView() }
             .fullScreenCover(isPresented: $studying) { StudyView(topic: nil) }
-            .task(id: "\(reminderMinutes)-\(lastStudy)") { await Reminder.schedule() }
+            .task(id: "\(reminderMinutes)-\(lastStudy)-\(queue.count)") { await Reminder.schedule(dueToday: queue.count) }
             .task(id: "\(Roadmap.current(topics: topics, scores: scores)?.number ?? 0)-\(roadmapAuto)") {
                 Roadmap.prepare(topics: topics, scores: scores, context: context, enabled: roadmapAuto)
             }

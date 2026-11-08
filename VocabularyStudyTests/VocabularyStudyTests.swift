@@ -291,3 +291,10 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     w.interval = 20; #expect(w.status == .learning)
     w.interval = 21; #expect(w.status == .mastered)
 }
+
+@Test func dueCountToday() {
+    #expect(Reminder.message(isToday: true, isLast: false, dueToday: 12).body.contains("Có 12 từ cần ôn"))
+    #expect(!Reminder.message(isToday: false, isLast: false, dueToday: 12).body.contains("12"))  // ngày sau: câu chung
+    #expect(!Reminder.message(isToday: true, isLast: false, dueToday: 0).body.contains("Có 0"))
+    #expect(Reminder.message(isToday: false, isLast: true, dueToday: nil).title.contains("Lâu rồi"))
+}
