@@ -374,4 +374,24 @@ final class VocabularyStudyUITests: XCTestCase {
         let after = NSPredicate { _, _ in self.remainingCards(app) == before.map { $0 - 1 } }
         wait(for: [expectation(for: after, evaluatedWith: nil)], timeout: 5)
     }
+
+    // MARK: - Tổng kết
+
+    func testSummaryAfterSession() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        app.buttons["Test, 3 từ"].tap()
+        app.buttons["Học chủ đề này"].tap()
+        app.buttons["revealAnswer"].tap()
+        app.buttons["answerForget"].tap()
+        for _ in 0..<3 {
+            XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
+            app.buttons["revealAnswer"].tap()
+            app.buttons["answerEasy"].tap()
+        }
+        XCTAssertTrue(app.staticTexts["Đã học 3 từ"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Chuỗi: 1 ngày (+1)"].exists)
+        XCTAssertTrue(app.staticTexts["Từ cần chú ý"].exists)
+        snapshot("summary")
+    }
 }

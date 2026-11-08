@@ -12,6 +12,8 @@ struct StudyView: View {
     @State private var answeredCount = 0  // đổi id thẻ gõ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
     @AppStorage("studyMode") private var mode = StudyMode.flip
     @State private var drag = 0.0  // độ kéo ngang của thẻ
+    @State private var summary = SessionSummary()
+    @State private var streakBefore = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Vuốt đủ xa (≥ 100pt) sau khi lật thẻ: phải = Dễ, trái = Quên. Chưa đủ xa thì thẻ bật về chỗ cũ.
@@ -40,8 +42,12 @@ struct StudyView: View {
                         }
                     }
                 } else if loaded {
-                    ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
-                                           description: Text("Hẹn gặp lại ngày mai."))
+                    if summary.wordCount == 0 {
+                        ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
+                                               description: Text("Hẹn gặp lại ngày mai."))
+                    } else {
+                        SummaryView(summary: summary, streakBefore: streakBefore)
+                    }
                 }
             }
             .navigationTitle(queue.isEmpty ? "" : "Còn \(queue.count) thẻ")
@@ -50,6 +56,7 @@ struct StudyView: View {
             .onAppear {
                 guard !loaded else { return }
                 queue = Word.todayQueue(topic?.words ?? allWords)
+                streakBefore = Streak.display(current: UserDefaults.standard.integer(forKey: "streak"), last: Streak.lastStudy)
                 loaded = true
             }
         }
@@ -112,6 +119,7 @@ struct StudyView: View {
         withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.35)) {
             let word = queue.removeFirst()
             word.answer(grade)
+            summary.add(word, grade)
             if grade == .forgot { queue.append(word) }  // quên thì học lại cuối buổi
             answeredCount += 1
             flipped = false
@@ -119,6 +127,105 @@ struct StudyView: View {
         }
         Streak.record()
         StudyLog.record()
+    }
+}
+
+/// Kết quả một buổi học. Mỗi từ tính theo lần trả lời đầu tiên; từ quên nhiều lần chỉ ghi 1 lần.
+struct SessionSummary {
+    private var first: [ObjectIdentifier: Word.Grade] = [:]
+    private(set) var forgotten: [Word] = []
+
+    mutating func add(_ word: Word, _ grade: Word.Grade) {
+        let id = ObjectIdentifier(word)
+        if first[id] == nil { first[id] = grade }
+        if grade == .forgot && !forgotten.contains(where: { $0 === word }) { forgotten.append(word) }
+    }
+
+    var wordCount: Int { first.count }
+    func count(_ grade: Word.Grade) -> Int { first.values.filter { $0 == grade }.count }
+
+    static let milestones = [7, 30, 100]
+}
+
+struct SummaryView: View {
+    let summary: SessionSummary
+    let streakBefore: Int
+    @AppStorage("streak") private var streak = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        let after = Streak.display(current: streak, last: Streak.lastStudy)
+        ScrollView {
+            VStack(spacing: 20) {
+                Image(systemName: "checkmark.seal.fill").font(.system(size: 56)).foregroundStyle(.tint)
+                Text("Xong rồi! 🎉").font(.title.bold())
+                Text("Đã học \(summary.wordCount) từ").font(.title3)
+                HStack {
+                    stat("Dễ", summary.count(.easy), .green)
+                    stat("Khó", summary.count(.hard), .orange)
+                    stat("Quên", summary.count(.forgot), .red)
+                }
+                Label("Chuỗi: \(after) ngày" + (after > streakBefore ? " (+\(after - streakBefore))" : ""), systemImage: "flame.fill")
+                    .font(.headline)
+                    .foregroundStyle(.tint)
+                if !summary.forgotten.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Từ cần chú ý").font(.headline)
+                        ForEach(summary.forgotten) { word in
+                            HStack {
+                                Text(word.term).bold()
+                                Spacer()
+                                Text(word.meaning).foregroundStyle(.secondary).multilineTextAlignment(.trailing)
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 16))
+                }
+                Text("Hẹn gặp lại ngày mai.").foregroundStyle(.secondary)
+            }
+            .padding()
+        }
+        .overlay {
+            if after > streakBefore && SessionSummary.milestones.contains(after) && !reduceMotion {
+                Confetti().allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
+    }
+
+    private func stat(_ title: String, _ value: Int, _ color: Color) -> some View {
+        VStack {
+            Text("\(value)").font(.title.bold()).foregroundStyle(color)
+            Text(title).font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Pháo giấy rơi trong ~3 giây, vẽ bằng Canvas.
+struct Confetti: View {
+    @State private var start = Date.now
+    private let pieces = (0..<80).map { _ in
+        (x: Double.random(in: 0...1), speed: Double.random(in: 0.25...0.6), spin: Double.random(in: -6...6),
+         delay: Double.random(in: 0...0.8), color: [Color.orange, .pink, .yellow, .green, .blue, .purple].randomElement()!)
+    }
+
+    var body: some View {
+        TimelineView(.animation(paused: Date.now.timeIntervalSince(start) > 4)) { timeline in
+            Canvas { context, size in
+                let t = timeline.date.timeIntervalSince(start)
+                for p in pieces where t > p.delay {
+                    let y = (t - p.delay) * p.speed * size.height - 20
+                    guard y < size.height + 20 else { continue }
+                    var piece = context
+                    piece.translateBy(x: p.x * size.width + sin(t * 3 + p.spin) * 20, y: y)
+                    piece.rotate(by: .radians(t * p.spin))
+                    piece.fill(Path(CGRect(x: -4, y: -6, width: 8, height: 12)), with: .color(p.color))
+                }
+            }
+        }
+        .ignoresSafeArea()
     }
 }
 

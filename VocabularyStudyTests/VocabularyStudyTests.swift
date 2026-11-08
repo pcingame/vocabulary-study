@@ -316,3 +316,11 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(StudyView.swipeDecision(-120) == .forgot)
     #expect(StudyView.swipeDecision(60) == nil && StudyView.swipeDecision(-60) == nil)
 }
+
+@Test func summaryCountsForgottenOnce() {
+    let a = Word(term: "a", pos: "", meaning: ""), b = Word(term: "b", pos: "", meaning: "")
+    var s = SessionSummary()
+    s.add(a, .forgot); s.add(b, .easy); s.add(a, .forgot); s.add(a, .easy)
+    #expect(s.wordCount == 2 && s.forgotten.count == 1 && s.forgotten[0] === a)
+    #expect(s.count(.forgot) == 1 && s.count(.easy) == 1 && s.count(.hard) == 0)  // theo lần trả lời đầu
+}

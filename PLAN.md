@@ -357,13 +357,13 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [ ] Bật Reduce Motion: không có xoay 3D hay bay ra, chỉ mờ dần.
   - [x] Vẫn bấm được nút như cũ, không bắt buộc phải vuốt.
 
-### 3.3 Tổng kết sau buổi học · P1 · M
+### 3.3 Tổng kết sau buổi học · P1 · M ✅
 - **Các bước**:
   1. Học xong hiện số từ Dễ/Khó/Quên, danh sách các từ đã quên, và "Chuỗi: N ngày (+1)".
   2. Đạt mốc chuỗi 7/30/100 ngày thì bắn pháo giấy (tự vẽ bằng `Canvas`, không thêm thư viện ngoài).
 - **Test tự động**:
-  - [ ] Unit `summaryCountsForgottenOnce`: một từ quên 2 lần trong buổi chỉ tính 1 lần trong danh sách quên.
-  - [ ] UI `testSummaryAfterSession`: học hết 3 thẻ → thấy "3 từ" trong tổng kết.
+  - [x] Unit `summaryCountsForgottenOnce`: một từ quên 2 lần trong buổi chỉ tính 1 lần trong danh sách quên.
+  - [x] UI `testSummaryAfterSession`: học hết 3 thẻ → thấy "3 từ" trong tổng kết.
 - **Test tay**:
   - [ ] Pháo giấy chỉ bắn ở đúng mốc. Bật Reduce Motion thì không bắn.
 
