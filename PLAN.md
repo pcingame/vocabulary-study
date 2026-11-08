@@ -389,7 +389,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Đọc hết 10 bài ở chế độ tối, công thức và ví dụ rõ ràng.
 
-### 3.7 Animation cho trắc nghiệm ngữ pháp · P1 · S
+### 3.7 Animation cho trắc nghiệm ngữ pháp · P1 · S ✅
 - **Các bước**: đáp án sai rung lắc (`keyframeAnimator`), đáp án đúng sáng lên, thanh tiến độ câu hỏi chạy mượt.
 - **Test tay**:
   - [ ] Hiệu ứng đúng/sai rõ ràng. Có Reduce Motion thì chỉ đổi màu.

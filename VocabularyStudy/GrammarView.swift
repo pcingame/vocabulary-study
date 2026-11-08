@@ -207,7 +207,9 @@ struct QuizView: View {
     @State private var index = 0
     @State private var picked: Int?
     @State private var score = 0
+    @State private var shakes = 0  // tăng mỗi lần chọn sai để chạy hiệu ứng rung
     @AppStorage("grammarScores") private var scores = GrammarScores()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var count: Int { questions.count }
 
@@ -222,7 +224,12 @@ struct QuizView: View {
                 if questions.isEmpty {
                     Color.clear  // chờ start() trong onAppear
                 } else if index < count {
-                    question(questions[index])
+                    VStack(spacing: 0) {
+                        ProgressView(value: Double(index + (picked == nil ? 0 : 1)), total: Double(count))
+                            .padding(.horizontal)
+                            .animation(reduceMotion ? nil : .spring, value: picked)
+                        question(questions[index]).id(index)  // view mới cho mỗi câu, không mang theo hiệu ứng của câu trước
+                    }
                 } else {
                     ContentUnavailableView {
                         Label("\(score)/\(count) câu đúng", systemImage: score == count ? "star.fill" : "checkmark.seal")
@@ -245,8 +252,8 @@ struct QuizView: View {
                 ForEach(q.options.indices, id: \.self) { i in
                     Button {
                         guard picked == nil else { return }
-                        picked = i
-                        if i == q.answer { score += 1 }
+                        withAnimation(reduceMotion ? nil : .spring(duration: 0.3)) { picked = i }
+                        if i == q.answer { score += 1 } else { shakes += 1 }
                         scores.answered(q, in: topic, correct: i == q.answer)
                     } label: {
                         HStack {
@@ -262,6 +269,16 @@ struct QuizView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(background(i, q), in: .rect(cornerRadius: 12))
                         .contentShape(.rect)
+                        // Đúng: sáng lên. Sai: rung lắc. Reduce Motion: chỉ đổi màu.
+                        .scaleEffect(!reduceMotion && picked != nil && i == q.answer ? 1.03 : 1)
+                        .shadow(color: .green.opacity(!reduceMotion && picked != nil && i == q.answer ? 0.5 : 0), radius: 8)
+                        .keyframeAnimator(initialValue: 0.0, trigger: picked == i && i != q.answer && !reduceMotion ? shakes : 0) {
+                            $0.offset(x: $1)
+                        } keyframes: { _ in
+                            KeyframeTrack {
+                                for x in [-10.0, 9, -7, 5, -3, 0] { CubicKeyframe(x, duration: 0.06) }
+                            }
+                        }
                     }
                     .buttonStyle(.plain)
                 }
