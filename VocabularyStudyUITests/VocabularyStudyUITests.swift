@@ -275,4 +275,16 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["kiên nhẫn"].waitForExistence(timeout: 5))
         XCTAssertEqual(remainingCards(app), before)  // quên → thẻ quay lại cuối hàng
     }
+
+    func testChoiceMode() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.segmentedControls["studyModePicker"].buttons["Chọn nghĩa"].tap()
+        app.buttons["startStudy"].tap()
+        let right = app.buttons["tử tế"]  // thẻ đầu là "kind"
+        XCTAssertTrue(right.waitForExistence(timeout: 5))
+        snapshot("choice")
+        let before = remainingCards(app)
+        right.tap()
+        XCTAssertEqual(remainingCards(app), before.map { $0 - 1 })
+    }
 }

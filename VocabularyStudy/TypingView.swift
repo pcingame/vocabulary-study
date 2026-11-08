@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum StudyMode: String, CaseIterable {
-    case flip, typing, listening
-    var title: String { ["Lật thẻ", "Gõ từ", "Nghe – gõ"][Self.allCases.firstIndex(of: self)!] }
+    case flip, typing, listening, choice
+    var title: String { ["Lật thẻ", "Gõ từ", "Nghe – gõ", "Chọn nghĩa"][Self.allCases.firstIndex(of: self)!] }
 }
 
 enum Answer {
@@ -13,6 +13,62 @@ enum Answer {
     }
 
     static func matches(_ input: String, _ term: String) -> Bool { normalize(input) == normalize(term) }
+
+    /// 4 nghĩa (1 đúng + 3 nhiễu, không trùng), nhiễu ưu tiên lấy từ `pool` (cùng chủ đề) rồi tới `fallback`.
+    /// Không đủ 3 nghĩa nhiễu → nil.
+    static func choices(for word: Word, pool: [Word], fallback: [Word]) -> [String]? {
+        var seen: Set<String> = [normalize(word.meaning)]
+        var wrong: [String] = []
+        for w in pool.shuffled() + fallback.shuffled() where wrong.count < 3 {
+            if seen.insert(normalize(w.meaning)).inserted { wrong.append(w.meaning) }
+        }
+        return wrong.count == 3 ? (wrong + [word.meaning]).shuffled() : nil
+    }
+}
+
+/// Thẻ trắc nghiệm: xem từ, chọn 1 trong 4 nghĩa. Đúng = Dễ, sai = Quên (hiện đáp án rồi bấm Tiếp).
+struct ChoiceCard: View {
+    let word: Word
+    let onDone: (Word.Grade) -> Void
+    @State private var choices: [String]  // giữ thứ tự trộn lần đầu, không đổi khi view vẽ lại
+    @State private var picked: String?
+
+    init(word: Word, choices: [String], onDone: @escaping (Word.Grade) -> Void) {
+        self.word = word
+        self.onDone = onDone
+        _choices = State(initialValue: choices)
+    }
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Spacer()
+            WordFront(word: word)
+            Spacer()
+            ForEach(choices, id: \.self) { choice in
+                Button { pick(choice) } label: { Text(choice).frame(maxWidth: .infinity) }
+                    .tint(color(choice))
+                    .disabled(picked != nil)
+            }
+            if picked != nil {
+                Button { onDone(.forgot) } label: { Text("Tiếp").frame(maxWidth: .infinity) }
+                    .tint(.primary)
+                    .accessibilityIdentifier("choiceNext")
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .padding()
+        .task { Speaker.say(word.term) }
+    }
+
+    private func pick(_ choice: String) {
+        if choice == word.meaning { onDone(.easy) } else { picked = choice }
+    }
+
+    private func color(_ choice: String) -> Color {
+        guard let picked else { return .accentColor }
+        return choice == word.meaning ? .green : choice == picked ? .red : .gray
+    }
 }
 
 /// Thẻ gõ từ: xem nghĩa (hoặc nghe) rồi gõ từ tiếng Anh.

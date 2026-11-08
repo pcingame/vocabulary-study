@@ -18,10 +18,16 @@ struct StudyView: View {
             ZStack {
                 Color.clear
                 if let word = queue.first {
-                    if mode == .flip {
-                        card(word)
-                    } else {
+                    switch mode {
+                    case .flip: card(word)
+                    case .typing, .listening:
                         TypingCard(word: word, listening: mode == .listening) { answer($0) }.id(answeredCount)
+                    case .choice:
+                        if let choices = Answer.choices(for: word, pool: word.topic?.words ?? [], fallback: allWords) {
+                            ChoiceCard(word: word, choices: choices) { answer($0) }.id(answeredCount)
+                        } else {
+                            card(word)  // chưa đủ 4 nghĩa khác nhau
+                        }
                     }
                 } else if loaded {
                     ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
