@@ -367,10 +367,10 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Pháo giấy chỉ bắn ở đúng mốc. Bật Reduce Motion thì không bắn.
 
-### 3.4 Tiến độ trong danh sách chủ đề · P1 · S
+### 3.4 Tiến độ trong danh sách chủ đề · P1 · S ✅
 - **Các bước**: mỗi chủ đề có thanh tiến độ "đã học / tổng" và số từ đến hạn.
 - **Test tay**:
-  - [ ] Học 1 từ → thanh tiến độ của chủ đề đó tăng.
+  - [x] Học 1 từ → thanh tiến độ của chủ đề đó tăng (UI `testTopicProgressUpdates`).
 
 ### 3.5 Lộ trình dạng timeline · P1 · M
 - **Các bước**:

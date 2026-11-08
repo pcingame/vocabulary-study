@@ -394,4 +394,21 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Từ cần chú ý"].exists)
         snapshot("summary")
     }
+
+    func testTopicProgressUpdates() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        let row = app.buttons["Test, 3 từ"]
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertEqual(row.value as? String, "Đã học 0, 0 từ đến hạn")
+        row.tap()
+        app.buttons["Học chủ đề này"].tap()
+        app.buttons["revealAnswer"].tap()
+        app.buttons["answerEasy"].tap()
+        app.buttons["studyClose"].tap()
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertEqual(row.value as? String, "Đã học 1, 0 từ đến hạn")
+        snapshot("topics-progress")
+    }
 }

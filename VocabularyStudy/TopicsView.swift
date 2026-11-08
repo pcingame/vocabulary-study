@@ -18,9 +18,7 @@ struct TopicsView: View {
             List {
                 if query.isEmpty && status == nil {
                     ForEach(topics) { topic in
-                        NavigationLink(value: topic) {
-                            LabeledContent(topic.name, value: "\(topic.words.count) từ")
-                        }
+                        NavigationLink(value: topic) { TopicRow(topic: topic) }
                     }
                     .onDelete { pendingDelete = $0.first.map { topics[$0] } }
                 } else {
@@ -238,5 +236,26 @@ struct WordFormView: View {
             }
             .onAppear { if word == nil { focused = true } }
         }
+    }
+}
+
+/// Dòng chủ đề: tên, số từ, thanh tiến độ đã học và số từ đến hạn.
+struct TopicRow: View {
+    let topic: Topic
+
+    var body: some View {
+        let learned = topic.words.filter { $0.learnedAt != nil }.count
+        let due = topic.words.filter { $0.learnedAt != nil && $0.due <= .now }.count
+        VStack(alignment: .leading, spacing: 6) {
+            LabeledContent(topic.name, value: "\(topic.words.count) từ")
+            ProgressView(value: Double(learned), total: Double(max(1, topic.words.count)))
+            Text("Đã học \(learned)/\(topic.words.count)" + (due > 0 ? " · \(due) từ đến hạn" : ""))
+                .font(.caption)
+                .foregroundStyle(due > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(topic.name), \(topic.words.count) từ")
+        .accessibilityValue("Đã học \(learned), \(due) từ đến hạn")
     }
 }
