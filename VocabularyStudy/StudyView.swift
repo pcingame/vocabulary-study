@@ -41,6 +41,16 @@ struct StudyView: View {
             if flipped {
                 if !word.pos.isEmpty { Text(word.pos).italic().foregroundStyle(.secondary) }
                 Text(word.meaning).font(.title2).multilineTextAlignment(.center)
+                if !word.example.isEmpty {
+                    Button { Speaker.say(word.example) } label: {
+                        Label(word.example, systemImage: "speaker.wave.1")
+                            .italic()
+                            .multilineTextAlignment(.leading)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .padding(.top)
+                }
             }
             Spacer()
             if flipped {

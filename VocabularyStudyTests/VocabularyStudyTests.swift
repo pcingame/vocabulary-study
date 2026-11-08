@@ -63,11 +63,26 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
 @Test func bundledContentIsValid() {
     #expect(Content.vocab.count == 10)
     for deck in Content.vocab {
-        for w in deck.words { #expect(w.count == 3 && !w[0].isEmpty && !w[2].isEmpty, "\(deck.name): \(w)") }
+        for w in deck.words {
+            #expect(w.count == 4 && !w[0].isEmpty && !w[2].isEmpty, "\(deck.name): \(w)")
+            #expect(w[3].lowercased().contains(w[0].lowercased().prefix(4)), "ví dụ không chứa từ: \(w)")
+        }
     }
     #expect(Set(Content.grammar.map(\.id)).count == Content.grammar.count)
     for topic in Content.grammar {
         #expect(!topic.questions.isEmpty)
         for q in topic.questions { #expect(q.options.count == 4 && q.options.indices.contains(q.answer), "\(q.q)") }
     }
+}
+
+@Test func roadmap() {
+    #expect(Roadmap.stages.count == 10)
+    #expect(Set(Roadmap.stages.map(\.deck.name)).count == 10)
+    #expect(Set(Roadmap.stages.map(\.grammar.id)).count == 10)
+
+    let topic = Roadmap.stages[0].grammar  // 6 câu: đạt khi đúng ≥ 5
+    var scores = GrammarScores()
+    scores.best[topic.id] = 4; #expect(!scores.passed(topic))
+    scores.best[topic.id] = 5; #expect(scores.passed(topic))
+    #expect(Roadmap.current(topics: [], scores: scores)?.number == 1)  // chưa có từ vựng → vẫn ở chặng 1
 }

@@ -14,6 +14,7 @@ import UserNotifications
     var term: String
     var pos: String
     var meaning: String
+    var example = ""
     var topic: Topic?
     var createdAt = Date.now
     var learnedAt: Date?   // nil = chưa học
@@ -21,10 +22,11 @@ import UserNotifications
     var interval = 0       // số ngày tới lần ôn sau
     var ease = 2.5
 
-    init(term: String, pos: String, meaning: String, createdAt: Date = .now) {
+    init(term: String, pos: String, meaning: String, example: String = "", createdAt: Date = .now) {
         self.term = term
         self.pos = pos
         self.meaning = meaning
+        self.example = example
         self.createdAt = createdAt
     }
 

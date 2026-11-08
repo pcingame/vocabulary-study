@@ -1,8 +1,9 @@
 import SwiftUI
+import SwiftData
 
 struct VocabDeck: Decodable {
     let name: String
-    let words: [[String]]  // [từ, từ loại, nghĩa]
+    let words: [[String]]  // [từ, từ loại, nghĩa, câu ví dụ]
 }
 
 struct GrammarTopic: Decodable, Identifiable, Hashable {
@@ -24,10 +25,32 @@ enum Content {
     static let vocab: [VocabDeck] = load("toeic_vocab")
     static let grammar: [GrammarTopic] = load("toeic_grammar")
 
+    static func add(_ deck: VocabDeck, to context: ModelContext) {
+        let topic = Topic(name: deck.name)
+        context.insert(topic)
+        let now = Date.now
+        for (i, w) in deck.words.enumerated() {
+            topic.words.append(Word(term: w[0], pos: w[1], meaning: w[2], example: w[3],
+                                    createdAt: now.addingTimeInterval(Double(i) / 1000)))
+        }
+    }
+
     private static func load<T: Decodable>(_ name: String) -> T {
         let url = Bundle.main.url(forResource: name, withExtension: "json")!
         return try! JSONDecoder().decode(T.self, from: Data(contentsOf: url))
     }
+}
+
+/// Điểm cao nhất mỗi bài ngữ pháp, lưu chung một key để mọi màn hình cùng cập nhật.
+struct GrammarScores: RawRepresentable {
+    var best: [String: Int] = [:]
+
+    init() {}
+    init?(rawValue: String) { best = (try? JSONDecoder().decode([String: Int].self, from: Data(rawValue.utf8))) ?? [:] }
+    var rawValue: String { String(decoding: try! JSONEncoder().encode(best), as: UTF8.self) }
+
+    /// Đạt khi đúng từ 80% trở lên.
+    func passed(_ topic: GrammarTopic) -> Bool { (best[topic.id] ?? 0) * 5 >= topic.questions.count * 4 }
 }
 
 struct GrammarView: View {
@@ -44,17 +67,15 @@ struct GrammarView: View {
     }
 }
 
-private struct BestScore: View {
+struct BestScore: View {
     let topic: GrammarTopic
-    @AppStorage private var best: Int
-
-    init(topic: GrammarTopic) {
-        self.topic = topic
-        _best = AppStorage(wrappedValue: -1, "grammar-\(topic.id)")
-    }
+    @AppStorage("grammarScores") private var scores = GrammarScores()
 
     var body: some View {
-        if best >= 0 { Text("\(best)/\(topic.questions.count)") }
+        if let best = scores.best[topic.id] {
+            Label("\(best)/\(topic.questions.count)", systemImage: scores.passed(topic) ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(scores.passed(topic) ? .green : .secondary)
+        }
     }
 }
 
@@ -89,12 +110,7 @@ struct QuizView: View {
     @State private var index = 0
     @State private var picked: Int?
     @State private var score = 0
-    @AppStorage private var best: Int
-
-    init(topic: GrammarTopic) {
-        self.topic = topic
-        _best = AppStorage(wrappedValue: -1, "grammar-\(topic.id)")
-    }
+    @AppStorage("grammarScores") private var scores = GrammarScores()
 
     private var count: Int { topic.questions.count }
 
@@ -148,7 +164,7 @@ struct QuizView: View {
                     Button {
                         picked = nil
                         index += 1
-                        if index == count { best = max(best, score) }
+                        if index == count { scores.best[topic.id] = max(scores.best[topic.id] ?? 0, score) }
                     } label: {
                         Text(index + 1 < count ? "Câu tiếp" : "Xem kết quả").frame(maxWidth: .infinity)
                     }

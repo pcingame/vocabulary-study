@@ -2,7 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct TodayView: View {
+    @Environment(\.modelContext) private var context
     @Query private var words: [Word]
+    @Query private var topics: [Topic]
+    @AppStorage("grammarScores") private var scores = GrammarScores()
     @AppStorage("streak") private var streak = 0
     @AppStorage("lastStudy") private var lastStudy = 0.0
     @AppStorage("reminderMinutes") private var reminderMinutes = Reminder.defaultMinutes
@@ -24,6 +27,7 @@ struct TodayView: View {
                     Button("Bắt đầu học") { studying = true }
                         .disabled(queue.isEmpty)
                 }
+                RoadmapSection(topics: topics, scores: scores)
                 Section {
                     DatePicker("Giờ nhắc học", selection: reminderTime, displayedComponents: .hourAndMinute)
                 } footer: {
@@ -33,6 +37,9 @@ struct TodayView: View {
             .navigationTitle("Hôm nay")
             .fullScreenCover(isPresented: $studying) { StudyView(topic: nil) }
             .task(id: "\(reminderMinutes)-\(lastStudy)") { await Reminder.schedule() }
+            .task(id: Roadmap.current(topics: topics, scores: scores)?.number) {
+                Roadmap.prepare(topics: topics, scores: scores, context: context)
+            }
         }
     }
 

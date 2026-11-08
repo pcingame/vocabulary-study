@@ -62,22 +62,13 @@ struct DecksView: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Button(added ? "Đã thêm" : "Thêm \(deck.words.count) từ") { add(deck) }
+                    Button(added ? "Đã thêm" : "Thêm \(deck.words.count) từ") { Content.add(deck, to: context) }
                         .buttonStyle(.bordered)
                         .disabled(added)
                 }
             }
             .navigationTitle("Bộ từ TOEIC")
             .toolbar { Button("Xong") { dismiss() } }
-        }
-    }
-
-    private func add(_ deck: VocabDeck) {
-        let topic = Topic(name: deck.name)
-        context.insert(topic)
-        let now = Date.now
-        for (i, w) in deck.words.enumerated() {
-            topic.words.append(Word(term: w[0], pos: w[1], meaning: w[2], createdAt: now.addingTimeInterval(Double(i) / 1000)))
         }
     }
 }
@@ -104,6 +95,9 @@ struct TopicDetailView: View {
                             Text(word.pos).italic().foregroundStyle(.secondary)
                         }
                         Text(word.meaning).foregroundStyle(.secondary)
+                        if !word.example.isEmpty {
+                            Text(word.example).font(.caption).italic().foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .onDelete { for i in $0 { context.delete(words[i]) } }
@@ -128,6 +122,7 @@ struct AddWordView: View {
     @State private var term = ""
     @State private var pos = ""
     @State private var meaning = ""
+    @State private var example = ""
     @State private var added = 0
     @FocusState private var focused: Bool
 
@@ -142,9 +137,12 @@ struct AddWordView: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                 TextField("Nghĩa (vd: hào phóng)", text: $meaning)
+                TextField("Câu ví dụ (không bắt buộc)", text: $example, axis: .vertical)
+                    .textInputAutocapitalization(.sentences)
                 Button("Thêm") {
-                    topic.words.append(Word(term: term.trimmingCharacters(in: .whitespaces), pos: pos, meaning: meaning))
-                    term = ""; pos = ""; meaning = ""
+                    topic.words.append(Word(term: term.trimmingCharacters(in: .whitespaces), pos: pos,
+                                            meaning: meaning, example: example))
+                    term = ""; pos = ""; meaning = ""; example = ""
                     added += 1
                     focused = true
                 }
