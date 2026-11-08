@@ -41,10 +41,12 @@ struct StudyView: View {
             Spacer()
             if flipped {
                 HStack {
-                    Button { answer(false) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.red)
+                    Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.red)
                         .accessibilityIdentifier("answerForget")
-                    Button { answer(true) } label: { Text("Nhớ").frame(maxWidth: .infinity) }.tint(.green)
-                        .accessibilityIdentifier("answerRemember")
+                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.orange)
+                        .accessibilityIdentifier("answerHard")
+                    Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.tint(.green)
+                        .accessibilityIdentifier("answerEasy")
                 }
             } else {
                 Button { flipped = true } label: { Text("Xem nghĩa").frame(maxWidth: .infinity) }
@@ -57,10 +59,10 @@ struct StudyView: View {
         .task(id: word.persistentModelID) { Speaker.say(word.term) }
     }
 
-    private func answer(_ remembered: Bool) {
+    private func answer(_ grade: Word.Grade) {
         let word = queue.removeFirst()
-        word.answer(remembered: remembered)
-        if !remembered { queue.append(word) }  // quên thì học lại cuối buổi
+        word.answer(grade)
+        if grade == .forgot { queue.append(word) }  // quên thì học lại cuối buổi
         flipped = false
         Streak.record()
     }

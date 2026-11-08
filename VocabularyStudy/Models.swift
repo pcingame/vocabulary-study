@@ -35,17 +35,25 @@ import UserNotifications
         self.createdAt = createdAt
     }
 
-    /// Lặp lại ngắt quãng (SM-2 rút gọn): nhớ → 1, 3, rồi nhân `ease` ngày; quên → học lại ngay.
-    func answer(remembered: Bool, now: Date = .now) {
+    enum Grade { case forgot, hard, easy }
+
+    /// Lặp lại ngắt quãng (SM-2 rút gọn).
+    /// Dễ: 1 → 3 → × ease ngày, ease +0.1. Khó: × 1.2 (ít nhất 1 ngày), ease −0.15. Quên: học lại ngay, ease −0.2.
+    func answer(_ grade: Grade, now: Date = .now) {
         if learnedAt == nil { learnedAt = now }
-        if remembered {
-            interval = interval == 0 ? 1 : interval == 1 ? 3 : Int((Double(interval) * ease).rounded())
-            due = Calendar.current.date(byAdding: .day, value: interval, to: Calendar.current.startOfDay(for: now))!
-        } else {
+        switch grade {
+        case .forgot:
             interval = 0
             ease = max(1.3, ease - 0.2)
-            due = now
+        case .hard:
+            interval = max(1, Int((Double(interval) * 1.2).rounded()))
+            ease = max(1.3, ease - 0.15)
+        case .easy:
+            interval = interval == 0 ? 1 : interval == 1 ? 3 : Int((Double(interval) * ease).rounded())
+            ease = min(3.0, ease + 0.1)
         }
+        due = grade == .forgot ? now
+            : Calendar.current.date(byAdding: .day, value: interval, to: Calendar.current.startOfDay(for: now))!
     }
 
     /// Từ cần ôn (tối đa `reviewLimit`) + từ mới (tối đa `newLimit`/ngày, tính cả từ mới đã học trong ngày).

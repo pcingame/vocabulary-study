@@ -44,7 +44,9 @@ final class VocabularyStudyUITests: XCTestCase {
         let before = remainingCards(app)
         XCTAssertNotNil(before)
         app.buttons["revealAnswer"].tap()
-        app.buttons["answerRemember"].tap()
+        XCTAssertTrue(app.buttons["answerHard"].exists)
+        snapshot("study-answers")
+        app.buttons["answerEasy"].tap()
         XCTAssertEqual(remainingCards(app), before.map { $0 - 1 })
         app.buttons["studyClose"].tap()
         XCTAssertTrue(app.staticTexts["1 ngày liên tiếp"].waitForExistence(timeout: 5))
@@ -172,7 +174,7 @@ final class VocabularyStudyUITests: XCTestCase {
         for _ in 0..<40 where !done.exists {
             XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
             app.buttons["revealAnswer"].tap()
-            app.buttons["answerRemember"].tap()
+            app.buttons["answerEasy"].tap()
         }
         XCTAssertTrue(done.waitForExistence(timeout: 5))
         app.buttons["studyClose"].tap()

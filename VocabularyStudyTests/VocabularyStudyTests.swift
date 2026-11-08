@@ -10,18 +10,18 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
 
 @Test func spacedRepetition() {
     let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
-    w.answer(remembered: true, now: day(0));  #expect(w.interval == 1)
-    w.answer(remembered: true, now: day(1));  #expect(w.interval == 3)
-    w.answer(remembered: true, now: day(4));  #expect(w.interval == 8)  // 3 × 2.5
+    w.answer(.easy, now: day(0));  #expect(w.interval == 1)
+    w.answer(.easy, now: day(1));  #expect(w.interval == 3)
+    w.answer(.easy, now: day(4));  #expect(w.interval == 8)  // 3 × 2.5
     #expect(w.due == cal.startOfDay(for: day(12)))
-    w.answer(remembered: false, now: day(12)); #expect(w.interval == 0 && w.due == day(12) && w.ease == 2.3)
+    w.answer(.forgot, now: day(12)); #expect(w.interval == 0 && w.due == day(12) && w.ease == 2.6)  // 2.5 + 3×0.1 − 0.2
 }
 
 @Test func dailyQueueLimitsNewWords() {
     let now = day(0)
     let words = (0..<30).map { Word(term: "w\($0)", pos: "", meaning: "", createdAt: day(-1).addingTimeInterval(Double($0))) }
-    words[0].answer(remembered: true, now: now)   // từ mới đã học hôm nay
-    words[1].answer(remembered: true, now: day(-5)) // đến hạn ôn
+    words[0].answer(.easy, now: now)   // từ mới đã học hôm nay
+    words[1].answer(.easy, now: day(-5)) // đến hạn ôn
     let q = Word.todayQueue(words, newLimit: 15, reviewLimit: 40, now: now)
     #expect(q.first === words[1])
     #expect(q.count == 1 + (15 - 1))
@@ -91,8 +91,8 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
 
 @Test func editKeepsSchedule() {
     let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
-    w.answer(remembered: true, now: day(0))
-    w.answer(remembered: true, now: day(1))
+    w.answer(.easy, now: day(0))
+    w.answer(.easy, now: day(1))
     let learned = w.learnedAt, due = w.due
     var fields = WordFields(w)
     fields.meaning = "  tốt bụng "
@@ -114,7 +114,7 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     let now = day(0)
     let due = (0..<30).map { i -> Word in
         let w = Word(term: "d\(i)", pos: "", meaning: "")
-        w.answer(remembered: true, now: day(-5))  // đến hạn từ day(-4)
+        w.answer(.easy, now: day(-5))  // đến hạn từ day(-4)
         return w
     }
     let fresh = (0..<30).map { Word(term: "n\($0)", pos: "", meaning: "") }
@@ -188,4 +188,23 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(t.count == Reminder.days)
     #expect(cal.date(from: t[0]) == cal.date(bySettingHour: 7, minute: 30, second: 0, of: day(0)))
     #expect(t.allSatisfy { $0.hour == 7 && $0.minute == 30 })
+}
+
+@Test func gradeHard() {
+    let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
+    w.answer(.easy, now: day(0)); #expect(w.interval == 1)
+    w.answer(.easy, now: day(1)); #expect(w.interval == 3)
+    w.answer(.hard, now: day(4)); #expect(w.interval == 4)  // 3 × 1.2 làm tròn
+    #expect(w.due == cal.startOfDay(for: day(8)))
+}
+
+@Test func gradeEaseBounds() {
+    let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
+    var rng = SystemRandomNumberGenerator()
+    for i in 0..<50 {
+        w.answer([.forgot, .hard, .easy].randomElement(using: &rng)!, now: day(i))
+        #expect((1.3...3.0).contains(w.ease))
+    }
+    for i in 0..<20 { w.answer(.easy, now: day(50 + i)) }
+    #expect(w.ease == 3.0)
 }
