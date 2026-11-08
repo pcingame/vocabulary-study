@@ -35,6 +35,21 @@ enum Content {
         }
     }
 
+    /// Điền IPA / câu ví dụ / nghĩa câu ví dụ còn trống cho bộ từ TOEIC đã thêm từ bản cũ.
+    /// Chỉ đụng tới chủ đề trùng tên bộ có sẵn, và không ghi đè ô người dùng đã điền.
+    static func sync(_ topics: [Topic]) {
+        for deck in vocab {
+            guard let topic = topics.first(where: { $0.name == deck.name }) else { continue }
+            let rows = Dictionary(deck.words.map { ($0[0], $0) }, uniquingKeysWith: { first, _ in first })
+            for word in topic.words {
+                guard let row = rows[word.term] else { continue }
+                if word.ipa.isEmpty { word.ipa = row[1] }
+                if word.example.isEmpty { word.example = row[4] }
+                if word.exampleMeaning.isEmpty { word.exampleMeaning = row[5] }
+            }
+        }
+    }
+
     private static func load<T: Decodable>(_ name: String) -> T {
         let url = Bundle.main.url(forResource: name, withExtension: "json")!
         return try! JSONDecoder().decode(T.self, from: Data(contentsOf: url))

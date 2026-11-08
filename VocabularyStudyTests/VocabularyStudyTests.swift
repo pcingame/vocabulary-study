@@ -132,3 +132,40 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     let topics = try context.fetch(FetchDescriptor<Topic>())
     #expect(topics.count == 1 && topics[0].words.count == 20)
 }
+
+/// Container in-memory; phải giữ biến container còn sống trong suốt test, context không tự giữ container.
+@MainActor private func memoryContainer() throws -> ModelContainer {
+    try ModelContainer(for: Topic.self, Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+}
+
+@MainActor @Test func syncFillsMissingFields() throws {
+    let container = try memoryContainer()
+    let context = container.mainContext
+    let topic = Topic(name: "TOEIC · Văn phòng")
+    context.insert(topic)
+    topic.words.append(Word(term: "agenda", pos: "n", meaning: "chương trình nghị sự"))
+    Content.sync([topic])
+    #expect(topic.words[0].ipa == "/əˈdʒɛndə/")
+    #expect(topic.words[0].example.contains("agenda") && !topic.words[0].exampleMeaning.isEmpty)
+}
+
+@MainActor @Test func syncKeepsUserEdits() throws {
+    let container = try memoryContainer()
+    let context = container.mainContext
+    let topic = Topic(name: "TOEIC · Văn phòng")
+    context.insert(topic)
+    topic.words.append(Word(term: "agenda", pos: "n", meaning: "x", exampleMeaning: "abc"))
+    Content.sync([topic])
+    #expect(topic.words[0].exampleMeaning == "abc")
+    #expect(topic.words[0].ipa == "/əˈdʒɛndə/")
+}
+
+@MainActor @Test func syncIgnoresUserTopics() throws {
+    let container = try memoryContainer()
+    let context = container.mainContext
+    let topic = Topic(name: "Từ của tôi")
+    context.insert(topic)
+    topic.words.append(Word(term: "agenda", pos: "n", meaning: "x"))
+    Content.sync([topic])
+    #expect(topic.words[0].ipa.isEmpty && topic.words[0].example.isEmpty)
+}

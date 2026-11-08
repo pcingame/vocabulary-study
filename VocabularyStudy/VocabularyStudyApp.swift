@@ -13,6 +13,7 @@ struct VocabularyStudyApp: App {
         container = try! ModelContainer(for: Topic.self, Word.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: LaunchFlags.uiTesting))
         if LaunchFlags.seed { Self.seed(container.mainContext) }
+        Content.sync((try? container.mainContext.fetch(FetchDescriptor<Topic>())) ?? [])
     }
 
     var body: some Scene {
