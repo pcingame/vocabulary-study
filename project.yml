@@ -1,0 +1,33 @@
+name: VocabularyStudy
+options:
+  bundleIdPrefix: com.doanthanhphuong
+  deploymentTarget:
+    iOS: "18.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+targets:
+  VocabularyStudy:
+    type: application
+    platform: iOS
+    sources: [VocabularyStudy]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.doanthanhphuong.VocabularyStudy
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Từ vựng
+        INFOPLIST_KEY_NSCameraUsageDescription: Chụp trang sách để lấy từ vựng.
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+    scheme:
+      testTargets: [VocabularyStudyTests]
+  VocabularyStudyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [VocabularyStudyTests]
+    dependencies:
+      - target: VocabularyStudy
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
