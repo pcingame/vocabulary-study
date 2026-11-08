@@ -49,7 +49,7 @@ struct OnboardingView: View {
     private func step(icon: String, title: String, text: String, @ViewBuilder actions: () -> some View) -> some View {
         VStack(spacing: 20) {
             Spacer()
-            Image(systemName: icon).font(.system(size: 64)).foregroundStyle(.orange)
+            Image(systemName: icon).font(.system(size: 64)).foregroundStyle(.tint)
             Text(title).font(.title.bold()).multilineTextAlignment(.center)
             Text(text).foregroundStyle(.secondary).multilineTextAlignment(.center)
             Spacer()

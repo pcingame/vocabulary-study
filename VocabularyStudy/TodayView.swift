@@ -23,7 +23,7 @@ struct TodayView: View {
                 Section {
                     Label("\(Streak.display(current: streak, last: Streak.lastStudy)) ngày liên tiếp", systemImage: "flame.fill")
                         .font(.title2.bold())
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.tint)
                 }
                 Section {
                     LabeledContent("Từ cần ôn", value: "\(queue.count - newCount)")
