@@ -21,7 +21,7 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
     scheme:
-      testTargets: [VocabularyStudyTests]
+      testTargets: [VocabularyStudyTests, VocabularyStudyUITests]
   VocabularyStudyTests:
     type: bundle.unit-test
     platform: iOS
@@ -31,3 +31,13 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  VocabularyStudyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [VocabularyStudyUITests]
+    dependencies:
+      - target: VocabularyStudy
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: VocabularyStudy
