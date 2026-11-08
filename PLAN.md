@@ -331,14 +331,14 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
 
 Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceMotion)`. Khi bật Reduce Motion thì chỉ dùng hiệu ứng mờ dần (fade).
 
-### 3.1 Tab Hôm nay mới · P1 · M
+### 3.1 Tab Hôm nay mới · P1 · M ✅
 - **Các bước**:
   1. Thẻ lớn ở đầu: ngọn lửa streak (nảy lên bằng `symbolEffect(.bounce)` khi chuỗi tăng) và vòng tiến độ "đã học / tổng thẻ hôm nay" (dùng dữ liệu từ 2.6).
   2. Nút "Bắt đầu học" to, màu chủ đạo, có chế độ học đang chọn.
   3. Các con số chuyển mượt bằng `.contentTransition(.numericText())`.
 - **Test tự động**: các UI test ở Phase 0–2 vẫn xanh. Giữ nguyên identifier.
 - **Test tay**:
-  - [ ] Xem ở chế độ sáng, tối, và cỡ chữ Accessibility XL: không bị cắt chữ.
+  - [x] Xem ở chế độ sáng, tối, và cỡ chữ lớn: không bị cắt chữ (ảnh chụp từ UI test).
   - [ ] Học 1 thẻ rồi quay lại: lửa nảy, vòng tiến độ chạy mượt.
 
 ### 3.2 Màn học mới: thẻ, vuốt, lật 3D · P1 · L

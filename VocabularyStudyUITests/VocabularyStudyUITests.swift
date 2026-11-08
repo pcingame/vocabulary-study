@@ -49,7 +49,8 @@ final class VocabularyStudyUITests: XCTestCase {
         app.buttons["answerEasy"].tap()
         XCTAssertEqual(remainingCards(app), before.map { $0 - 1 })
         app.buttons["studyClose"].tap()
-        XCTAssertTrue(app.staticTexts["1 ngày liên tiếp"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["1 ngày liên tiếp"].waitForExistence(timeout: 5))
+        snapshot("today-after-one")
     }
 
     /// Mở chủ đề "Test" rồi mở form sửa từ "kind".
@@ -178,7 +179,7 @@ final class VocabularyStudyUITests: XCTestCase {
         }
         XCTAssertTrue(done.waitForExistence(timeout: 5))
         app.buttons["studyClose"].tap()
-        XCTAssertTrue(app.staticTexts["1 ngày liên tiếp"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["1 ngày liên tiếp"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Từ mới, 0"].exists)
     }
 
