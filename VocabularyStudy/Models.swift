@@ -61,6 +61,31 @@ import UserNotifications
     }
 }
 
+/// Nội dung người dùng nhập cho một từ. Sửa nội dung không đụng tới tiến độ ôn.
+struct WordFields: Equatable {
+    var term = "", ipa = "", pos = "", meaning = "", example = "", exampleMeaning = ""
+
+    init() {}
+    init(_ w: Word) {
+        (term, ipa, pos, meaning, example, exampleMeaning) = (w.term, w.ipa, w.pos, w.meaning, w.example, w.exampleMeaning)
+    }
+
+    var isValid: Bool { !trimmed(term).isEmpty && !trimmed(meaning).isEmpty }
+
+    func apply(to w: Word) {
+        (w.term, w.ipa, w.pos, w.meaning, w.example, w.exampleMeaning) =
+            (trimmed(term), trimmed(ipa), trimmed(pos), trimmed(meaning), trimmed(example), trimmed(exampleMeaning))
+    }
+
+    func makeWord() -> Word {
+        let w = Word(term: "", pos: "", meaning: "")
+        apply(to: w)
+        return w
+    }
+
+    private func trimmed(_ s: String) -> String { s.trimmingCharacters(in: .whitespacesAndNewlines) }
+}
+
 enum Streak {
     /// Chuỗi sau khi học vào `now`.
     static func next(current: Int, last: Date?, now: Date) -> Int {

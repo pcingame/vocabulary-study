@@ -87,3 +87,24 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     scores.best[topic.id] = 5; #expect(scores.passed(topic))
     #expect(Roadmap.current(topics: [], scores: scores)?.number == 1)  // chưa có từ vựng → vẫn ở chặng 1
 }
+
+@Test func editKeepsSchedule() {
+    let w = Word(term: "kind", pos: "adj", meaning: "tử tế")
+    w.answer(remembered: true, now: day(0))
+    w.answer(remembered: true, now: day(1))
+    let learned = w.learnedAt, due = w.due
+    var fields = WordFields(w)
+    fields.meaning = "  tốt bụng "
+    fields.apply(to: w)
+    #expect(w.meaning == "tốt bụng")
+    #expect(w.interval == 3 && w.learnedAt == learned && w.due == due)
+}
+
+@Test func wordFieldsValidation() {
+    var f = WordFields()
+    #expect(!f.isValid)
+    f.term = "   "; f.meaning = "x"
+    #expect(!f.isValid)
+    f.term = "kind"
+    #expect(f.isValid && f.makeWord().term == "kind")
+}

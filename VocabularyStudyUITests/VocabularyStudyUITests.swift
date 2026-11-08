@@ -43,4 +43,53 @@ final class VocabularyStudyUITests: XCTestCase {
         app.buttons["studyClose"].tap()
         XCTAssertTrue(app.staticTexts["1 ngày liên tiếp"].waitForExistence(timeout: 5))
     }
+
+    /// Mở chủ đề "Test" rồi mở form sửa từ "kind".
+    private func kindRow(_ app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any).matching(identifier: "word-kind").firstMatch
+    }
+
+    private func kindRowHas(_ app: XCUIApplication, _ text: String) -> Bool {
+        kindRow(app).label.contains(text)
+    }
+
+    private func openEditKind(_ app: XCUIApplication) {
+        app.tabBars.buttons["Chủ đề"].tap()
+        app.buttons["Test, 3 từ"].tap()
+        kindRow(app).tap()
+        XCTAssertTrue(app.buttons["saveWord"].waitForExistence(timeout: 5))
+    }
+
+    private func replaceText(_ field: XCUIElement, with text: String) {
+        field.tap()
+        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count))
+        field.typeText(text)
+    }
+
+    func testEditWord() {
+        let app = launch(["-ui-testing", "-seed"])
+        openEditKind(app)
+        replaceText(app.textFields["fieldMeaning"], with: "nghia moi")
+        app.buttons["saveWord"].tap()
+        XCTAssertTrue(kindRow(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(kindRowHas(app, "adj, nghia moi"))
+        XCTAssertFalse(kindRowHas(app, "adj, tử tế"))
+    }
+
+    func testCancelEditKeepsWord() {
+        let app = launch(["-ui-testing", "-seed"])
+        openEditKind(app)
+        replaceText(app.textFields["fieldMeaning"], with: "nghia moi")
+        app.buttons["cancelEdit"].tap()
+        XCTAssertTrue(kindRow(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(kindRowHas(app, "adj, tử tế"))
+        XCTAssertFalse(kindRowHas(app, "adj, nghia moi"))
+    }
+
+    func testSaveDisabledWhenTermEmpty() {
+        let app = launch(["-ui-testing", "-seed"])
+        openEditKind(app)
+        replaceText(app.textFields["fieldTerm"], with: "")
+        XCTAssertFalse(app.buttons["saveWord"].isEnabled)
+    }
 }
