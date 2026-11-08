@@ -3,7 +3,7 @@ import SwiftData
 
 struct VocabDeck: Decodable {
     let name: String
-    let words: [[String]]  // [từ, từ loại, nghĩa, câu ví dụ]
+    let words: [[String]]  // [từ, từ loại, nghĩa, câu ví dụ, nghĩa câu ví dụ]
 }
 
 struct GrammarTopic: Decodable, Identifiable, Hashable {
@@ -30,7 +30,7 @@ enum Content {
         context.insert(topic)
         let now = Date.now
         for (i, w) in deck.words.enumerated() {
-            topic.words.append(Word(term: w[0], pos: w[1], meaning: w[2], example: w[3],
+            topic.words.append(Word(term: w[0], pos: w[1], meaning: w[2], example: w[3], exampleMeaning: w[4],
                                     createdAt: now.addingTimeInterval(Double(i) / 1000)))
         }
     }

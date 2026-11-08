@@ -97,6 +97,9 @@ struct TopicDetailView: View {
                         Text(word.meaning).foregroundStyle(.secondary)
                         if !word.example.isEmpty {
                             Text(word.example).font(.caption).italic().foregroundStyle(.secondary)
+                            if !word.exampleMeaning.isEmpty {
+                                Text(word.exampleMeaning).font(.caption).foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }
@@ -123,6 +126,7 @@ struct AddWordView: View {
     @State private var pos = ""
     @State private var meaning = ""
     @State private var example = ""
+    @State private var exampleMeaning = ""
     @State private var added = 0
     @FocusState private var focused: Bool
 
@@ -139,10 +143,11 @@ struct AddWordView: View {
                 TextField("Nghĩa (vd: hào phóng)", text: $meaning)
                 TextField("Câu ví dụ (không bắt buộc)", text: $example, axis: .vertical)
                     .textInputAutocapitalization(.sentences)
+                TextField("Nghĩa câu ví dụ (không bắt buộc)", text: $exampleMeaning, axis: .vertical)
                 Button("Thêm") {
                     topic.words.append(Word(term: term.trimmingCharacters(in: .whitespaces), pos: pos,
-                                            meaning: meaning, example: example))
-                    term = ""; pos = ""; meaning = ""; example = ""
+                                            meaning: meaning, example: example, exampleMeaning: exampleMeaning))
+                    term = ""; pos = ""; meaning = ""; example = ""; exampleMeaning = ""
                     added += 1
                     focused = true
                 }

@@ -50,6 +50,9 @@ struct StudyView: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                     .padding(.top)
+                    if !word.exampleMeaning.isEmpty {
+                        Text(word.exampleMeaning).font(.callout).foregroundStyle(.secondary)
+                    }
                 }
             }
             Spacer()
