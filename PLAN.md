@@ -341,7 +341,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [x] Xem ở chế độ sáng, tối, và cỡ chữ lớn: không bị cắt chữ (ảnh chụp từ UI test).
   - [ ] Học 1 thẻ rồi quay lại: lửa nảy, vòng tiến độ chạy mượt.
 
-### 3.2 Màn học mới: thẻ, vuốt, lật 3D · P1 · L
+### 3.2 Màn học mới: thẻ, vuốt, lật 3D · P1 · L ✅
 - **File**: `StudyView.swift`.
 - **Các bước**:
   1. Thẻ có khung giống Flashcard, lật 3D (dùng lại hiệu ứng của `FlashcardView`).
@@ -350,12 +350,12 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   4. Thẻ cũ bay ra theo hướng vuốt, thẻ mới trượt vào.
   5. Rung nhẹ khi trả lời (`.sensoryFeedback`).
 - **Test tự động**:
-  - [ ] Unit `swipeDecision`: kéo +120pt → Dễ, −120pt → Quên, ±60pt → không chọn (thẻ bật về chỗ cũ).
-  - [ ] UI `testSwipeRightAnswers`: lật thẻ → vuốt phải → số thẻ còn lại giảm.
+  - [x] Unit `swipeDecision`: kéo +120pt → Dễ, −120pt → Quên, ±60pt → không chọn (thẻ bật về chỗ cũ).
+  - [x] UI `testSwipeRightAnswers`: lật thẻ → vuốt phải → số thẻ còn lại giảm.
 - **Test tay**:
   - [ ] Lật và vuốt mượt, không giật khi đi qua 20 thẻ liên tiếp.
   - [ ] Bật Reduce Motion: không có xoay 3D hay bay ra, chỉ mờ dần.
-  - [ ] Vẫn bấm được nút như cũ, không bắt buộc phải vuốt.
+  - [x] Vẫn bấm được nút như cũ, không bắt buộc phải vuốt.
 
 ### 3.3 Tổng kết sau buổi học · P1 · M
 - **Các bước**:

@@ -359,4 +359,19 @@ final class VocabularyStudyUITests: XCTestCase {
         app.buttons["Close"].firstMatch.tap()
         XCTAssertTrue(app.buttons["Test, 3 từ"].waitForExistence(timeout: 5))
     }
+
+    func testSwipeRightAnswers() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.buttons["startStudy"].tap()
+        let before = remainingCards(app)
+        app.buttons["revealAnswer"].tap()
+        let card = app.descendants(matching: .any)["studyCard"].firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        snapshot("study-flipped")
+        // Kéo theo toạ độ màn hình: swipeRight() trên phần tử nhỏ bên trong thẻ chỉ kéo được vài chục pt.
+        let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.45))
+        from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.45)))
+        let after = NSPredicate { _, _ in self.remainingCards(app) == before.map { $0 - 1 } }
+        wait(for: [expectation(for: after, evaluatedWith: nil)], timeout: 5)
+    }
 }

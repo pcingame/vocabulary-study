@@ -310,3 +310,9 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(Word.search(words, query: "", status: .learning).map(\.term) == ["deadline"])
     #expect(Word.search(words, query: "", status: .new).map(\.term) == ["budget", "generous"])
 }
+
+@Test func swipeDecision() {
+    #expect(StudyView.swipeDecision(120) == .easy)
+    #expect(StudyView.swipeDecision(-120) == .forgot)
+    #expect(StudyView.swipeDecision(60) == nil && StudyView.swipeDecision(-60) == nil)
+}

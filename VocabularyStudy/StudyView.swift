@@ -11,6 +11,13 @@ struct StudyView: View {
     @State private var flipped = false
     @State private var answeredCount = 0  // đổi id thẻ gõ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
     @AppStorage("studyMode") private var mode = StudyMode.flip
+    @State private var drag = 0.0  // độ kéo ngang của thẻ
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Vuốt đủ xa (≥ 100pt) sau khi lật thẻ: phải = Dễ, trái = Quên. Chưa đủ xa thì thẻ bật về chỗ cũ.
+    static func swipeDecision(_ dx: Double, threshold: Double = 100) -> Word.Grade? {
+        dx >= threshold ? .easy : dx <= -threshold ? .forgot : nil
+    }
 
     var body: some View {
         NavigationStack {
@@ -18,6 +25,9 @@ struct StudyView: View {
             ZStack {
                 Color.clear
                 if let word = queue.first {
+                    ProgressView(value: Double(answeredCount), total: Double(answeredCount + queue.count))
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .padding(.horizontal)
                     switch mode {
                     case .flip: card(word)
                     case .typing, .listening:
@@ -47,10 +57,23 @@ struct StudyView: View {
 
     private func card(_ word: Word) -> some View {
         VStack(spacing: 20) {
-            Spacer()
-            WordFront(word: word)
-            if flipped { WordBack(word: word) }
-            Spacer()
+            FlipCard(word: word, flipped: flipped)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(drag > 0 ? Color.green : .red)
+                        .opacity(min(0.35, abs(drag) / 300))
+                        .allowsHitTesting(false)
+                }
+                .offset(x: drag)
+                .rotationEffect(.degrees(reduceMotion ? 0 : drag / 20))
+                .onTapGesture { flip() }
+                .gesture(DragGesture()
+                    .onChanged { if flipped && !reduceMotion { drag = $0.translation.width } }
+                    .onEnded { endSwipe($0.translation.width) })
+                .accessibilityIdentifier("studyCard")
+                .id(answeredCount)
+                .transition(reduceMotion ? .opacity
+                            : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .opacity))
             if flipped {
                 HStack {
                     Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.red)
@@ -61,22 +84,39 @@ struct StudyView: View {
                         .accessibilityIdentifier("answerEasy")
                 }
             } else {
-                Button { flipped = true } label: { Text("Xem nghĩa").frame(maxWidth: .infinity) }
+                Button { flip() } label: { Text("Xem nghĩa").frame(maxWidth: .infinity) }
                     .accessibilityIdentifier("revealAnswer")
             }
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
         .padding()
-        .task(id: word.persistentModelID) { Speaker.say(word.term) }
+        .padding(.top, 8)
+        .sensoryFeedback(.impact(weight: .light), trigger: answeredCount)
+        .task(id: answeredCount) { Speaker.say(word.term) }
+    }
+
+    private func flip() {
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.4)) { flipped = true }
+    }
+
+    private func endSwipe(_ dx: Double) {
+        guard let grade = Self.swipeDecision(dx) else {
+            withAnimation(.spring) { drag = 0 }
+            return
+        }
+        withAnimation(.easeIn(duration: 0.2)) { drag = dx > 0 ? 700 : -700 } completion: { answer(grade) }
     }
 
     private func answer(_ grade: Word.Grade) {
-        let word = queue.removeFirst()
-        word.answer(grade)
-        if grade == .forgot { queue.append(word) }
-        answeredCount += 1  // quên thì học lại cuối buổi
-        flipped = false
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.35)) {
+            let word = queue.removeFirst()
+            word.answer(grade)
+            if grade == .forgot { queue.append(word) }  // quên thì học lại cuối buổi
+            answeredCount += 1
+            flipped = false
+            drag = 0
+        }
         Streak.record()
         StudyLog.record()
     }
@@ -156,23 +196,10 @@ struct FlashcardView: View {
     }
 
     private func card(_ word: Word, flipped: Bool) -> some View {
-        ZStack {
-            VStack(spacing: 16) {
-                WordFront(word: word)
-                Text("Chạm để lật").font(.caption).foregroundStyle(.tertiary)
-            }
-            .opacity(flipped ? 0 : 1)
-            WordBack(word: word)
-                .padding()
-                .opacity(flipped ? 1 : 0)
-                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 24))
-        .rotation3DEffect(.degrees(flipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
-        .padding()
-        .contentShape(.rect)
-        .onTapGesture { withAnimation(.spring(duration: 0.4)) { self.flipped.toggle() } }
+        FlipCard(word: word, flipped: flipped)
+            .padding()
+            .contentShape(.rect)
+            .onTapGesture { withAnimation(.spring(duration: 0.4)) { self.flipped.toggle() } }
     }
 }
 
@@ -186,5 +213,32 @@ struct FlashcardView: View {
         utterance.voice = AVSpeechSynthesisVoice(language: Settings.voice)
         utterance.rate = Float(Settings.speechRate)
         synth.speak(utterance)
+    }
+}
+
+/// Thẻ lật 3D: mặt trước là từ, mặt sau là từ + nghĩa + ví dụ. Bật Reduce Motion thì chỉ mờ dần.
+struct FlipCard: View {
+    let word: Word
+    let flipped: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        ZStack {
+            VStack(spacing: 16) {
+                WordFront(word: word)
+                Text("Chạm để lật").font(.caption).foregroundStyle(.tertiary)
+            }
+            .opacity(flipped ? 0 : 1)
+            VStack(spacing: 12) {
+                Text(word.term).font(.title.bold())
+                WordBack(word: word)
+            }
+            .padding()
+            .opacity(flipped ? 1 : 0)
+            .rotation3DEffect(.degrees(reduceMotion ? 0 : 180), axis: (x: 0, y: 1, z: 0))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 24))
+        .rotation3DEffect(.degrees(flipped && !reduceMotion ? 180 : 0), axis: (x: 0, y: 1, z: 0))
     }
 }
