@@ -73,6 +73,11 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     #expect(Set(Content.grammar.map(\.id)).count == Content.grammar.count)
     for topic in Content.grammar {
         #expect(topic.questions.count >= 15, "\(topic.id)")
+        #expect(topic.lesson.contains { $0.type == .formula } && topic.lesson.contains { $0.type == .example }, "\(topic.id)")
+        for block in topic.lesson {
+            #expect(!block.text.isEmpty, "\(topic.id)")
+            #expect((block.type == .example) == (block.meaning != nil), "chỉ ví dụ mới có nghĩa: \(block.text)")
+        }
         #expect(Set(topic.questions.map(\.q)).count == topic.questions.count, "trùng đề: \(topic.id)")
         for q in topic.questions { #expect(q.options.count == 4 && q.options.indices.contains(q.answer), "\(q.q)") }
     }

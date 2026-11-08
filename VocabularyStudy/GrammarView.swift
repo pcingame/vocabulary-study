@@ -9,8 +9,16 @@ struct VocabDeck: Decodable {
 struct GrammarTopic: Decodable, Identifiable, Hashable {
     let id: String
     let name: String
-    let lesson: String
+    let lesson: [LessonBlock]
     let questions: [Question]
+}
+
+/// Một khối bài giảng: đoạn chữ (có **đậm**), công thức (khung màu) hoặc câu ví dụ (có nghĩa, chạm để nghe).
+struct LessonBlock: Decodable, Hashable {
+    enum Kind: String, Decodable { case text, formula, example }
+    let type: Kind
+    let text: String
+    var meaning: String?
 }
 
 struct Question: Decodable, Hashable {
@@ -128,11 +136,10 @@ struct GrammarLessonView: View {
 
     var body: some View {
         ScrollView {
-            Text((try? AttributedString(markdown: topic.lesson,
-                                        options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)))
-                 ?? AttributedString(topic.lesson))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach(topic.lesson, id: \.self) { LessonBlockView(block: $0) }
+            }
+            .padding()
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
@@ -153,6 +160,41 @@ struct GrammarLessonView: View {
         }
         .navigationTitle(topic.name)
         .fullScreenCover(item: $quiz) { QuizView(topic: topic, reviewing: $0 == .mistakes) }
+    }
+}
+
+struct LessonBlockView: View {
+    let block: LessonBlock
+
+    var body: some View {
+        switch block.type {
+        case .text:
+            Text((try? AttributedString(markdown: block.text)) ?? AttributedString(block.text))
+                .frame(maxWidth: .infinity, alignment: .leading)
+        case .formula:
+            Text(block.text)
+                .font(.callout.weight(.semibold).monospaced())
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.tint.opacity(0.12), in: .rect(cornerRadius: 10))
+                .overlay(alignment: .leading) { Rectangle().fill(.tint).frame(width: 4) }
+                .clipShape(.rect(cornerRadius: 10))
+        case .example:
+            Button { Speaker.say(block.text) } label: {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "speaker.wave.2.fill").foregroundStyle(.tint)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(block.text).italic()
+                        if let meaning = block.meaning { Text(meaning).font(.callout).foregroundStyle(.secondary) }
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(12)
+                .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 10))
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("Chạm để nghe")
+        }
     }
 }
 

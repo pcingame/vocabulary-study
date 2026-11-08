@@ -2,7 +2,17 @@
   {
     "id": "word-forms",
     "name": "Từ loại",
-    "lesson": "Câu hỏi từ loại chiếm nhiều nhất trong Part 5. Nhìn **vị trí chỗ trống** để chọn loại từ:\n\n• **Danh từ** đứng sau mạo từ (a, an, the), sau tính từ sở hữu (my, their…) hoặc sau tính từ. Đuôi hay gặp: -tion, -ment, -ness, -ity, -er/-or, -ance.\n\n• **Tính từ** đứng trước danh từ, hoặc sau be, become, seem, remain. Đuôi hay gặp: -ful, -ive, -able, -ous, -al.\n\n• **Trạng từ** bổ nghĩa cho động từ, tính từ hoặc cả câu. Đuôi hay gặp: -ly.\n\n• **Động từ** đứng sau chủ ngữ và chia theo thì.\n\nVí dụ: The manager gave a **clear** explanation. (tính từ đứng trước danh từ)",
+    "lesson": [
+      {"type": "text", "text": "Câu hỏi từ loại chiếm nhiều nhất trong Part 5. Nhìn **vị trí chỗ trống** để chọn loại từ."},
+      {"type": "text", "text": "**Danh từ** đứng sau mạo từ (a, an, the), sau tính từ sở hữu (my, their…) hoặc sau tính từ. Đuôi hay gặp: -tion, -ment, -ness, -ity, -er/-or, -ance."},
+      {"type": "formula", "text": "the / my / adj + ___ (danh từ)"},
+      {"type": "text", "text": "**Tính từ** đứng trước danh từ, hoặc sau be, become, seem, remain. Đuôi hay gặp: -ful, -ive, -able, -ous, -al."},
+      {"type": "formula", "text": "___ (tính từ) + danh từ  ·  be / seem + ___ (tính từ)"},
+      {"type": "text", "text": "**Trạng từ** bổ nghĩa cho động từ, tính từ hoặc cả câu. Đuôi hay gặp: -ly."},
+      {"type": "formula", "text": "động từ + ___ (-ly)  ·  ___ (-ly) + tính từ"},
+      {"type": "text", "text": "**Động từ** đứng sau chủ ngữ và chia theo thì."},
+      {"type": "example", "text": "The manager gave a clear explanation.", "meaning": "Quản lý đã giải thích rõ ràng. (tính từ “clear” đứng trước danh từ)"}
+    ],
     "questions": [
       {"q": "The new software has greatly improved the ------- of our accounting team.", "options": ["efficient", "efficiently", "efficiency", "more efficient"], "answer": 2, "explain": "Sau \"the\" và trước \"of\" cần danh từ → efficiency (hiệu suất)."},
       {"q": "Ms. Tanaka responded ------- to all customer complaints.", "options": ["prompt", "promptly", "promptness", "prompted"], "answer": 1, "explain": "Bổ nghĩa cho động từ \"responded\" cần trạng từ → promptly (nhanh chóng)."},
@@ -25,7 +35,20 @@
   {
     "id": "tenses",
     "name": "Thì động từ",
-    "lesson": "Tìm **dấu hiệu thời gian** trong câu để chọn thì:\n\n• **Hiện tại đơn**: thói quen, sự thật, lịch trình. Dấu hiệu: every day, usually, always.\n\n• **Hiện tại tiếp diễn** (am/is/are + V-ing): đang xảy ra. Dấu hiệu: now, currently, at the moment.\n\n• **Hiện tại hoàn thành** (have/has + V3): từ quá khứ kéo dài đến nay. Dấu hiệu: since, for, already, yet, recently.\n\n• **Quá khứ đơn**: đã xong trong quá khứ. Dấu hiệu: yesterday, last week, ago, in 2020.\n\n• **Tương lai đơn** (will + V): dấu hiệu tomorrow, next month, soon.\n\n• Lưu ý: sau **when, before, after, as soon as, until** mà nói về tương lai thì dùng **hiện tại đơn**, không dùng will.",
+    "lesson": [
+      {"type": "text", "text": "Tìm **dấu hiệu thời gian** trong câu để chọn thì."},
+      {"type": "text", "text": "**Hiện tại đơn**: thói quen, sự thật, lịch trình. Dấu hiệu: every day, usually, always."},
+      {"type": "text", "text": "**Hiện tại tiếp diễn**: đang xảy ra. Dấu hiệu: now, currently, at the moment."},
+      {"type": "formula", "text": "am / is / are + V-ing"},
+      {"type": "text", "text": "**Hiện tại hoàn thành**: từ quá khứ kéo dài đến nay. Dấu hiệu: since, for, already, yet, recently."},
+      {"type": "formula", "text": "have / has + V3"},
+      {"type": "example", "text": "Mr. Lee has worked here since 2015.", "meaning": "Ông Lee đã làm ở đây từ năm 2015."},
+      {"type": "text", "text": "**Quá khứ đơn**: đã xong trong quá khứ. Dấu hiệu: yesterday, last week, ago, in 2020."},
+      {"type": "text", "text": "**Tương lai đơn**: dấu hiệu tomorrow, next month, soon."},
+      {"type": "formula", "text": "will + V"},
+      {"type": "text", "text": "Lưu ý: sau **when, before, after, as soon as, until** mà nói về tương lai thì dùng **hiện tại đơn**, không dùng will."},
+      {"type": "example", "text": "Please call me when the package arrives.", "meaning": "Hãy gọi tôi khi gói hàng tới."}
+    ],
     "questions": [
       {"q": "Mr. Lee ------- for this company since 2015.", "options": ["works", "worked", "has worked", "will work"], "answer": 2, "explain": "\"since 2015\" → hiện tại hoàn thành: has worked."},
       {"q": "The board of directors ------- the proposal last Monday.", "options": ["approves", "approved", "has approved", "will approve"], "answer": 1, "explain": "\"last Monday\" → quá khứ đơn: approved."},
@@ -48,7 +71,15 @@
   {
     "id": "passive",
     "name": "Câu bị động",
-    "lesson": "Câu bị động dùng khi chủ ngữ **chịu tác động** của hành động. Công thức: **be + V3 (quá khứ phân từ)**.\n\n• Hiện tại: is/are + V3\n• Quá khứ: was/were + V3\n• Hoàn thành: has/have been + V3\n• Tương lai, động từ khuyết thiếu: will/can/must be + V3\n• Tiếp diễn: is/are being + V3\n\nMẹo: chủ ngữ là vật (report, product…) và sau chỗ trống **không có tân ngữ** → thường chọn bị động. Có \"by + người\" cũng là dấu hiệu bị động.",
+    "lesson": [
+      {"type": "text", "text": "Câu bị động dùng khi chủ ngữ **chịu tác động** của hành động."},
+      {"type": "formula", "text": "be + V3 (quá khứ phân từ)"},
+      {"type": "text", "text": "Chia **be** theo thì:"},
+      {"type": "formula", "text": "is/are + V3  ·  was/were + V3  ·  has/have been + V3"},
+      {"type": "formula", "text": "will/can/must be + V3  ·  is/are being + V3"},
+      {"type": "text", "text": "Mẹo: chủ ngữ là vật (report, product…) và sau chỗ trống **không có tân ngữ** → thường chọn bị động. Có \"by + người\" cũng là dấu hiệu bị động."},
+      {"type": "example", "text": "The report will be sent to all shareholders.", "meaning": "Báo cáo sẽ được gửi tới tất cả cổ đông."}
+    ],
     "questions": [
       {"q": "The annual report ------- to all shareholders next week.", "options": ["sends", "will send", "will be sent", "is sending"], "answer": 2, "explain": "Báo cáo \"được gửi\" → bị động; \"next week\" → will be sent."},
       {"q": "The conference room ------- every evening by the cleaning staff.", "options": ["cleans", "is cleaned", "cleaned", "is cleaning"], "answer": 1, "explain": "Phòng \"được dọn\", có \"by the cleaning staff\" → bị động hiện tại: is cleaned."},
@@ -71,7 +102,16 @@
   {
     "id": "prepositions",
     "name": "Giới từ",
-    "lesson": "• **Thời gian**: at + giờ (at 9 A.M.), on + thứ/ngày (on Monday, on May 5), in + tháng/năm/buổi (in July, in 2025, in the morning).\n\n• **by** + thời điểm: trước, không muộn hơn (by Friday). **until** + thời điểm: kéo dài đến (until 5 P.M.).\n\n• **for** + khoảng thời gian (for three years). **during** + sự kiện/giai đoạn (during the meeting). **within** + khoảng thời gian: trong vòng (within 24 hours).\n\n• **Nơi chốn**: at + điểm cụ thể (at the front desk), in + không gian (in the office), on + bề mặt/tầng (on the third floor).\n\n• **despite / in spite of** + danh từ: mặc dù. **due to / because of** + danh từ: do, vì.",
+    "lesson": [
+      {"type": "text", "text": "**Thời gian**: at + giờ, on + thứ/ngày, in + tháng/năm/buổi."},
+      {"type": "formula", "text": "at 9 A.M.  ·  on Monday / on May 5  ·  in July / in 2025 / in the morning"},
+      {"type": "text", "text": "**by** + thời điểm: trước, không muộn hơn. **until** + thời điểm: kéo dài đến."},
+      {"type": "example", "text": "Please return the form by Friday.", "meaning": "Vui lòng gửi lại mẫu đơn trước thứ Sáu."},
+      {"type": "text", "text": "**for** + khoảng thời gian (for three years). **during** + sự kiện/giai đoạn (during the meeting). **within** + khoảng thời gian: trong vòng (within 24 hours)."},
+      {"type": "text", "text": "**Nơi chốn**: at + điểm cụ thể (at the front desk), in + không gian (in the office), on + bề mặt/tầng (on the third floor)."},
+      {"type": "text", "text": "**despite / in spite of** + danh từ: mặc dù. **due to / because of** + danh từ: do, vì."},
+      {"type": "example", "text": "The flight was canceled due to bad weather.", "meaning": "Chuyến bay bị huỷ do thời tiết xấu."}
+    ],
     "questions": [
       {"q": "The meeting has been rescheduled ------- Thursday morning.", "options": ["in", "on", "at", "by"], "answer": 1, "explain": "Thứ trong tuần (kể cả \"Thursday morning\") → on."},
       {"q": "Please return the signed form ------- Friday at the latest.", "options": ["until", "by", "during", "since"], "answer": 1, "explain": "Hạn chót, không muộn hơn → by."},
@@ -94,7 +134,16 @@
   {
     "id": "conjunctions",
     "name": "Liên từ",
-    "lesson": "• Nối hai vế ngang hàng: **and, but, or, so**.\n\n• Nhượng bộ: **although / even though** + mệnh đề (mặc dù).\n\n• Nguyên nhân: **because / since** + mệnh đề.\n\n• Điều kiện: **if**, **unless** (trừ khi), **as long as** (miễn là).\n\n• Thời gian: **when, while, before, after, once, until, as soon as**.\n\n• Cặp liên từ: **both … and**, **either … or**, **neither … nor**, **not only … but also**.\n\n• Phân biệt: liên từ + **mệnh đề** (because it rained), giới từ + **danh từ** (because of the rain).",
+    "lesson": [
+      {"type": "text", "text": "Nối hai vế ngang hàng: **and, but, or, so**."},
+      {"type": "text", "text": "Nhượng bộ: **although / even though** + mệnh đề (mặc dù). Nguyên nhân: **because / since** + mệnh đề."},
+      {"type": "text", "text": "Điều kiện: **if**, **unless** (trừ khi), **as long as** (miễn là). Thời gian: **when, while, before, after, once, until, as soon as**."},
+      {"type": "text", "text": "Cặp liên từ:"},
+      {"type": "formula", "text": "both … and  ·  either … or  ·  neither … nor  ·  not only … but also"},
+      {"type": "text", "text": "Phân biệt liên từ và giới từ:"},
+      {"type": "formula", "text": "liên từ + mệnh đề  ·  giới từ + danh từ"},
+      {"type": "example", "text": "Although the price was high, many customers bought it.", "meaning": "Mặc dù giá cao, nhiều khách hàng vẫn mua."}
+    ],
     "questions": [
       {"q": "------- the price was high, many customers bought the new model.", "options": ["Despite", "Although", "Because of", "However"], "answer": 1, "explain": "Sau chỗ trống là mệnh đề, nghĩa nhượng bộ → Although."},
       {"q": "The package will not be delivered ------- someone signs for it.", "options": ["unless", "if", "or", "so"], "answer": 0, "explain": "\"sẽ không giao trừ khi có người ký nhận\" → unless."},
@@ -117,7 +166,14 @@
   {
     "id": "relative-clauses",
     "name": "Mệnh đề quan hệ",
-    "lesson": "• **who**: thay cho người, làm chủ ngữ.\n• **whom**: thay cho người, làm tân ngữ.\n• **which**: thay cho vật.\n• **that**: thay cho người hoặc vật, **không** dùng sau dấu phẩy.\n• **whose** + danh từ: chỉ sở hữu.\n• **where** (nơi chốn), **when** (thời gian).\n\nMẹo: nhìn danh từ đứng trước (người hay vật), rồi xem sau chỗ trống thiếu chủ ngữ, thiếu tân ngữ, hay có ngay một danh từ.",
+    "lesson": [
+      {"type": "text", "text": "**who**: thay cho người, làm chủ ngữ. **whom**: thay cho người, làm tân ngữ."},
+      {"type": "text", "text": "**which**: thay cho vật. **that**: thay cho người hoặc vật, **không** dùng sau dấu phẩy."},
+      {"type": "text", "text": "**whose** + danh từ: chỉ sở hữu. **where** (nơi chốn), **when** (thời gian)."},
+      {"type": "formula", "text": "người + who / whom  ·  vật + which  ·  ___ whose + danh từ"},
+      {"type": "text", "text": "Mẹo: nhìn danh từ đứng trước (người hay vật), rồi xem sau chỗ trống thiếu chủ ngữ, thiếu tân ngữ, hay có ngay một danh từ."},
+      {"type": "example", "text": "Mr. Garcia, whose office is on the fifth floor, will lead the training.", "meaning": "Ông Garcia, người có văn phòng ở tầng năm, sẽ phụ trách buổi đào tạo."}
+    ],
     "questions": [
       {"q": "Employees ------- wish to attend the seminar should register by Monday.", "options": ["who", "which", "whose", "where"], "answer": 0, "explain": "Thay cho người, làm chủ ngữ của \"wish\" → who."},
       {"q": "The printer ------- was installed last week is already broken.", "options": ["who", "whom", "which", "where"], "answer": 2, "explain": "Thay cho vật (the printer) → which."},
@@ -140,7 +196,16 @@
   {
     "id": "pronouns",
     "name": "Đại từ",
-    "lesson": "• **Chủ ngữ**: I, you, he, she, it, we, they.\n• **Tân ngữ** (sau động từ, giới từ): me, you, him, her, it, us, them.\n• **Tính từ sở hữu** + danh từ: my, your, his, her, its, our, their.\n• **Đại từ sở hữu** (đứng một mình): mine, yours, his, hers, ours, theirs.\n• **Phản thân**: myself, himself, themselves… dùng khi chủ ngữ và tân ngữ là cùng một người, hoặc **by + oneself** = tự mình.\n\nLưu ý: **its** là sở hữu, **it's** = it is.",
+    "lesson": [
+      {"type": "formula", "text": "Chủ ngữ: I, you, he, she, it, we, they"},
+      {"type": "formula", "text": "Tân ngữ: me, you, him, her, it, us, them"},
+      {"type": "formula", "text": "Tính từ sở hữu + danh từ: my, your, his, her, its, our, their"},
+      {"type": "formula", "text": "Đại từ sở hữu: mine, yours, his, hers, ours, theirs"},
+      {"type": "text", "text": "**Tân ngữ** đứng sau động từ, giới từ. **Đại từ sở hữu** đứng một mình, không có danh từ theo sau."},
+      {"type": "text", "text": "**Phản thân** (myself, himself, themselves…) dùng khi chủ ngữ và tân ngữ là cùng một người, hoặc **by + oneself** = tự mình."},
+      {"type": "example", "text": "Mr. Kim completed the project by himself.", "meaning": "Ông Kim tự mình hoàn thành dự án."},
+      {"type": "text", "text": "Lưu ý: **its** là sở hữu, **it's** = it is."}
+    ],
     "questions": [
       {"q": "Ms. Chen asked ------- assistant to prepare the slides.", "options": ["she", "her", "hers", "herself"], "answer": 1, "explain": "Trước danh từ \"assistant\" → tính từ sở hữu: her."},
       {"q": "The manager will meet with ------- after lunch.", "options": ["we", "our", "us", "ours"], "answer": 2, "explain": "Sau giới từ \"with\" → tân ngữ: us."},
@@ -163,7 +228,17 @@
   {
     "id": "comparisons",
     "name": "So sánh",
-    "lesson": "• **So sánh hơn**: tính từ ngắn + **-er** + than (cheaper than); tính từ dài: **more** + adj + than (more expensive than).\n\n• **So sánh nhất**: **the** + adj-**est** / **the most** + adj (the largest, the most popular).\n\n• **So sánh bằng**: **as** + adj/adv + **as** (as soon as possible).\n\n• Bất quy tắc: good → better → best; bad → worse → worst; many/much → more → most.\n\n• Nhấn mạnh so sánh hơn: **much, far, even, significantly** + so sánh hơn (much better).",
+    "lesson": [
+      {"type": "text", "text": "**So sánh hơn**: tính từ ngắn thêm -er, tính từ dài thêm more."},
+      {"type": "formula", "text": "adj-er + than  ·  more + adj + than"},
+      {"type": "text", "text": "**So sánh nhất**:"},
+      {"type": "formula", "text": "the + adj-est  ·  the most + adj"},
+      {"type": "text", "text": "**So sánh bằng**:"},
+      {"type": "formula", "text": "as + adj/adv + as"},
+      {"type": "example", "text": "Please reply as soon as possible.", "meaning": "Vui lòng trả lời sớm nhất có thể."},
+      {"type": "text", "text": "Bất quy tắc: good → better → best; bad → worse → worst; many/much → more → most."},
+      {"type": "text", "text": "Nhấn mạnh so sánh hơn: **much, far, even, significantly** + so sánh hơn (much better)."}
+    ],
     "questions": [
       {"q": "The new model is ------- than the previous one.", "options": ["light", "lighter", "lightest", "more light"], "answer": 1, "explain": "Có \"than\", tính từ ngắn → lighter."},
       {"q": "This is the ------- popular product in our store.", "options": ["more", "most", "much", "very"], "answer": 1, "explain": "the + most + tính từ dài → so sánh nhất."},
@@ -186,7 +261,15 @@
   {
     "id": "gerunds-infinitives",
     "name": "V-ing và to V",
-    "lesson": "• Sau các động từ sau dùng **to V**: want, plan, decide, hope, agree, offer, refuse, need, expect, promise.\n\n• Sau các động từ sau dùng **V-ing**: enjoy, avoid, consider, finish, suggest, recommend, mind, postpone, keep.\n\n• Sau **giới từ** luôn dùng **V-ing**: interested in joining, thank you for coming, look forward **to meeting** (to ở đây là giới từ).\n\n• Chỉ **mục đích** dùng **to V** (= in order to): We hired more staff **to reduce** wait times.",
+    "lesson": [
+      {"type": "text", "text": "Sau các động từ sau dùng **to V**: want, plan, decide, hope, agree, offer, refuse, need, expect, promise."},
+      {"type": "text", "text": "Sau các động từ sau dùng **V-ing**: enjoy, avoid, consider, finish, suggest, recommend, mind, postpone, keep."},
+      {"type": "text", "text": "Sau **giới từ** luôn dùng **V-ing**. Chú ý look forward **to** + V-ing (to ở đây là giới từ)."},
+      {"type": "formula", "text": "giới từ + V-ing"},
+      {"type": "example", "text": "We look forward to meeting you.", "meaning": "Chúng tôi mong được gặp bạn."},
+      {"type": "text", "text": "Chỉ **mục đích** dùng **to V** (= in order to)."},
+      {"type": "example", "text": "We hired more staff to reduce wait times.", "meaning": "Chúng tôi tuyển thêm nhân viên để giảm thời gian chờ."}
+    ],
     "questions": [
       {"q": "The company plans ------- a new branch in Hanoi.", "options": ["open", "opening", "to open", "opened"], "answer": 2, "explain": "plan + to V → to open."},
       {"q": "We look forward to ------- you at the conference.", "options": ["see", "seeing", "seen", "saw"], "answer": 1, "explain": "look forward to: \"to\" là giới từ → V-ing: seeing."},
@@ -209,7 +292,19 @@
   {
     "id": "conditionals",
     "name": "Câu điều kiện",
-    "lesson": "• **Loại 1** (có thể xảy ra): If + hiện tại đơn, **will** + V.\nIf it rains, the event **will be** moved indoors.\n\n• **Loại 2** (không có thật ở hiện tại): If + quá khứ đơn (be → were), **would/could** + V.\nIf I **had** more time, I **would join** the course.\n\n• **Loại 3** (không có thật ở quá khứ): If + had + V3, **would have** + V3.\n\n• **Unless** = if not.\n\n• Đảo ngữ hay gặp trong TOEIC: **Should** you have any questions, please contact us. (= If you have any questions…)",
+    "lesson": [
+      {"type": "text", "text": "**Loại 1** (có thể xảy ra):"},
+      {"type": "formula", "text": "If + hiện tại đơn, will + V"},
+      {"type": "example", "text": "If it rains, the event will be moved indoors.", "meaning": "Nếu trời mưa, sự kiện sẽ chuyển vào trong nhà."},
+      {"type": "text", "text": "**Loại 2** (không có thật ở hiện tại), be → were:"},
+      {"type": "formula", "text": "If + quá khứ đơn, would/could + V"},
+      {"type": "example", "text": "If I had more time, I would join the course.", "meaning": "Nếu có thêm thời gian, tôi sẽ tham gia khoá học."},
+      {"type": "text", "text": "**Loại 3** (không có thật ở quá khứ):"},
+      {"type": "formula", "text": "If + had + V3, would have + V3"},
+      {"type": "text", "text": "**Unless** = if not. Đảo ngữ hay gặp trong TOEIC:"},
+      {"type": "formula", "text": "Should + S + V = If + S + V (loại 1)"},
+      {"type": "example", "text": "Should you have any questions, please contact us.", "meaning": "Nếu bạn có câu hỏi nào, vui lòng liên hệ chúng tôi."}
+    ],
     "questions": [
       {"q": "If the shipment arrives late, we ------- a discount.", "options": ["offer", "will offer", "would offer", "offered"], "answer": 1, "explain": "If + hiện tại đơn → loại 1: will offer."},
       {"q": "If I ------- you, I would accept the job offer.", "options": ["am", "was being", "were", "be"], "answer": 2, "explain": "Loại 2, động từ be dùng \"were\" cho mọi ngôi."},

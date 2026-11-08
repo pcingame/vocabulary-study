@@ -381,7 +381,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Cho đạt bài ngữ pháp và học hết từ chặng 1 (dùng `-seed` với dữ liệu đã học sẵn): chặng 2 mở khoá có animation, mở lại app thì không chạy lại.
 
-### 3.6 Bài giảng ngữ pháp dễ đọc hơn · P1 · M
+### 3.6 Bài giảng ngữ pháp dễ đọc hơn · P1 · M ✅
 - **Các bước**:
   1. Đổi `lesson` trong JSON từ một chuỗi dài thành danh sách khối: `text`, `formula` (khung màu), `example` (khung ví dụ, có nút nghe).
   2. Cập nhật test nội dung.
