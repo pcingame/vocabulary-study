@@ -455,6 +455,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - Bài mới (16 câu mỗi bài): Hoà hợp chủ ngữ – động từ, Lượng từ & mạo từ, Phân từ (V-ing / V3). Chưa đưa vào lộ trình.
 - **Test tự động**: [x] unit `bundledContentIsValid`, [x] UI `testGrammarQuizTracksMistakes`, `testAccessibilityAudit`.
 - Thêm bài tập: mọi bài đều có 24 câu (thêm 96 câu).
+- **Test tay**: [ ] Trên iPhone đọc bài Thì và làm thử 1 bài mới.
 
 **Kết thúc Phase 3** → quay video màn hình các luồng chính và gửi người dùng xem trước khi phát hành.
 
