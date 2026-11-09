@@ -357,6 +357,16 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(s.count(.forgot) == 1 && s.count(.easy) == 1 && s.count(.hard) == 0)  // theo lần trả lời đầu
 }
 
+@Test func sessionRequeuesForgotten() {
+    let a = Word(term: "a", pos: "", meaning: ""), b = Word(term: "b", pos: "", meaning: "")
+    var s = StudySession(queue: [a, b])
+    s.answer(.forgot)  // a quên → xuống cuối
+    #expect(s.queue.map(\.term) == ["b", "a"])
+    s.answer(.easy); s.answer(.forgot); s.answer(.easy)  // a quên lần 2 rồi nhớ
+    #expect(s.queue.isEmpty && s.answered == 4)
+    #expect(s.summary.wordCount == 2 && s.summary.forgotten.count == 1)
+}
+
 @MainActor @Test func fetchedQueueMatchesFiltered() throws {
     let container = try memoryContainer()
     let context = container.mainContext

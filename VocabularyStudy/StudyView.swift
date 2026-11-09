@@ -7,13 +7,11 @@ struct StudyView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @State private var fallback: [Word] = []  // nghĩa nhiễu cho trắc nghiệm khi chủ đề quá ít từ
-    @State private var queue: [Word] = []
+    @State private var session = StudySession()
     @State private var loaded = false
     @State private var flipped = false
-    @State private var answeredCount = 0  // đổi id thẻ gõ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
     @AppStorage(Settings.studyModeKey) private var mode = StudyMode.flip
     @State private var drag = 0.0  // độ kéo ngang của thẻ
-    @State private var summary = SessionSummary()
     @State private var streakBefore = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -27,37 +25,37 @@ struct StudyView: View {
             // Color.clear giữ cho view luôn có nội dung, nếu không onAppear không chạy khi hàng đợi còn rỗng.
             ZStack {
                 Color.clear
-                if let word = queue.first {
-                    ProgressView(value: Double(answeredCount), total: Double(answeredCount + queue.count))
+                if let word = session.queue.first {
+                    ProgressView(value: Double(session.answered), total: Double(session.answered + session.queue.count))
                         .frame(maxHeight: .infinity, alignment: .top)
                         .padding(.horizontal)
                     switch mode {
                     case .flip: card(word)
                     case .typing, .listening:
-                        TypingCard(word: word, listening: mode == .listening) { answer($0) }.id(answeredCount)
+                        TypingCard(word: word, listening: mode == .listening) { answer($0) }.id(session.answered)
                     case .choice:
                         if let choices = Answer.choices(for: word, pool: word.topic?.words ?? [], fallback: fallback) {
-                            ChoiceCard(word: word, choices: choices) { answer($0) }.id(answeredCount)
+                            ChoiceCard(word: word, choices: choices) { answer($0) }.id(session.answered)
                         } else {
                             card(word)  // chưa đủ 4 nghĩa khác nhau
                         }
                     }
                 } else if loaded {
-                    if summary.wordCount == 0 {
+                    if session.summary.wordCount == 0 {
                         ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
                                                description: Text("Hẹn gặp lại ngày mai."))
                     } else {
-                        SummaryView(summary: summary, streakBefore: streakBefore)
+                        SummaryView(summary: session.summary, streakBefore: streakBefore)
                     }
                 }
             }
-            .navigationTitle(queue.isEmpty ? "" : "Còn \(queue.count) thẻ")
+            .navigationTitle(session.queue.isEmpty ? "" : "Còn \(session.queue.count) thẻ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() }.accessibilityIdentifier("studyClose") }
             .onDisappear { try? context.save() }  // lưu ngay để tab Hôm nay fetch thấy đúng tiến độ
             .onAppear {
                 guard !loaded else { return }
-                queue = topic.map { Word.todayQueue($0.words) } ?? Word.todayQueue(in: context)
+                session.queue = topic.map { Word.todayQueue($0.words) } ?? Word.todayQueue(in: context)
                 var some = FetchDescriptor<Word>()
                 some.fetchLimit = 50
                 fallback = (try? context.fetch(some)) ?? []
@@ -83,7 +81,7 @@ struct StudyView: View {
                     .onChanged { if flipped && !reduceMotion { drag = $0.translation.width } }
                     .onEnded { endSwipe($0.translation.width) })
                 .accessibilityIdentifier("studyCard")
-                .id(answeredCount)
+                .id(session.answered)
                 .transition(reduceMotion ? .opacity
                             : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .opacity))
             if flipped {
@@ -104,8 +102,8 @@ struct StudyView: View {
         .controlSize(.large)
         .padding()
         .padding(.top, 8)
-        .sensoryFeedback(.impact(weight: .light), trigger: answeredCount)
-        .task(id: answeredCount) { Speaker.say(word.term) }
+        .sensoryFeedback(.impact(weight: .light), trigger: session.answered)
+        .task(id: session.answered) { Speaker.say(word.term) }
     }
 
     private func flip() {
@@ -122,11 +120,7 @@ struct StudyView: View {
 
     private func answer(_ grade: Word.Grade) {
         withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.35)) {
-            let word = queue.removeFirst()
-            word.answer(grade)
-            summary.add(word, grade)
-            if grade == .forgot { queue.append(word) }  // quên thì học lại cuối buổi
-            answeredCount += 1
+            session.answer(grade)
             flipped = false
             drag = 0
         }
@@ -139,6 +133,21 @@ extension Color {
     // Đậm hơn .red/.green để chữ trắng trên nút đạt tương phản 4.5:1.
     static let forgot = Color(red: 0.73, green: 0.11, blue: 0.11)
     static let easy = Color(red: 0.08, green: 0.50, blue: 0.24)
+}
+
+/// Hàng đợi một buổi học. Từ trả lời Quên được đưa xuống cuối để học lại trong buổi.
+struct StudySession {
+    var queue: [Word] = []
+    private(set) var summary = SessionSummary()
+    private(set) var answered = 0  // làm id thẻ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
+
+    mutating func answer(_ grade: Word.Grade) {
+        let word = queue.removeFirst()
+        word.answer(grade)
+        summary.add(word, grade)
+        if grade == .forgot { queue.append(word) }
+        answered += 1
+    }
 }
 
 /// Kết quả một buổi học. Mỗi từ tính theo lần trả lời đầu tiên; từ quên nhiều lần chỉ ghi 1 lần.
