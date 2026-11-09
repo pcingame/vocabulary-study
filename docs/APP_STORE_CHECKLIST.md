@@ -53,6 +53,8 @@ Web nằm ở repo riêng **`pcingame/vocabulary-study-web`** (để repo code g
 
 ## 4. Metadata App Store Connect
 
+Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Text, Description, Keywords, URL).
+
 - [ ] **Tên** (≤ 30 ký tự, phải duy nhất), ví dụ: `Mầm – Từ vựng & Ngữ pháp`
 - [ ] **Subtitle** (≤ 30): ví dụ `Luyện thi TOEIC mỗi ngày`
 - [ ] **Category**: Education (phụ: Reference)
