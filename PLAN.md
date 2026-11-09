@@ -438,7 +438,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [x] UI liên quan: testStudyOneCard, testChoiceMode, testSummaryAfterSession, testGrammarQuizTracksMistakes, testOnboardingSavesChoice, testRegressionDarkLargeText, testAccessibilityAudit, testChangeNewWordLimit, testStatsAfterStudy.
 - **Test tay**:
   - [ ] Trên iPhone: đổi Giao diện Sáng/Tối/Hệ thống, app đổi ngay.
-  - [ ] Icon app vẫn là ngọn lửa cam — đổi sang mint nếu muốn.
+  - [x] Icon app: đã đổi sang mầm cây mint (xem 3.12).
 
 ### 3.10 Nền trắng ngà, xoá dễ thấy hơn, thêm bộ từ · P1 · S ✅
 - Nền màn học/ngữ pháp/giới thiệu: `Color.paper` (sáng #FAF7F0, tối đen), `paperBackground()`. Danh sách giữ nền xám hệ thống.
@@ -456,6 +456,12 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tự động**: [x] unit `bundledContentIsValid`, [x] UI `testGrammarQuizTracksMistakes`, `testAccessibilityAudit`.
 - Thêm bài tập: mọi bài đều có 24 câu (thêm 96 câu).
 - **Test tay**: [ ] Trên iPhone đọc bài Thì và làm thử 1 bài mới.
+
+### 3.12 Tên app "Mầm" + icon mầm cây · P1 · S ✅
+- Tên hiển thị `Mầm` (project.yml). Icon: mầm 2 lá mint trên nền kem; bản tối nền xanh rêu đậm; bản tinted xám trên nền đen. Nguồn vẽ: script SVG → `rsvg-convert` (không lưu trong repo).
+- Biểu tượng trong app đổi ngọn lửa → chiếc lá (`leaf` / `leaf.fill`): tab Hôm nay, thẻ streak, tổng kết buổi học, màn giới thiệu.
+- **Test tự động**: [x] UI `testOnboardingSavesChoice`, `testStudyOneCard`, `testSummaryAfterSession`, `testAccessibilityAudit`.
+- **Test tay**: [ ] Màn hình chính iPhone hiện icon mầm + tên "Mầm" ở chế độ sáng, tối, tinted.
 
 **Kết thúc Phase 3** → quay video màn hình các luồng chính và gửi người dùng xem trước khi phát hành.
 

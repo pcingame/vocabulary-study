@@ -147,7 +147,7 @@ struct SummaryView: View {
                     stat("Khó", summary.count(.hard), .hardInk)
                     stat("Quên", summary.count(.forgot), .forgotInk)
                 }
-                Label("Chuỗi: \(after) ngày" + (after > streakBefore ? " (+\(after - streakBefore))" : ""), systemImage: "flame.fill")
+                Label("Chuỗi: \(after) ngày" + (after > streakBefore ? " (+\(after - streakBefore))" : ""), systemImage: "leaf.fill")
                     .font(.headline)
                     .foregroundStyle(.tint)
                 if !summary.forgotten.isEmpty {

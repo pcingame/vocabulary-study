@@ -10,7 +10,7 @@ struct OnboardingView: View {
 
     var body: some View {
         TabView(selection: $page) {
-            step(icon: "flame.fill", title: "Học từ vựng TOEIC",
+            step(icon: "leaf.fill", title: "Học từ vựng TOEIC",
                  text: "Học theo lộ trình, mỗi ngày khoảng 10 phút. App tự xếp lịch ôn để bạn nhớ lâu.") {
                 Button { page = 1 } label: { wide("Tiếp tục") }.accessibilityIdentifier("onboardingNext1")
             }

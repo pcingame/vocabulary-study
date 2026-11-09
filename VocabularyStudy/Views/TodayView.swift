@@ -41,7 +41,7 @@ struct TodayView: View {
                                                               : AnyLayout(HStackLayout())
                     layout {
                         VStack(alignment: .leading, spacing: 2) {
-                            Image(systemName: "flame.fill")
+                            Image(systemName: "leaf.fill")
                                 .font(.system(size: 44))
                                 .foregroundStyle(.tint)
                                 .symbolEffect(.bounce, value: reduceMotion ? 0 : days)

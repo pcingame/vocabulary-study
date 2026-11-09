@@ -25,7 +25,7 @@ struct VocabularyStudyApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Hôm nay", systemImage: "flame") { TodayView(today: today) }
+                Tab("Hôm nay", systemImage: "leaf") { TodayView(today: today) }
                 Tab("Chủ đề", systemImage: "books.vertical") { TopicsView() }
                 Tab("Ngữ pháp", systemImage: "text.book.closed") { GrammarView() }
             }
