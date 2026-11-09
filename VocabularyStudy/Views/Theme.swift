@@ -27,9 +27,22 @@ extension Color {
 }
 
 extension View {
-    /// Nút chính kiểu pastel: nền pastel, chữ đậm. Nút con có thể đổi nền bằng `.tint(.easy)`…
-    func pastelProminent() -> some View {
-        buttonStyle(.borderedProminent).tint(.accentFill).foregroundStyle(Color.onPastel)
+    /// Nút chính kiểu pastel: nền pastel, chữ đậm. Đặt lên khối chứa thì chỉ các nút đổi màu,
+    /// chữ/icon khác trong khối giữ nguyên (tránh chữ xanh đậm trên nền tối).
+    func pastelProminent(_ fill: Color = .accentFill) -> some View {
+        buttonStyle(PastelButtonStyle(fill: fill))
+    }
+}
+
+struct PastelButtonStyle: PrimitiveButtonStyle {
+    let fill: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        Button(role: configuration.role, action: configuration.trigger) {
+            configuration.label.foregroundStyle(Color.onPastel)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(fill)
     }
 }
 

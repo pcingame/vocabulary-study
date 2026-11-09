@@ -20,7 +20,7 @@ struct ChoiceCard: View {
             Spacer()
             ForEach(choices, id: \.self) { choice in
                 Button { pick(choice) } label: { Text(choice).frame(maxWidth: .infinity) }
-                    .tint(color(choice))
+                    .pastelProminent(color(choice))
                     .disabled(picked != nil)
             }
             if picked != nil {

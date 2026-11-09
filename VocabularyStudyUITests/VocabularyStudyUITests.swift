@@ -336,6 +336,18 @@ final class VocabularyStudyUITests: XCTestCase {
         }
     }
 
+    func testDarkStudyCardContrast() throws {
+        let app = launch(["-ui-testing", "-seed"])
+        XCUIDevice.shared.appearance = .dark
+        addTeardownBlock { @MainActor in XCUIDevice.shared.appearance = .light }
+        app.buttons["startStudy"].tap()
+        app.buttons["revealAnswer"].tap()
+        XCTAssertTrue(app.buttons["answerEasy"].waitForExistence(timeout: 5))
+        sleep(1)  // chờ hiệu ứng lật xong
+        snapshot("dark-study-answers")
+        try app.performAccessibilityAudit(for: .contrast)  // chữ trên thẻ phải đọc được ở chế độ tối
+    }
+
     // MARK: - Gõ từ
 
     private func startTyping(_ app: XCUIApplication) -> XCUIElement {

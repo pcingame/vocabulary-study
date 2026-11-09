@@ -86,11 +86,11 @@ struct StudyView: View {
                             : .asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .opacity))
             if flipped {
                 HStack {
-                    Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.forgot)
+                    Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.pastelProminent(.forgot)
                         .accessibilityIdentifier("answerForget")
-                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.hard)
+                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.pastelProminent(.hard)
                         .accessibilityIdentifier("answerHard")
-                    Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.tint(.easy)
+                    Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.pastelProminent(.easy)
                         .accessibilityIdentifier("answerEasy")
                 }
             } else {
