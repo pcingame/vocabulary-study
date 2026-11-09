@@ -4,6 +4,9 @@ import SwiftUI
 /// - Nền nút: màu pastel nhạt + chữ `onPastel` đậm (chữ trắng trên pastel không đọc được).
 /// - Chữ/icon nhấn: tông đậm (`…Ink`, AccentColor) để đủ tương phản 4.5:1 trên nền trắng.
 extension Color {
+    /// Nền màn học: trắng ngà cho đỡ chói (tối vẫn đen).
+    static let paper = dynamic(light: 0xFAF7F0, dark: 0x000000)
+
     static let accentFill = dynamic(light: 0xBFE8D6, dark: 0x93D3B8)
     static let onPastel = dynamic(light: 0x173D2E, dark: 0x0E2A1F)
 
@@ -28,6 +31,10 @@ extension View {
     func pastelProminent() -> some View {
         buttonStyle(.borderedProminent).tint(.accentFill).foregroundStyle(Color.onPastel)
     }
+}
+
+extension View {
+    func paperBackground() -> some View { background(Color.paper.ignoresSafeArea()) }
 }
 
 /// Giao diện sáng/tối, chọn trong Cài đặt.

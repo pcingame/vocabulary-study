@@ -59,6 +59,7 @@ struct GrammarLessonView: View {
             .padding()
             .background(.bar)  // nền đặc, không để chữ bài giảng hiện xuyên qua nút
         }
+        .paperBackground()
         .navigationTitle(topic.name)
         .fullScreenCover(item: $quiz) { QuizView(topic: topic, reviewing: $0 == .mistakes) }
     }
@@ -139,6 +140,8 @@ struct QuizView: View {
                     }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .paperBackground()
             .navigationTitle(index < count ? "Câu \(index + 1)/\(count)" : topic.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() } }

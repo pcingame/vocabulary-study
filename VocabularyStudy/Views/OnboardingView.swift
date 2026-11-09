@@ -44,6 +44,7 @@ struct OnboardingView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
+        .paperBackground()
     }
 
     private func wide(_ title: String) -> some View { Text(title).frame(maxWidth: .infinity) }
@@ -55,9 +56,8 @@ struct OnboardingView: View {
             Text(title).font(.title.bold()).multilineTextAlignment(.center)
             Text(text).foregroundStyle(.secondary).multilineTextAlignment(.center)
             Spacer()
-            actions()
+            VStack(spacing: 20) { actions() }.pastelProminent()  // chỉ nút dùng màu pastel, không nhuộm icon/tiêu đề
         }
-        .pastelProminent()
         .controlSize(.large)
         .padding(32)
         .padding(.bottom, 40)

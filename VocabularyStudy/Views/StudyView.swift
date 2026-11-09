@@ -48,6 +48,7 @@ struct StudyView: View {
                     }
                 }
             }
+            .paperBackground()
             .navigationTitle(session.queue.isEmpty ? "" : "Còn \(session.queue.count) thẻ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() }.accessibilityIdentifier("studyClose") }
@@ -268,6 +269,7 @@ struct FlashcardView: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .paperBackground()
             .navigationTitle("\(index + 1)/\(cards.count)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
