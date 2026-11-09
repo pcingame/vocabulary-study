@@ -11,6 +11,8 @@ import UserNotifications
 }
 
 @Model final class Word {
+    #Index<Word>([\.due], [\.learnedAt])  // cho fetch hàng đợi hôm nay
+
     var term: String
     var ipa = ""
     var pos: String

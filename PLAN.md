@@ -431,9 +431,12 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Các bước**: tính một `RoadmapState` duy nhất trong `TodayView`, rồi truyền xuống `RoadmapSection` và `.task(id:)`.
 - **Test tự động**: các test `roadmap` vẫn xanh.
 
-### 4.4 Index SwiftData · P2 · S
+### 4.4 Index SwiftData · P2 · S ✅
 - **Các bước**: thêm `#Index<Word>([\.due], [\.learnedAt])`.
-- **Test tự động**: performance test ở 4.2 không chậm đi. Mở app có dữ liệu cũ không bị mất dữ liệu (migration).
+- **Test tự động**:
+  - [x] Performance test ở 4.2 không chậm đi (vẫn 0,004 s).
+  - [x] Mở app có dữ liệu cũ không bị mất dữ liệu: cài bản mới đè lên store cũ, vẫn đủ 23 từ.
+- **Ghi chú**: SwiftData chỉ tạo index khi cài mới. Store đã có từ trước vẫn chạy đúng nhưng không có index. Hiện chưa có bản cài thật nào nên không cần migration riêng.
 
 ### 4.5 Cấu hình audio 1 lần · P2 · S
 - **Các bước**: chuyển `AVAudioSession.setCategory` từ mỗi lần đọc (`StudyView.swift:162`) sang lúc mở app.
