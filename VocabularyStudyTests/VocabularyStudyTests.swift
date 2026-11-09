@@ -345,3 +345,11 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
         #expect(old.map(\.term) == new.map(\.term))
     }
 }
+
+@Test func rejectsDuplicateTopicName() {
+    let topics = [Topic(name: "Sách")]
+    #expect(Topic.nameTaken("sách ", in: topics))
+    #expect(Topic.nameTaken("SÁCH", in: topics))
+    #expect(!Topic.nameTaken("Sach", in: topics))  // khác dấu là tên khác
+    #expect(!Topic.nameTaken("Sách 2", in: topics))
+}

@@ -31,6 +31,33 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertFalse(XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch.exists)
     }
 
+    func testDuplicateTopicShowsError() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        app.buttons["addTopicMenu"].tap()
+        app.buttons["Chủ đề mới"].tap()
+        let name = app.alerts.textFields.firstMatch
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.typeText("test")
+        app.alerts.buttons["Thêm"].tap()
+        XCTAssertTrue(app.alerts["Chủ đề “test” đã có"].waitForExistence(timeout: 5))
+        app.alerts.buttons["OK"].tap()
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Test,'")).count, 1)
+
+        // Nhập tay từ đã có: hỏi lại, đồng ý thì vẫn thêm.
+        app.buttons["Test, 3 từ"].tap()
+        app.buttons["addWordMenu"].tap()
+        app.buttons["Nhập tay"].tap()
+        let term = app.textFields["fieldTerm"]
+        XCTAssertTrue(term.waitForExistence(timeout: 5))
+        term.typeText("Kind")
+        app.textFields["fieldMeaning"].tap(); app.textFields["fieldMeaning"].typeText("loại")
+        app.buttons["Thêm"].tap()
+        XCTAssertTrue(app.alerts["Từ đã có, vẫn thêm?"].waitForExistence(timeout: 5))
+        app.alerts.buttons["Vẫn thêm"].tap()
+        XCTAssertTrue(app.navigationBars["Đã thêm 1 từ"].waitForExistence(timeout: 5))
+    }
+
     /// Số trên tiêu đề "Còn N thẻ" của màn học.
     private func remainingCards(_ app: XCUIApplication) -> Int? {
         let title = app.navigationBars.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Còn '")).firstMatch

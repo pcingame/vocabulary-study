@@ -444,11 +444,13 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [ ] Bật im lặng vẫn nghe được.
   - [ ] Đang mở nhạc nền: app đọc xong thì nhạc tiếp tục phát.
 
-### 4.6 Chặn trùng chủ đề và trùng từ · P1 · S
+### 4.6 Chặn trùng chủ đề và trùng từ · P1 · S ✅
 - **Các bước**:
   1. Không cho tạo chủ đề trùng tên: báo lỗi trong alert.
   2. Nhập tay trùng từ trong cùng chủ đề: hỏi "Từ đã có, vẫn thêm?".
-- **Test tự động**: unit `rejectsDuplicateTopicName`. UI `testDuplicateTopicShowsError`.
+- **Test tự động**:
+  - [x] Unit `rejectsDuplicateTopicName`.
+  - [x] UI `testDuplicateTopicShowsError` (cả phần hỏi "Từ đã có, vẫn thêm?").
 
 ### 4.7 UI test luồng chính từ đầu đến cuối · P1 · M
 - **Test tự động**: `testFullJourney`:

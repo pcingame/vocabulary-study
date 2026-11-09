@@ -7,6 +7,7 @@ struct TopicsView: View {
     @State private var adding = false
     @State private var browsingDecks = false
     @State private var newName = ""
+    @State private var takenName: String?
     @State private var pendingDelete: Topic?
     @Query private var words: [Word]
     @State private var query = ""
@@ -73,9 +74,15 @@ struct TopicsView: View {
                 Button("Huỷ", role: .cancel) { newName = "" }
                 Button("Thêm") {
                     let name = newName.trimmingCharacters(in: .whitespaces)
-                    if !name.isEmpty { context.insert(Topic(name: name)) }
+                    if Topic.nameTaken(name, in: topics) { takenName = name }
+                    else if !name.isEmpty { context.insert(Topic(name: name)) }
                     newName = ""
                 }
+            }
+            .alert("Chủ đề “\(takenName ?? "")” đã có", isPresented: .constant(takenName != nil)) {
+                Button("OK") { takenName = nil }
+            } message: {
+                Text("Hãy đặt tên khác, hoặc thêm từ vào chủ đề có sẵn.")
             }
         }
     }
@@ -186,6 +193,7 @@ struct WordFormView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var fields: WordFields
     @State private var added = 0
+    @State private var confirmingDuplicate = false
     @FocusState private var focused: Bool
 
     init(topic: Topic, word: Word? = nil) {
@@ -215,10 +223,8 @@ struct WordFormView: View {
                 TextField("Nghĩa câu ví dụ (không bắt buộc)", text: $fields.exampleMeaning, axis: .vertical)
                 if word == nil {
                     Button("Thêm") {
-                        topic.words.append(fields.makeWord())
-                        fields = WordFields()
-                        added += 1
-                        focused = true
+                        let term = Answer.normalize(fields.term)
+                        if topic.words.contains(where: { Answer.normalize($0.term) == term }) { confirmingDuplicate = true } else { add() }
                     }
                     .disabled(!fields.isValid)
                 }
@@ -239,7 +245,20 @@ struct WordFormView: View {
                 }
             }
             .onAppear { if word == nil { focused = true } }
+            .alert("Từ đã có, vẫn thêm?", isPresented: $confirmingDuplicate) {
+                Button("Vẫn thêm") { add() }
+                Button("Huỷ", role: .cancel) {}
+            } message: {
+                Text("“\(fields.term.trimmingCharacters(in: .whitespaces))” đã có trong chủ đề này.")
+            }
         }
+    }
+
+    private func add() {
+        topic.words.append(fields.makeWord())
+        fields = WordFields()
+        added += 1
+        focused = true
     }
 }
 

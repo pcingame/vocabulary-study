@@ -8,6 +8,12 @@ import UserNotifications
     @Relationship(deleteRule: .cascade, inverse: \Word.topic) var words: [Word] = []
 
     init(name: String) { self.name = name }
+
+    /// Tên đã có (không phân biệt hoa thường, bỏ khoảng trắng hai đầu).
+    static func nameTaken(_ name: String, in topics: [Topic]) -> Bool {
+        let n = name.trimmingCharacters(in: .whitespaces)
+        return topics.contains { $0.name.compare(n, options: .caseInsensitive) == .orderedSame }
+    }
 }
 
 @Model final class Word {
