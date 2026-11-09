@@ -12,8 +12,8 @@ struct StatsView: View {
             Section {
                 HStack {
                     tile("Mới", .new, .gray)
-                    tile("Đang học", .learning, .orange)
-                    tile("Đã thuộc", .mastered, .green)
+                    tile("Đang học", .learning, .hardInk)
+                    tile("Đã thuộc", .mastered, .easyInk)
                 }
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)

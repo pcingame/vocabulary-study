@@ -25,11 +25,10 @@ struct ChoiceCard: View {
             }
             if picked != nil {
                 Button { onDone(.forgot) } label: { Text("Tiếp").frame(maxWidth: .infinity) }
-                    .tint(.primary)
                     .accessibilityIdentifier("choiceNext")
             }
         }
-        .buttonStyle(.borderedProminent)
+        .pastelProminent()
         .controlSize(.large)
         .padding()
         .task { Speaker.say(word.term) }
@@ -40,8 +39,8 @@ struct ChoiceCard: View {
     }
 
     private func color(_ choice: String) -> Color {
-        guard let picked else { return .accentColor }
-        return choice == word.meaning ? .easy : choice == picked ? .forgot : .gray
+        guard let picked else { return .accentFill }
+        return choice == word.meaning ? .easy : choice == picked ? .forgot : Color(.systemGray5)
     }
 }
 
@@ -88,7 +87,7 @@ struct TypingCard: View {
                 .onSubmit(check)
                 .accessibilityIdentifier("typingField")
             Button { check() } label: { Text("Kiểm tra").frame(maxWidth: .infinity) }
-                .buttonStyle(.borderedProminent)
+                .pastelProminent()
                 .controlSize(.large)
                 .disabled(typed.trimmingCharacters(in: .whitespaces).isEmpty)
                 .accessibilityIdentifier("typingCheck")
@@ -119,7 +118,7 @@ struct TypingCard: View {
         for (i, ch) in word.term.enumerated() {
             var piece = AttributedString(String(ch))
             let same = i < given.count && Answer.normalize(String(ch)) == String(given[i])
-            piece.foregroundColor = same ? .primary : .red
+            piece.foregroundColor = same ? .primary : .forgotInk
             result += piece
         }
         return result

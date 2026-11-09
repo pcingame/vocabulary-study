@@ -9,6 +9,7 @@ struct SettingsView: View {
     @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = Settings.defaultRoadmapAuto
     @AppStorage(Settings.voiceKey) private var voice = Settings.defaultVoice
     @AppStorage(Settings.speechRateKey) private var speechRate = Settings.defaultSpeechRate
+    @AppStorage(Settings.appearanceKey) private var appearance = Appearance.system
     @State private var notificationStatus = UNAuthorizationStatus.authorized
 
     var body: some View {
@@ -42,6 +43,13 @@ struct SettingsView: View {
                     Text("Lộ trình TOEIC")
                 } footer: {
                     Text("Tắt nếu chỉ muốn học từ của bạn (ví dụ từ trong sách). Khi đang bật, xoá bộ từ của chặng hiện tại thì app sẽ tự thêm lại bộ đó và tiến độ cũ bị mất.")
+                }
+                Section("Giao diện") {
+                    Picker("Giao diện", selection: $appearance) {
+                        ForEach(Appearance.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityIdentifier("appearancePicker")
                 }
                 Section("Phát âm") {
                     Picker("Giọng đọc", selection: $voice) {

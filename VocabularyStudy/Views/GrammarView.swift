@@ -22,7 +22,7 @@ struct BestScore: View {
     var body: some View {
         if let best = scores.best[topic.id] {
             Label("\(best)%", systemImage: scores.passed(topic) ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(scores.passed(topic) ? .green : .secondary)
+                .foregroundStyle(scores.passed(topic) ? Color.easyInk : .secondary)
         }
     }
 }
@@ -52,7 +52,7 @@ struct GrammarLessonView: View {
                 Button { quiz = .random } label: {
                     Text("Làm \(min(GrammarScores.quizSize, topic.questions.count)) câu bài tập").frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .pastelProminent()
                 .accessibilityIdentifier("startQuiz")
             }
             .controlSize(.large)
@@ -161,9 +161,9 @@ struct QuizView: View {
                             Text("\(String(UnicodeScalar(UInt8(65 + i)))). \(q.options[i])")
                             Spacer()
                             if picked != nil && i == q.answer {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.easyInk)
                             } else if picked == i {
-                                Image(systemName: "xmark.circle.fill").foregroundStyle(.red)
+                                Image(systemName: "xmark.circle.fill").foregroundStyle(Color.forgotInk)
                             }
                         }
                         .padding()
@@ -172,7 +172,7 @@ struct QuizView: View {
                         .contentShape(.rect)
                         // Đúng: sáng lên. Sai: rung lắc. Reduce Motion: chỉ đổi màu.
                         .scaleEffect(!reduceMotion && picked != nil && i == q.answer ? 1.03 : 1)
-                        .shadow(color: .green.opacity(!reduceMotion && picked != nil && i == q.answer ? 0.5 : 0), radius: 8)
+                        .shadow(color: Color.easyInk.opacity(!reduceMotion && picked != nil && i == q.answer ? 0.5 : 0), radius: 8)
                         .keyframeAnimator(initialValue: 0.0, trigger: picked == i && i != q.answer && !reduceMotion ? shakes : 0) {
                             $0.offset(x: $1)
                         } keyframes: { _ in
@@ -192,7 +192,7 @@ struct QuizView: View {
                     } label: {
                         Text(index + 1 < count ? "Câu tiếp" : "Xem kết quả").frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .pastelProminent()
                     .controlSize(.large)
                 }
             }
@@ -202,8 +202,8 @@ struct QuizView: View {
 
     private func background(_ i: Int, _ q: Question) -> Color {
         guard picked != nil else { return .secondary.opacity(0.12) }
-        if i == q.answer { return .green.opacity(0.25) }
-        if i == picked { return .red.opacity(0.25) }
+        if i == q.answer { return .easy }
+        if i == picked { return .forgot }
         return .secondary.opacity(0.12)
     }
 }

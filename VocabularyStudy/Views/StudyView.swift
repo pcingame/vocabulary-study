@@ -87,7 +87,7 @@ struct StudyView: View {
                 HStack {
                     Button { answer(.forgot) } label: { Text("Quên").frame(maxWidth: .infinity) }.tint(.forgot)
                         .accessibilityIdentifier("answerForget")
-                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.accentColor)
+                    Button { answer(.hard) } label: { Text("Khó").frame(maxWidth: .infinity) }.tint(.hard)
                         .accessibilityIdentifier("answerHard")
                     Button { answer(.easy) } label: { Text("Dễ").frame(maxWidth: .infinity) }.tint(.easy)
                         .accessibilityIdentifier("answerEasy")
@@ -97,7 +97,7 @@ struct StudyView: View {
                     .accessibilityIdentifier("revealAnswer")
             }
         }
-        .buttonStyle(.borderedProminent)
+        .pastelProminent()
         .controlSize(.large)
         .padding()
         .padding(.top, 8)
@@ -128,12 +128,6 @@ struct StudyView: View {
     }
 }
 
-extension Color {
-    // Đậm hơn .red/.green để chữ trắng trên nút đạt tương phản 4.5:1.
-    static let forgot = Color(red: 0.73, green: 0.11, blue: 0.11)
-    static let easy = Color(red: 0.08, green: 0.50, blue: 0.24)
-}
-
 struct SummaryView: View {
     let summary: SessionSummary
     let streakBefore: Int
@@ -148,9 +142,9 @@ struct SummaryView: View {
                 Text("Xong rồi! 🎉").font(.title.bold())
                 Text("Đã học \(summary.wordCount) từ").font(.title3)
                 HStack {
-                    stat("Dễ", summary.count(.easy), .easy)
-                    stat("Khó", summary.count(.hard), .accentColor)
-                    stat("Quên", summary.count(.forgot), .forgot)
+                    stat("Dễ", summary.count(.easy), .easyInk)
+                    stat("Khó", summary.count(.hard), .hardInk)
+                    stat("Quên", summary.count(.forgot), .forgotInk)
                 }
                 Label("Chuỗi: \(after) ngày" + (after > streakBefore ? " (+\(after - streakBefore))" : ""), systemImage: "flame.fill")
                     .font(.headline)

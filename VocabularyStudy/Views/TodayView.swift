@@ -75,7 +75,7 @@ struct TodayView: View {
                         .fixedSize(horizontal: false, vertical: true)  // chữ to thì nút cao lên, không cắt chữ
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .pastelProminent()
                     .buttonBorderShape(.roundedRectangle(radius: 14))  // hình viên thuốc cắt mép khi chữ nhiều dòng
                     .controlSize(.large)
                     .disabled(queue.isEmpty)

@@ -431,6 +431,15 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Bật VoiceOver và học được 1 thẻ chỉ bằng thao tác VoiceOver.
 
+### 3.9 Theme pastel xanh mint + chọn Sáng/Tối · P1 · S ✅
+- **File**: `Views/Theme.swift` (màu pastel sáng/tối, `pastelProminent()`, `Appearance`), `AccentColor`, Cài đặt → "Giao diện" (Hệ thống/Sáng/Tối, key `Settings.appearanceKey`).
+- **Các bước**: nút chính nền mint pastel chữ xanh đậm; Quên/Khó/Dễ và đúng/sai dùng hồng/vàng/xanh lá pastel, chữ/icon dùng bản màu đậm (`*Ink`) cho đủ tương phản.
+- **Test tự động**:
+  - [x] UI liên quan: testStudyOneCard, testChoiceMode, testSummaryAfterSession, testGrammarQuizTracksMistakes, testOnboardingSavesChoice, testRegressionDarkLargeText, testAccessibilityAudit, testChangeNewWordLimit, testStatsAfterStudy.
+- **Test tay**:
+  - [ ] Trên iPhone: đổi Giao diện Sáng/Tối/Hệ thống, app đổi ngay.
+  - [ ] Icon app vẫn là ngọn lửa cam — đổi sang mint nếu muốn.
+
 **Kết thúc Phase 3** → quay video màn hình các luồng chính và gửi người dùng xem trước khi phát hành.
 
 ---

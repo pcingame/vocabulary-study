@@ -8,6 +8,7 @@ enum Settings {
     static let roadmapAutoKey = "roadmapAuto", defaultRoadmapAuto = true
     static let reminderMinutesKey = "reminderMinutes", defaultReminderMinutes = 20 * 60
     static let studyModeKey = "studyMode"
+    static let appearanceKey = "appearance"
     // Trạng thái app (không hiện trong màn Cài đặt).
     static let onboardedKey = "onboarded"
     static let grammarScoresKey = "grammarScores"

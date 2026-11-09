@@ -57,7 +57,7 @@ struct OnboardingView: View {
             Spacer()
             actions()
         }
-        .buttonStyle(.borderedProminent)
+        .pastelProminent()
         .controlSize(.large)
         .padding(32)
         .padding(.bottom, 40)
