@@ -58,6 +58,51 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Đã thêm 1 từ"].waitForExistence(timeout: 5))
     }
 
+    /// Đi trọn hành trình: onboarding → chặng 1 tự thêm bộ từ → học hết thẻ → bài ngữ pháp đạt → tiến độ lộ trình → streak 1.
+    func testFullJourney() throws {
+        let app = launch(["-ui-testing", "-show-onboarding"])
+        tapWhenHittable(app.buttons["onboardingNext1"])
+        tapWhenHittable(app.buttons["onboardingNext2"])
+        tapWhenHittable(app.buttons["onboardingLater"])
+
+        XCTAssertTrue(app.staticTexts["Từ mới, 15"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Chặng 1/10: Văn phòng"].exists)
+
+        app.buttons["startStudy"].tap()
+        let done = app.staticTexts["Hẹn gặp lại ngày mai."]
+        for _ in 0..<15 {
+            XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
+            app.buttons["revealAnswer"].tap()
+            app.buttons["answerEasy"].tap()
+        }
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        app.buttons["studyClose"].tap()
+
+        // Bài ngữ pháp của chặng 1, trả lời đúng cả 8 câu (tra đáp án trong file nội dung).
+        struct Topic: Decodable { let id: String; let questions: [Q] }
+        struct Q: Decodable { let q: String; let options: [String]; let answer: Int }
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "toeic_grammar", withExtension: "json"))
+        let questions = try JSONDecoder().decode([Topic].self, from: Data(contentsOf: url)).first { $0.id == "word-forms" }!.questions
+        app.buttons["Bài ngữ pháp: Từ loại"].tap()
+        app.buttons["startQuiz"].tap()
+        for i in 1...8 {
+            XCTAssertTrue(app.navigationBars["Câu \(i)/8"].waitForExistence(timeout: 5))
+            let q = try XCTUnwrap(questions.first { app.staticTexts[$0.q].exists })
+            let letter = ["A", "B", "C", "D"][q.answer]
+            app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "\(letter). \(q.options[q.answer])")).firstMatch.tap()
+            app.buttons[i < 8 ? "Câu tiếp" : "Xem kết quả"].tap()
+        }
+        XCTAssertTrue(app.staticTexts["8/8 câu đúng"].waitForExistence(timeout: 5))
+        app.buttons["Đóng"].tap()
+        app.navigationBars.buttons.firstMatch.tap()  // về tab Hôm nay
+
+        XCTAssertTrue(app.staticTexts["Từ vựng 15/20 · Ngữ pháp: đạt"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Bài ngữ pháp: Từ loại"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["1 ngày liên tiếp"].exists)
+        XCTAssertTrue(app.staticTexts["Từ mới, 0"].exists)
+        snapshot("journey-end")
+    }
+
     /// Số trên tiêu đề "Còn N thẻ" của màn học.
     private func remainingCards(_ app: XCUIApplication) -> Int? {
         let title = app.navigationBars.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Còn '")).firstMatch

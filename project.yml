@@ -36,7 +36,10 @@ targets:
   VocabularyStudyUITests:
     type: bundle.ui-testing
     platform: iOS
-    sources: [VocabularyStudyUITests]
+    sources:
+      - VocabularyStudyUITests
+      - path: VocabularyStudy/Resources/toeic_grammar.json  # để testFullJourney tra đáp án
+        buildPhase: resources
     dependencies:
       - target: VocabularyStudy
     settings:

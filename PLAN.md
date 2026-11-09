@@ -452,8 +452,8 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [x] Unit `rejectsDuplicateTopicName`.
   - [x] UI `testDuplicateTopicShowsError` (cả phần hỏi "Từ đã có, vẫn thêm?").
 
-### 4.7 UI test luồng chính từ đầu đến cuối · P1 · M
-- **Test tự động**: `testFullJourney`:
+### 4.7 UI test luồng chính từ đầu đến cuối · P1 · M ✅
+- **Test tự động**: `testFullJourney` (đáp án ngữ pháp tra từ `toeic_grammar.json`, file này được đóng gói kèm target UI test):
   1. Onboarding.
   2. Chặng 1 tự thêm bộ từ.
   3. Học hết thẻ hôm nay.
@@ -492,7 +492,7 @@ Chạy trên simulator sau khi đã xoá app và cài lại (giống lần cài 
 
 - [x] Lần đầu mở app: onboarding (từ Phase 1) → tab Hôm nay có chặng 1 và 15 từ mới.
 - [x] Học hết thẻ hôm nay → tổng kết → streak = 1 → hết thẻ cần học.
-- [ ] Mở bài ngữ pháp của chặng, làm đạt → dấu ✓ ở tab Hôm nay và Ngữ pháp.
+- [ ] Mở bài ngữ pháp của chặng, làm đạt → dấu ✓ ở tab Hôm nay và Ngữ pháp. (Phần tab Hôm nay đã có trong `testFullJourney`.)
 - [x] Tab Chủ đề: thêm bộ TOEIC khác, thêm chủ đề tự tạo, nhập tay 1 từ, sửa từ, xoá từ.
 - [ ] Quét ảnh: chọn ảnh trang sách trong thư viện → kiểm tra lại → lưu → từ hiện trong chủ đề.
 - [ ] Flashcard: vuốt, lật, trộn, nghe.
