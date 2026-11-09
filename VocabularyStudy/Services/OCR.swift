@@ -67,7 +67,9 @@ enum OCR {
     static func attachReadings(_ drafts: [Draft], lines: [(text: String, others: [String])]) -> [Draft] {
         drafts.map { d in
             var d = d
-            d.readings = lines.first { $0.text.contains(d.term) }?.others ?? []
+            // ưu tiên dòng có đúng từ đó ("kind" không lấy nhầm dòng "kind-hearted")
+            let line = lines.first { parse([(text: $0.text, x: 0)]).first?.term == d.term } ?? lines.first { $0.text.contains(d.term) }
+            d.readings = line?.others ?? []
             return d
         }
     }
@@ -82,7 +84,7 @@ enum OCR {
         var pending: [(index: Int, x: Double)] = []  // dòng đầu chưa có nghĩa
 
         func term(_ head: Substring) -> String {
-            String(head.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: false)[0])
+            String(head.split(maxSplits: 1, omittingEmptySubsequences: false) { "/!".contains($0) }[0])  // "/" mở phiên âm hay bị đọc thành "!"
                 .trimmingCharacters(in: .whitespaces.union(CharacterSet(charactersIn: "-=•*+–")))  // gạch đầu dòng chép tay
         }
         func meaning(_ rest: Substring) -> String {
@@ -94,6 +96,7 @@ enum OCR {
             return p.hasPrefix("adv") ? "adv" : p.hasPrefix("ad") ? "adj" : p
         }
 
+        var lastX = 0.0  // cột của từ vừa thêm
         for (raw, x) in lines {
             var text = raw.trimmingCharacters(in: .whitespaces)
             if !text.contains("(") {  // mất dấu "(" của loại từ: "reimburse ment in): …" → "reimburse ment (in): …"
@@ -110,14 +113,22 @@ enum OCR {
                     pending.remove(at: k)
                 } else if t.contains(where: \.isLetter) {
                     drafts.append(Draft(term: t, pos: pos(m.pos), meaning: meaning(m.rest)))
+                    lastX = x
                 }
             } else if let m = text.wholeMatch(of: noted) {
                 drafts.append(Draft(term: term(m.head), pos: "", meaning: meaning(m.rest)))
+                lastX = x
             } else if text.contains("/") {
                 let t = term(Substring(text))
                 guard t.contains(where: \.isLetter) else { continue }
                 pending.append((drafts.count, x))
                 drafts.append(Draft(term: t, pos: "", meaning: ""))
+                lastX = x
+            } else if let i = drafts.indices.last, drafts[i].meaning.isEmpty, abs(x - lastX) < 0.1,
+                      text.contains(where: \.isLowercase) {  // dòng viết hoa toàn bộ là tiêu đề ("LÒNG TỐT")
+                // nghĩa nằm riêng ở dòng dưới, không có "(adj) -": "sincere /…/ (adj)" rồi "chân thành"
+                drafts[i].meaning = meaning(Substring(text))
+                pending.removeAll { $0.index == i }
             }
         }
         return drafts.filter { !$0.meaning.isEmpty }  // ô thiếu nghĩa thường là trang bên cạnh bị cắt

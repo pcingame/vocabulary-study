@@ -170,3 +170,31 @@ import Testing
                                                         "- en vinom mentabre qu la tioms (m) : quy đinh về môi trưởng"]))
     #expect(t?.term == "environmental regulations" && t?.meaning == "quy định về môi trường")
 }
+
+/// Trang sách in và sổ chép tay trong scan-log.txt (2026-11-09 20:34–20:35).
+@Test func parseMeaningOnNextLine() {
+    let drafts = OCR.parse([(text: "forgiving /far' givın/ (adj) - bao dung", x: 0.1),
+                            (text: "sincere !etn' str/ (ad))", x: 0.1),
+                            (text: "chân thành", x: 0.1),
+                            (text: "kind /katnd/ (adj) - tử tế", x: 0.1)])
+    #expect(drafts.map(\.term) == ["forgiving", "sincere", "kind"])
+    #expect(drafts[1].meaning == "chân thành")
+}
+
+@Test func readingsFromExactTermLine() {
+    let lines = [(text: "kind-hearted/ katnd ha:rtd/", others: ["kind-hearted/ katnd ho:rtd/"]),
+                 (text: "kind /katnd/ (adj) - tử tế", others: ["kind/katnd/ (adj) - tử tế"])]
+    let out = OCR.attachReadings([Draft(term: "kind", pos: "adj", meaning: "tử tế")], lines: lines)
+    #expect(out[0].readings == ["kind/katnd/ (adj) - tử tế"])
+}
+
+@Test func acceptMeaningWithoutFillerWord() {
+    let s = VocabSuggester.accept(term: "promotion", meaning: "thăng chức",
+                                  for: Draft(term: "promotion", pos: "n", meaning: "Sự thăng chứa",
+                                             readings: ["- pro motion (m) : Sự thăng chứa.", "- promotion (m) : Sự thăng chức."]))
+    #expect(s?.term == "promotion" && s?.meaning == "thăng chức")
+    // Trang sách in: AI trả về y nguyên → không hiện gợi ý; nghĩa khác hẳn → bỏ
+    #expect(VocabSuggester.accept(term: "generous", meaning: "hào phóng", for: Draft(term: "generous", pos: "adj", meaning: "hào phóng")) == nil)
+    #expect(VocabSuggester.accept(term: "humble", meaning: "khuyến khích", for: Draft(term: "humble", pos: "adj", meaning: "khiêm tốn")) == nil)
+    #expect(VocabSuggester.accept(term: "patient", meaning: "kiên nhẫn", for: Draft(term: "patient", pos: "adj", meaning: "kiên nhận"))?.meaning == "kiên nhẫn")
+}

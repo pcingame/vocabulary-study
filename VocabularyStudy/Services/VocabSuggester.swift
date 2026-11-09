@@ -54,10 +54,11 @@ enum VocabSuggester {
 
     /// Từ AI đề xuất còn giống một trong các cách đọc (không quá 40% ký tự khác), để chặn AI đổi sang từ khác hẳn.
     /// Không ngắn hơn quá 10% (AI hay bỏ bớt chữ: "claim reimbursement" → "reimbursement").
-    static func isClose(_ term: String, to readings: [String], ratio: Double = 0.4) -> Bool {
+    /// `keepLength: false` cho nghĩa: AI bỏ chữ thừa như "Sự thăng chức" → "thăng chức" vẫn được.
+    static func isClose(_ term: String, to readings: [String], ratio: Double = 0.4, keepLength: Bool = true) -> Bool {
         readings.contains { r in
             let (a, b) = (letters(term).count, letters(r).count)
-            return Double(changes(term, r)) <= ratio * Double(max(a, b)) && a * 10 >= b * 9
+            return Double(changes(term, r)) <= ratio * Double(max(a, b)) && (!keepLength || a * 10 >= b * 9)
         }
     }
 
@@ -69,7 +70,7 @@ enum VocabSuggester {
         let aiMeaning = meaning.trimmingCharacters(in: .whitespaces)
         let trimmedByAI = letters(d.term).count > letters(aiTerm).count && letters(d.term).contains(letters(aiTerm))
         let termOK = !aiTerm.isEmpty && !trimmedByAI && isClose(aiTerm, to: termReadings(d))
-        let meaningOK = !aiMeaning.isEmpty && isClose(aiMeaning, to: meaningReadings(d), ratio: 0.75)
+        let meaningOK = !aiMeaning.isEmpty && isClose(aiMeaning, to: meaningReadings(d), ratio: 0.75, keepLength: false)
         let s = Suggestion(term: termOK ? aiTerm : d.term, pos: d.pos, meaning: meaningOK ? aiMeaning : d.meaning, source: .ai)
         return (termOK || meaningOK) && s.differs(from: d) ? s : nil
     }
