@@ -46,3 +46,30 @@ import Testing
     #expect(OCR.downscaledSize(CGSize(width: 8000, height: 6000)) == CGSize(width: 3000, height: 2250))
     #expect(OCR.downscaledSize(CGSize(width: 1200, height: 1600)) == CGSize(width: 1200, height: 1600))
 }
+
+/// Dòng Vision đọc thật từ trang sổ chép tay (photo_2026-11-09 19.54.54).
+@Test func parseHandwrittenNotes() {
+    let lines = ["shift", "Thứ", "ngày",
+        "- repre sentative (a): đai diện",
+        "- promotion (m) : Sự thăng chứa.",
+        "= appre ciate (v): đánh giá",
+        "- re im bur sement (m) : hoàn tra",
+        "- eli gible ex pem ses (n): các hooi chi phí đượ hà hn",
+        "- transpor tation (M) : chi phủ đi bải",
+        "- accom modations (m) : chỗ ở",
+        "- en vinam mentab regu la tioms (n) : quay đinh về môi ning",
+        "- repund policy (n) : chinh sách hoàn trả",
+        "- busimess - nelated costs: chi pheo hien quan đếu công vi",
+        "- be direct ly relatid to: lien quan trưc tiếp",
+        "- Proop of payment (m): dang từ theanh toar.",
+        "- chaim reimbusse ment (a: yeu cầu loàn tẻ",
+        "- Exceding : vượt quó",
+        "eligible fon : đủ điều hiệm"].map { (text: $0, x: 0.1) }
+    let drafts = OCR.parse(lines)
+    #expect(drafts.count == 15)
+    #expect(drafts[1] == Draft(term: "promotion", pos: "n", meaning: "Sự thăng chứa"))
+    #expect(drafts[2] == Draft(term: "appre ciate", pos: "v", meaning: "đánh giá"))
+    #expect(drafts[9] == Draft(term: "busimess - nelated costs", pos: "", meaning: "chi pheo hien quan đếu công vi"))
+    #expect(drafts[12] == Draft(term: "chaim reimbusse ment", pos: "a", meaning: "yeu cầu loàn tẻ"))
+    #expect(drafts[14] == Draft(term: "eligible fon", pos: "", meaning: "đủ điều hiệm"))
+}

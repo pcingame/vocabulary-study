@@ -51,23 +51,25 @@ enum OCR {
         })
     }
 
-    /// Tách các dòng dạng `generous /ˈdʒɛnərəs/ (adj) – hào phóng`.
+    /// Tách các dòng dạng `generous /ˈdʒɛnərəs/ (adj) – hào phóng` (sách) hoặc `- refund policy (n): chính sách hoàn trả` (chép tay, có thể thiếu loại từ).
     /// Ô bị xuống dòng (`kind-hearted /…/` rồi `(adj) – tốt bụng`) được ghép theo cột gần nhất.
     /// Bỏ IPA vì OCR đọc sai gần hết; phát âm đã có giọng đọc của máy lo.
     static func parse(_ lines: [(text: String, x: Double)]) -> [Draft] {
-        let entry = /^(?<head>[^(]*)\((?<pos>[^)\s]{1,4})(?:\)|$)(?<rest>.*)$/
+        let entry = /^(?<head>[^(]*)\((?<pos>[^):\s]{1,4})(?:\)|(?=:)|$)(?<rest>.*)$/
+        let noted = /^(?<head>[^:(\/]*[A-Za-z][^:(\/]*):(?<rest>[^\/]+)$/  // chép tay không ghi loại từ: `từ: nghĩa` (dòng có / là phiên âm)
         var drafts: [Draft] = []
         var pending: [(index: Int, x: Double)] = []  // dòng đầu chưa có nghĩa
 
         func term(_ head: Substring) -> String {
             String(head.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: false)[0])
-                .trimmingCharacters(in: .whitespaces)
+                .trimmingCharacters(in: .whitespaces.union(CharacterSet(charactersIn: "-=•*+–")))  // gạch đầu dòng chép tay
         }
         func meaning(_ rest: Substring) -> String {
-            String(rest.drop { " -–—)".contains($0) }).trimmingCharacters(in: .whitespaces)
+            String(rest.drop { " -–—):".contains($0) }).trimmingCharacters(in: .whitespaces.union(CharacterSet(charactersIn: ".")))
         }
         func pos(_ raw: Substring) -> String {
             let p = raw.lowercased().filter(\.isLetter)
+            if p == "m" { return "n" }  // chữ n viết tay hay bị đọc thành m
             return p.hasPrefix("adv") ? "adv" : p.hasPrefix("ad") ? "adj" : p
         }
 
@@ -85,6 +87,8 @@ enum OCR {
                 } else if t.contains(where: \.isLetter) {
                     drafts.append(Draft(term: t, pos: pos(m.pos), meaning: meaning(m.rest)))
                 }
+            } else if let m = text.wholeMatch(of: noted) {
+                drafts.append(Draft(term: term(m.head), pos: "", meaning: meaning(m.rest)))
             } else if text.contains("/") {
                 let t = term(Substring(text))
                 guard t.contains(where: \.isLetter) else { continue }
