@@ -21,6 +21,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         INFOPLIST_KEY_CFBundleDisplayName: Mầm
         INFOPLIST_KEY_NSCameraUsageDescription: Chụp trang sách để lấy từ vựng.
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO  # chỉ dùng mã hoá của hệ thống, khỏi bị hỏi mỗi lần upload
+        TARGETED_DEVICE_FAMILY: "1"  # chỉ iPhone
         OTHER_LDFLAGS: ["-weak_framework", "FoundationModels"]  # AI chỉ có từ iOS 26, máy iOS 18 vẫn mở được app
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
