@@ -324,6 +324,20 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   - [x] UI `testSearchFindsWord` (`-seed`): gõ một phần nghĩa → thấy đúng từ.
   - [x] Unit `searchMatchesMeaningWithoutAccents`: "hao phong" tìm được "hào phóng".
 
+### 2.9 Quét sổ chép tay và gợi ý sửa · P1 · M ✅
+- **Các bước**:
+  1. Đọc được dòng chép tay `- từ (loại): nghĩa`, cho phép thiếu loại từ; `(m)` hiểu là `(n)`.
+  2. Gợi ý từ bộ TOEIC khi từ đọc được gần giống một từ trong bộ.
+  3. Gợi ý chính tả tiếng Anh (`UITextChecker`): ghép mảnh bị tách, sửa từ đơn.
+  4. Máy có AI của Apple (iOS 26+): gửi cả trang cho AI trên máy sửa cả từ lẫn nghĩa tiếng Việt; gợi ý của AI ưu tiên hơn 2 và 3. Máy không có AI vẫn có 1–3.
+  5. Gợi ý hiện dưới mỗi dòng ở màn "Kiểm tra lại", chạm để dùng. Không tự thay.
+- **Test tự động**:
+  - [x] Unit `parseHandwrittenNotes` (dòng Vision đọc thật từ ảnh sổ), `deckSuggestsCloseWord`, `spellingJoinsAndFixes`, `applySuggestionKeepsPosWhenMissing`.
+  - [x] `FoundationModels` liên kết kiểu weak (`LC_LOAD_WEAK_DYLIB`), máy iOS 18 vẫn mở được app.
+- **Test tay**:
+  - [ ] Trên iPhone: chụp trang sổ chép tay → thấy gợi ý ✨ của AI, chạm để dùng. Thử trên Mac cho kết quả đúng khoảng 12/15 dòng.
+  - [ ] Tắt Apple Intelligence: vẫn có gợi ý 💡 từ bộ TOEIC / chính tả.
+
 **Kết thúc Phase 2** → chạy Checklist hồi quy, gửi bản TestFlight mới.
 
 ---
