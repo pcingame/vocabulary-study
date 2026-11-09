@@ -45,8 +45,8 @@ Web nằm ở repo riêng **`pcingame/vocabulary-study-web`** (để repo code g
 
 - [x] Đẩy repo app lên GitHub: `pcingame/vocabulary-study`
 - [x] Tạo và push 3 trang lên `pcingame/vocabulary-study-web`
-- [ ] Repo web để **public**, bật GitHub Pages: Settings ▸ Pages ▸ Source "Deploy from a branch" ▸ Branch `main`, thư mục `/ (root)` ▸ Save
-- [ ] Kiểm tra 3 URL trả `200 OK`:
+- [x] Repo web để **public**, bật GitHub Pages: Settings ▸ Pages ▸ Source "Deploy from a branch" ▸ Branch `main`, thư mục `/ (root)` ▸ Save
+- [x] Kiểm tra 3 URL trả `200 OK` (2026-11-09):
   - Marketing URL → `https://pcingame.github.io/vocabulary-study-web/`
   - Privacy Policy URL → `https://pcingame.github.io/vocabulary-study-web/privacy.html`
   - Support URL → `https://pcingame.github.io/vocabulary-study-web/support.html`
