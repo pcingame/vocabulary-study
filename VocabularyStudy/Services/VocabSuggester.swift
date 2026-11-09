@@ -53,13 +53,35 @@ enum VocabSuggester {
     static func changes(_ a: String, _ b: String) -> Int { Array(letters(a)).difference(from: Array(letters(b))).count }
 
     /// Từ AI đề xuất còn giống một trong các cách đọc (không quá 40% ký tự khác), để chặn AI đổi sang từ khác hẳn.
-    static func isClose(_ term: String, to readings: [String]) -> Bool {
-        readings.contains { r in Double(changes(term, r)) <= 0.4 * Double(max(letters(term).count, letters(r).count)) }
+    /// Không ngắn hơn quá 20% (AI hay bỏ bớt chữ: "claim reimbursement" → "reimbursement").
+    static func isClose(_ term: String, to readings: [String], ratio: Double = 0.4) -> Bool {
+        readings.contains { r in
+            let (a, b) = (letters(term).count, letters(r).count)
+            return Double(changes(term, r)) <= ratio * Double(max(a, b)) && a * 5 >= b * 4
+        }
+    }
+
+    /// Lọc câu trả lời của AI cho một dòng.
+    /// - AI chỉ cắt bớt chữ ("be directly related to" → "directly related") thì giữ từ gốc, chỉ lấy nghĩa.
+    /// - Từ phải còn giống chữ đọc được; nghĩa lỏng hơn (nghĩa viết tay hay bị đọc sai nhiều) nhưng chặn nghĩa khác hẳn.
+    static func accept(term: String, meaning: String, for d: Draft) -> Suggestion? {
+        let aiTerm = term.trimmingCharacters(in: .whitespaces)
+        let trimmedByAI = letters(d.term).count > letters(aiTerm).count && letters(d.term).contains(letters(aiTerm))
+        let s = Suggestion(term: trimmedByAI ? d.term : aiTerm, pos: d.pos,
+                           meaning: meaning.trimmingCharacters(in: .whitespaces), source: .ai)
+        guard !s.term.isEmpty, !s.meaning.isEmpty, s.differs(from: d),
+              trimmedByAI || isClose(s.term, to: termReadings(d)),
+              isClose(s.meaning, to: meaningReadings(d), ratio: 0.75) else { return nil }
+        return s
     }
 
     /// Các cách viết của từ trong một dòng quét: chữ chính và từ trong các cách đọc khác.
     static func termReadings(_ d: Draft) -> [String] {
         [d.term] + d.readings.compactMap { OCR.parse([(text: $0, x: 0)]).first?.term }
+    }
+
+    static func meaningReadings(_ d: Draft) -> [String] {
+        [d.meaning] + d.readings.compactMap { OCR.parse([(text: $0, x: 0)]).first?.meaning }
     }
 
     /// Máy có AI của Apple (iOS 26+, Apple Intelligence đang bật và đã tải xong mô hình).
@@ -131,9 +153,7 @@ enum VocabSuggester {
         var out: [UUID: Suggestion] = [:]
         for f in page.content.fixes where drafts.indices.contains(f.line - 1) {
             let d = drafts[f.line - 1]
-            let s = Suggestion(term: f.term.trimmingCharacters(in: .whitespaces), pos: d.pos,
-                               meaning: f.meaning.trimmingCharacters(in: .whitespaces), source: .ai)
-            if !s.term.isEmpty, s.differs(from: d), VocabSuggester.isClose(s.term, to: VocabSuggester.termReadings(d)) { out[d.id] = s }
+            out[d.id] = VocabSuggester.accept(term: f.term, meaning: f.meaning, for: d)
         }
         return out
     }
@@ -142,6 +162,11 @@ enum VocabSuggester {
 
 extension Suggestion {
     func differs(from d: Draft) -> Bool {
-        Answer.normalize(term) != Answer.normalize(d.term) || Answer.normalize(meaning) != Answer.normalize(d.meaning)
+        // nghĩa so cả dấu: sửa "trưc" → "trực" cũng là gợi ý có ích
+        Answer.normalize(term) != Answer.normalize(d.term) || folded(meaning) != folded(d.meaning)
+    }
+
+    private func folded(_ s: String) -> String {
+        s.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 }

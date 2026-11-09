@@ -89,12 +89,15 @@ enum OCR {
         }
         func pos(_ raw: Substring) -> String {
             let p = raw.lowercased().filter(\.isLetter)
-            if p == "m" { return "n" }  // chữ n viết tay hay bị đọc thành m
+            if p == "m" || p == "in" { return "n" }  // "(n)" viết tay hay bị đọc thành "(m)" hoặc "in)"
             return p.hasPrefix("adv") ? "adv" : p.hasPrefix("ad") ? "adj" : p
         }
 
         for (raw, x) in lines {
-            let text = raw.trimmingCharacters(in: .whitespaces)
+            var text = raw.trimmingCharacters(in: .whitespaces)
+            if !text.contains("(") {  // mất dấu "(" của loại từ: "reimburse ment in): …" → "reimburse ment (in): …"
+                text = text.replacing(/\s(?<p>[A-Za-z]{1,3})\)/) { " (\($0.p))" }
+            }
             if let m = text.wholeMatch(of: entry) {
                 let t = term(m.head)
                 if t.isEmpty {

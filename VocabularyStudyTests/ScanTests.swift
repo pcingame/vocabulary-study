@@ -120,3 +120,31 @@ import Testing
     // Cách đọc thứ 2 của Vision giúp nhận "proof"
     #expect(VocabSuggester.isClose("proof of payment", to: ["Proop of payment", "Proof of payment"]))
 }
+
+/// Dòng và câu trả lời AI thật khi quét trên iPhone (test_image/, 2026-11-09).
+@Test func parseLostParenthesis() {
+    #expect(OCR.parse([(text: "- chaim reimburse ment in): uo cầu loàn truể", x: 0)])
+            == [Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")])
+}
+
+@Test func acceptAIAnswersFromDevice() {
+    // Chữ đọc đã đúng → giữ từ, chỉ sửa dấu nghĩa
+    let s = VocabSuggester.accept(term: "directly related", meaning: "liên quan trực tiếp",
+                                  for: Draft(term: "be directly related to", pos: "", meaning: "liên quan trưc tiếp"))
+    #expect(s?.term == "be directly related to" && s?.meaning == "liên quan trực tiếp")
+    // AI bỏ mất "claim" → bỏ gợi ý
+    #expect(VocabSuggester.accept(term: "reimbursement in", meaning: "hỗ trợ tài chính",
+                                  for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) == nil)
+    // Nghĩa khác hẳn → bỏ; nghĩa sửa dấu dù đọc sai nhiều → nhận
+    #expect(VocabSuggester.accept(term: "claim reimbursement", meaning: "hỗ trợ tài chính",
+                                  for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) == nil)
+    #expect(VocabSuggester.accept(term: "claim reimbursement", meaning: "yêu cầu hoàn trả",
+                                  for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) != nil)
+    #expect(VocabSuggester.accept(term: "environmental regulations", meaning: "quy định về môi trường",
+                                  for: Draft(term: "en vinam mentab re gu la tioms", pos: "n", meaning: "quay đi nh về màn nhản")) != nil)
+    // Sửa lỗi đọc → nhận
+    #expect(VocabSuggester.accept(term: "proof of payment", meaning: "chứng minh thanh toán",
+                                  for: Draft(term: "proof of pay ment", pos: "n", meaning: "dung từ thanh toan"))?.term == "proof of payment")
+    #expect(VocabSuggester.accept(term: "exceeding", meaning: "vượt quá",
+                                  for: Draft(term: "exceding", pos: "", meaning: "vượt quá"))?.term == "exceeding")
+}
