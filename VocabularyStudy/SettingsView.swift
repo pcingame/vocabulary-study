@@ -57,7 +57,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Lộ trình TOEIC")
                 } footer: {
-                    Text("Tắt nếu chỉ muốn học từ của bạn (ví dụ từ trong sách).")
+                    Text("Tắt nếu chỉ muốn học từ của bạn (ví dụ từ trong sách). Khi đang bật, xoá bộ từ của chặng hiện tại thì app sẽ tự thêm lại bộ đó và tiến độ cũ bị mất.")
                 }
                 Section("Phát âm") {
                     Picker("Giọng đọc", selection: $voice) {
