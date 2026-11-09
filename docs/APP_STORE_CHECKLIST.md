@@ -41,10 +41,15 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 
 ## 3. Trang Privacy / Support (GitHub Pages)
 
-- [ ] Đẩy repo lên GitHub (hiện **chưa có remote**)
-- [ ] Tạo `docs/index.html`, `docs/privacy.html`, `docs/support.html` (chép khung từ `korea_study/docs/`, sửa nội dung: dữ liệu học lưu trên máy, ảnh quét xử lý trên máy và không lưu lại, nhắc học là thông báo cục bộ)
-- [ ] Bật GitHub Pages: Settings ▸ Pages ▸ Branch `main`, thư mục `/docs` — repo phải public nếu dùng gói GitHub miễn phí
-- [ ] Kiểm tra 3 URL trả `200 OK`
+Web nằm ở repo riêng **`pcingame/vocabulary-study-web`** (để repo code giữ private), thư mục local `../vocabulary-study-web`: `index.html`, `privacy.html`, `support.html`, `style.css`, `icon.png`. Song ngữ VI/EN, màu mint, tự theo sáng/tối.
+
+- [x] Đẩy repo app lên GitHub: `pcingame/vocabulary-study`
+- [x] Tạo và push 3 trang lên `pcingame/vocabulary-study-web`
+- [ ] Repo web để **public**, bật GitHub Pages: Settings ▸ Pages ▸ Source "Deploy from a branch" ▸ Branch `main`, thư mục `/ (root)` ▸ Save
+- [ ] Kiểm tra 3 URL trả `200 OK`:
+  - Marketing URL → `https://pcingame.github.io/vocabulary-study-web/`
+  - Privacy Policy URL → `https://pcingame.github.io/vocabulary-study-web/privacy.html`
+  - Support URL → `https://pcingame.github.io/vocabulary-study-web/support.html`
 
 ## 4. Metadata App Store Connect
 
