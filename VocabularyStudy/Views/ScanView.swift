@@ -10,6 +10,7 @@ struct ScanView: View {
     @State private var drafts: [Draft] = []
     @State private var busy = false
     @State private var suggesting = false
+    @State private var aiProgress = (done: 0, total: 0)
     @State private var message: String?
 
     var body: some View {
@@ -22,7 +23,7 @@ struct ScanView: View {
                         Label("Chọn ảnh có sẵn", systemImage: "photo")
                     }
                 } footer: {
-                    Text(busy ? "Đang đọc chữ…" : suggesting ? "Đang nhờ AI trên máy gợi ý sửa…"
+                    Text(busy ? "Đang đọc chữ…" : suggesting ? "AI trên máy đang gợi ý sửa… \(aiProgress.done)/\(aiProgress.total) dòng"
                          : message ?? "Có thể quét nhiều trang, từ sẽ được cộng dồn.")
                 }
                 if !drafts.isEmpty {
@@ -104,8 +105,12 @@ struct ScanView: View {
         guard VocabSuggester.aiAvailable else { return }
         busy = false
         suggesting = true
-        let fixes = await VocabSuggester.ai(drafts.filter { $0.suggestion?.source != .ai })
-        for i in drafts.indices { if let s = fixes[drafts[i].id] { drafts[i].suggestion = s } }
+        let lines = drafts.filter { $0.suggestion?.source != .ai }
+        aiProgress = (0, lines.count)
+        await VocabSuggester.ai(lines) { id, s in
+            aiProgress.done += 1
+            if let s, let i = drafts.firstIndex(where: { $0.id == id }) { drafts[i].suggestion = s }
+        }
         suggesting = false
     }
 

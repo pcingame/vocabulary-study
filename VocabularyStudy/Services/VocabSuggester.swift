@@ -99,14 +99,14 @@ enum VocabSuggester {
         #endif
     }
 
-    /// Gửi cả trang cho AI trên máy sửa một lần (có ngữ cảnh chung nên sửa tốt hơn từng dòng). Trả về gợi ý theo id dòng.
-    @MainActor static func ai(_ drafts: [Draft]) async -> [UUID: Suggestion] {
+    /// Gửi cả trang cho AI trên máy sửa một lần (có ngữ cảnh chung nên sửa tốt hơn từng dòng).
+    /// AI viết xong dòng nào thì gọi `onLine` cho dòng đó (gợi ý nil = bị bộ lọc bỏ), để màn hình hiện dần.
+    @MainActor static func ai(_ drafts: [Draft], onLine: (UUID, Suggestion?) -> Void) async {
         #if canImport(FoundationModels)
         if #available(iOS 26, *), aiAvailable, !drafts.isEmpty {
-            return await PageFixer.fix(drafts)
+            await PageFixer.fix(drafts, onLine: onLine)
         }
         #endif
-        return [:]
     }
 }
 
@@ -144,25 +144,35 @@ enum VocabSuggester {
         return "\(i + 1). \(d.term): \(d.meaning)" + (others.isEmpty ? "" : " (máy còn đọc ra: \(others))")
     }
 
-    static func fix(_ drafts: [Draft]) async -> [UUID: Suggestion] {
+    static func fix(_ drafts: [Draft], onLine: (UUID, Suggestion?) -> Void) async {
         let prompt = drafts.enumerated().map { line($0.offset, $0.element) }.joined(separator: "\n")
         let session = warm ?? LanguageModelSession(instructions: instructions)
         warm = nil  // mỗi phiên chỉ dùng 1 lần, không mang ngữ cảnh trang trước
         // greedy: cùng một trang luôn ra cùng gợi ý (mặc định có ngẫu nhiên, đúng 7–11/15 tuỳ lần)
         ScanLog.write("Gửi AI:\n" + prompt)
         let start = Date.now
-        guard let page = try? await session.respond(to: prompt, generating: Page.self, options: GenerationOptions(sampling: .greedy))
-        else { ScanLog.write("AI lỗi hoặc không trả lời"); return [:] }
-        var out: [UUID: Suggestion] = [:]
         var log: [String] = []
-        for f in page.content.fixes where drafts.indices.contains(f.line - 1) {
-            let d = drafts[f.line - 1]
-            let s = VocabSuggester.accept(term: f.term, meaning: f.meaning, for: d)
-            out[d.id] = s
-            log.append("\(f.line). \(d.term) → \(f.term): \(f.meaning)  [\(s == nil ? "BỎ" : "nhận")]")
+        func emit(_ f: Fix.PartiallyGenerated) {
+            guard let line = f.line, drafts.indices.contains(line - 1) else { return }
+            let d = drafts[line - 1]
+            let s = VocabSuggester.accept(term: f.term ?? "", meaning: f.meaning ?? "", for: d)
+            onLine(d.id, s)
+            log.append(String(format: "%.1fs ", Date.now.timeIntervalSince(start))
+                       + "\(line). \(d.term) → \(f.term ?? ""): \(f.meaning ?? "")  [\(s == nil ? "BỎ" : "nhận")]")
         }
-        ScanLog.write(String(format: "AI trả lời sau %.1fs:\n", Date.now.timeIntervalSince(start)) + log.joined(separator: "\n"))
-        return out
+        var fixes: [Fix.PartiallyGenerated] = []
+        var done = 0
+        do {
+            for try await snapshot in session.streamResponse(to: prompt, generating: Page.self, options: GenerationOptions(sampling: .greedy)) {
+                fixes = snapshot.content.fixes ?? []
+                // dòng trước đã viết xong khi AI bắt đầu dòng sau
+                while done < fixes.count - 1 { emit(fixes[done]); done += 1 }
+            }
+            while done < fixes.count { emit(fixes[done]); done += 1 }
+        } catch {
+            log.append("AI lỗi: \(error)")
+        }
+        ScanLog.write("AI trả lời (giây tính từ lúc gửi):\n" + log.joined(separator: "\n"))
     }
 }
 #endif
