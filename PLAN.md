@@ -438,8 +438,8 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [x] Mở app có dữ liệu cũ không bị mất dữ liệu: cài bản mới đè lên store cũ, vẫn đủ 23 từ.
 - **Ghi chú**: SwiftData chỉ tạo index khi cài mới. Store đã có từ trước vẫn chạy đúng nhưng không có index. Hiện chưa có bản cài thật nào nên không cần migration riêng.
 
-### 4.5 Cấu hình audio 1 lần · P2 · S
-- **Các bước**: chuyển `AVAudioSession.setCategory` từ mỗi lần đọc (`StudyView.swift:162`) sang lúc mở app.
+### 4.5 Cấu hình audio 1 lần · P2 · S ✅
+- **Các bước**: chuyển `AVAudioSession.setCategory` từ mỗi lần đọc (`StudyView.swift:162`) sang lúc mở app. Làm: cấu hình 1 lần lúc đọc lần đầu, `.duckOthers` (nhạc nhỏ đi lúc đọc), đọc xong thì `setActive(false, .notifyOthersOnDeactivation)`.
 - **Test tay**:
   - [ ] Bật im lặng vẫn nghe được.
   - [ ] Đang mở nhạc nền: app đọc xong thì nhạc tiếp tục phát.
