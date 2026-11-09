@@ -139,6 +139,7 @@ enum VocabSuggester {
     }
 
     static func line(_ i: Int, _ d: Draft) -> String {
+        // Không gửi kèm từ TOEIC gần giống: thử rồi, AI thay cả cụm bằng từ đó ("refund policy" → "refund"), đúng còn 3–5/15.
         let others = d.readings.map { "«\($0)»" }.joined(separator: "; ")
         return "\(i + 1). \(d.term): \(d.meaning)" + (others.isEmpty ? "" : " (máy còn đọc ra: \(others))")
     }
@@ -148,13 +149,19 @@ enum VocabSuggester {
         let session = warm ?? LanguageModelSession(instructions: instructions)
         warm = nil  // mỗi phiên chỉ dùng 1 lần, không mang ngữ cảnh trang trước
         // greedy: cùng một trang luôn ra cùng gợi ý (mặc định có ngẫu nhiên, đúng 7–11/15 tuỳ lần)
+        ScanLog.write("Gửi AI:\n" + prompt)
+        let start = Date.now
         guard let page = try? await session.respond(to: prompt, generating: Page.self, options: GenerationOptions(sampling: .greedy))
-        else { return [:] }
+        else { ScanLog.write("AI lỗi hoặc không trả lời"); return [:] }
         var out: [UUID: Suggestion] = [:]
+        var log: [String] = []
         for f in page.content.fixes where drafts.indices.contains(f.line - 1) {
             let d = drafts[f.line - 1]
-            out[d.id] = VocabSuggester.accept(term: f.term, meaning: f.meaning, for: d)
+            let s = VocabSuggester.accept(term: f.term, meaning: f.meaning, for: d)
+            out[d.id] = s
+            log.append("\(f.line). \(d.term) → \(f.term): \(f.meaning)  [\(s == nil ? "BỎ" : "nhận")]")
         }
+        ScanLog.write(String(format: "AI trả lời sau %.1fs:\n", Date.now.timeIntervalSince(start)) + log.joined(separator: "\n"))
         return out
     }
 }

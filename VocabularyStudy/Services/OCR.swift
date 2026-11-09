@@ -59,6 +59,7 @@ enum OCR {
             let c = o.topCandidates(3).map(\.string)
             return c.first.map { (text: $0, x: Double(o.boundingBox.cgRect.minX), others: Array(c.dropFirst())) }
         }
+        ScanLog.write("Vision đọc:\n" + lines.map { ([$0.text] + $0.others).joined(separator: "  |  ") }.joined(separator: "\n"))
         return attachReadings(parse(lines.map { ($0.text, $0.x) }), lines: lines.map { ($0.text, $0.others) })
     }
 
