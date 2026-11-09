@@ -6,6 +6,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: P3MPHWPJ62
 targets:
   VocabularyStudy:
     type: application

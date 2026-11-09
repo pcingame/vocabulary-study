@@ -204,7 +204,7 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
 ### 1.8 Đưa app lên TestFlight · P0 · M
 - **Trạng thái**: đã có Apple Developer account. **Tạm hoãn**: hiện chỉ code và test trên simulator, làm việc này khi sẵn sàng thử trên máy thật.
 - **Các bước**:
-  1. Điền `DEVELOPMENT_TEAM` vào `project.yml`, đăng ký bundle id `com.doanthanhphuong.VocabularyStudy`.
+  1. ✅ Điền `DEVELOPMENT_TEAM` (P3MPHWPJ62) vào `project.yml`, đã build và cài lên iPhone thật bằng ký tự động. Còn đăng ký bundle id `com.doanthanhphuong.VocabularyStudy` (hiện dùng profile wildcard).
   2. Tạo app trên App Store Connect và điền Privacy: "Không thu thập dữ liệu".
   3. Archive → Upload → thêm người dùng vào danh sách tester nội bộ.
 - **Test tay trên iPhone thật**:
