@@ -465,6 +465,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Cần người dùng quyết**: tạo repo GitHub (private) và push code lên.
 - **Các bước**: GitHub Actions trên runner macOS: cài XcodeGen → `xcodegen generate` → `xcodebuild test`.
 - **Xong khi**: mỗi lần push đều thấy dấu ✓ xanh.
+- **Đã làm**: viết sẵn `.github/workflows/test.yml` (chỉ chạy unit test cho đỡ tốn phút macOS). Chưa push nên chưa tick.
 
 ### 4.9 Dọn code · P2 · S
 - **Các bước**:

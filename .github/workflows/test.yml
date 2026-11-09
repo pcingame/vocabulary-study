@@ -1,0 +1,15 @@
+name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - run: xcodegen generate
+      # Chỉ chạy unit test: UI test mất ~7 phút, mà phút macOS trên repo private tính gấp 10.
+      # Muốn chạy cả UI test thì bỏ dòng -only-testing.
+      - run: >
+          xcodebuild test -scheme VocabularyStudy
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+          -only-testing:VocabularyStudyTests
