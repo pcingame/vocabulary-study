@@ -480,7 +480,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 
 - [ ] Widget màn hình chính: streak và số từ cần ôn. *Test*: widget cập nhật sau khi học.
 - [ ] Sao lưu: xuất/nhập file CSV/JSON. *Test*: xuất → xoá app → nhập lại → dữ liệu và tiến độ giống hệt.
-- [ ] "Đóng băng chuỗi": nghỉ 1 ngày mỗi tuần không mất chuỗi. *Test*: unit cho `Streak` với ngày nghỉ.
+- [x] "Đóng băng chuỗi": nghỉ 1 ngày mỗi tuần không mất chuỗi. *Test*: unit cho `Streak` với ngày nghỉ (`streakFreeze`). Quy tắc: chỉ lỡ đúng 1 ngày và 7 ngày trước đó chưa nghỉ → giữ chuỗi; ngày nghỉ không cộng vào chuỗi. Có dòng ghi chú dưới chuỗi ở tab Hôm nay.
 - [ ] Mục tiêu học: điểm TOEIC muốn đạt và ngày thi → gợi ý số từ mới mỗi ngày. *Test*: unit cho công thức gợi ý.
 - [ ] Thêm bộ từ TOEIC: Part 1 mô tả tranh, sức khoẻ, bất động sản…
 - [ ] Hỗ trợ iPad (bố cục 2 cột).

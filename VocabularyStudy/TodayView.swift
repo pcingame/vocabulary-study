@@ -56,6 +56,8 @@ struct TodayView: View {
                     }
                     .padding(.vertical, 8)
                     .animation(reduceMotion ? nil : .spring, value: done)
+                } footer: {
+                    Text("Mỗi tuần được nghỉ 1 ngày mà không mất chuỗi.")
                 }
                 Section {
                     LabeledContent("Từ cần ôn") { Text("\(queue.count - newCount)").contentTransition(.numericText()) }
