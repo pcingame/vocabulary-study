@@ -65,9 +65,9 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     #expect(Content.vocab.count == 10)
     for deck in Content.vocab {
         for w in deck.words {
-            #expect(w.count == 6 && w[0...5].allSatisfy { !$0.isEmpty }, "\(deck.name): \(w)")
-            #expect(w[1].hasPrefix("/") && w[1].hasSuffix("/"), "phiên âm: \(w)")
-            #expect(w[4].lowercased().contains(w[0].lowercased().prefix(4)), "ví dụ không chứa từ: \(w)")
+            #expect([w.term, w.ipa, w.pos, w.meaning, w.example, w.exampleMeaning].allSatisfy { !$0.isEmpty }, "\(deck.name): \(w)")
+            #expect(w.ipa.hasPrefix("/") && w.ipa.hasSuffix("/"), "phiên âm: \(w)")
+            #expect(w.example.lowercased().contains(w.term.lowercased().prefix(4)), "ví dụ không chứa từ: \(w)")
         }
     }
     #expect(Set(Content.grammar.map(\.id)).count == Content.grammar.count)

@@ -467,7 +467,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Xong khi**: mỗi lần push đều thấy dấu ✓ xanh.
 - **Đã làm**: viết sẵn `.github/workflows/test.yml` (chỉ chạy unit test cho đỡ tốn phút macOS). Chưa push nên chưa tick.
 
-### 4.9 Dọn code · P2 · S
+### 4.9 Dọn code · P2 · S ✅
 - **Các bước**:
   1. Tách `Content`/`VocabDeck` ra file `Content.swift`.
   2. Đổi từ vựng trong JSON từ mảng `[String]` sang object có tên trường (`term`, `ipa`, `pos`…), để sửa nội dung không bị nhầm vị trí.

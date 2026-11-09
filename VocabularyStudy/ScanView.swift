@@ -20,9 +20,9 @@ struct Draft: Identifiable, Equatable {
     /// Tạo từ; nếu có trong bộ TOEIC thì tự điền phiên âm và câu ví dụ.
     func makeWord(createdAt: Date) -> Word {
         let t = term.trimmingCharacters(in: .whitespaces)
-        let row = Content.vocab.lazy.flatMap(\.words).first { Answer.normalize($0[0]) == Answer.normalize(t) }
-        return Word(term: t, ipa: row?[1] ?? "", pos: pos, meaning: meaning,
-                    example: row?[4] ?? "", exampleMeaning: row?[5] ?? "", createdAt: createdAt)
+        let row = Content.vocab.lazy.flatMap(\.words).first { Answer.normalize($0.term) == Answer.normalize(t) }
+        return Word(term: t, ipa: row?.ipa ?? "", pos: pos, meaning: meaning,
+                    example: row?.example ?? "", exampleMeaning: row?.exampleMeaning ?? "", createdAt: createdAt)
     }
 }
 

@@ -100,7 +100,7 @@ struct DecksView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text(deck.name)
-                        Text(deck.words.prefix(4).map { $0[0] }.joined(separator: ", ") + "…")
+                        Text(deck.words.prefix(4).map(\.term).joined(separator: ", ") + "…")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer()
