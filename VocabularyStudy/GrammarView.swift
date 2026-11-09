@@ -57,6 +57,7 @@ struct GrammarLessonView: View {
             }
             .controlSize(.large)
             .padding()
+            .background(.bar)  // nền đặc, không để chữ bài giảng hiện xuyên qua nút
         }
         .navigationTitle(topic.name)
         .fullScreenCover(item: $quiz) { QuizView(topic: topic, reviewing: $0 == .mistakes) }

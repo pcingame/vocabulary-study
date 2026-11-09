@@ -69,7 +69,7 @@ struct TodayView: View {
                     .accessibilityIdentifier("studyModePicker")
                     Button { studying = true } label: {
                         VStack(spacing: 2) {
-                            Label("Bắt đầu học", systemImage: "play.fill").font(.headline)
+                            Text("Bắt đầu học").font(.headline)
                             Text(mode.title).font(.caption)
                         }
                         .fixedSize(horizontal: false, vertical: true)  // chữ to thì nút cao lên, không cắt chữ

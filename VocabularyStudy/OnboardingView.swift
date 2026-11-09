@@ -12,7 +12,7 @@ struct OnboardingView: View {
         TabView(selection: $page) {
             step(icon: "flame.fill", title: "Học từ vựng TOEIC",
                  text: "Học theo lộ trình, mỗi ngày khoảng 10 phút. App tự xếp lịch ôn để bạn nhớ lâu.") {
-                Button("Tiếp tục") { page = 1 }.accessibilityIdentifier("onboardingNext1")
+                Button { page = 1 } label: { wide("Tiếp tục") }.accessibilityIdentifier("onboardingNext1")
             }
             .tag(0)
             step(icon: "square.stack.3d.up.fill", title: "Mỗi ngày bao nhiêu từ mới?",
@@ -22,19 +22,19 @@ struct OnboardingView: View {
                 }
                 .pickerStyle(.segmented)
                 .accessibilityIdentifier("onboardingNewPerDay")
-                Button("Tiếp tục") { page = 2 }.accessibilityIdentifier("onboardingNext2")
+                Button { page = 2 } label: { wide("Tiếp tục") }.accessibilityIdentifier("onboardingNext2")
             }
             .tag(1)
             step(icon: "bell.badge.fill", title: "Nhắc học mỗi ngày",
                  text: "Học đều mỗi ngày mới giữ được chuỗi. App chỉ nhắc 1 lần/ngày, và không nhắc nếu hôm đó bạn đã học.") {
                 DatePicker("Giờ nhắc học", selection: Reminder.time($reminderMinutes), displayedComponents: .hourAndMinute)
-                Button("Bật nhắc học") {
+                Button {
                     Task {
                         _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
                         await Reminder.schedule()
                         onboarded = true
                     }
-                }
+                } label: { wide("Bật nhắc học") }
                 .accessibilityIdentifier("onboardingEnableReminders")
                 Button("Để sau") { onboarded = true }
                     .buttonStyle(.borderless)
@@ -45,6 +45,8 @@ struct OnboardingView: View {
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
+
+    private func wide(_ title: String) -> some View { Text(title).frame(maxWidth: .infinity) }
 
     private func step(icon: String, title: String, text: String, @ViewBuilder actions: () -> some View) -> some View {
         VStack(spacing: 20) {
