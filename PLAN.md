@@ -339,6 +339,15 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
 - **Test tay**:
   - [ ] Trên iPhone: chụp trang sổ chép tay → thấy gợi ý ✨ của AI, chạm để dùng. Thử trên Mac cho kết quả đúng khoảng 12/15 dòng.
   - [ ] Tắt Apple Intelligence: vẫn có gợi ý 💡 từ bộ TOEIC / chính tả.
+- **Kết quả trên iPhone (scan-log 2026-11-09)**: sổ chép tay 10/15 dòng có gợi ý, 0 gợi ý sai; sách in 24 dòng chỉ hiện gợi ý ở dòng thật sự sai (kiên nhẫn, hay giúp đỡ, người nghe). AI mất 6–9 giây/trang.
+- **Để cải thiện sau**:
+  - [ ] 4 dòng chép tay AI vẫn sai (representative, eligible expenses, refund policy, claim reimbursement): AI lặp "reimbursement: trả lại tiền" cho nhiều dòng. Ý tưởng chưa thử: chia trang thành nhóm ~5 dòng, hoặc đổi cách hỏi.
+  - [ ] "repund policy" → AI đề xuất "repayment policy": bộ lọc theo khoảng cách ký tự không phân biệt được với lỗi đọc thật (transportation cũng khác ~6 ký tự).
+  - [ ] Dòng "be directly nelated to": AI bỏ chữ "be" nên chỉ sửa được nghĩa, chữ "nelated" vẫn sai.
+  - [ ] Tốc độ: đo trên máy thời gian dòng đầu tiên hiện ra (log mới ghi giây từng dòng); trang dài có thể chia nhỏ để có gợi ý sớm hơn.
+  - **Đã thử, đừng làm lại**: gửi kèm từ TOEIC gần giống trong prompt ("từ TOEIC gần giống: refund" hoặc "repund → refund") làm kết quả tệ đi còn 3–5/15, AI thay cả cụm bằng từ gợi ý. Sampling mặc định (không greedy) cho 7–11/15 tuỳ lần.
+  - **Cách lấy nhật ký** (chỉ bản Debug): `xcrun devicectl device copy from --device 28369EF5-2483-53F1-877F-8D5A7BCAC7EB --domain-type appDataContainer --domain-identifier com.doanthanhphuong.VocabularyStudy --source Documents/scan-log.txt --destination scan-log.txt`. Mỗi lỗi tìm được nên thêm thành unit test trong `ScanTests.swift` (dùng đúng dòng trong log) rồi mới chỉnh bộ lọc.
+  - Ảnh chụp thử nằm ở `test_image/` (chưa commit).
 
 **Kết thúc Phase 2** → chạy Checklist hồi quy, gửi bản TestFlight mới.
 
