@@ -8,14 +8,14 @@ struct TodayView: View {
     @Query private var fresh: [Word]
     @Query private var learnedToday: [Word]
     @Query private var topics: [Topic]
-    @AppStorage("grammarScores") private var scores = GrammarScores()
-    @AppStorage("streak") private var streak = 0
-    @AppStorage("lastStudy") private var lastStudy = 0.0
-    @AppStorage("reminderMinutes") private var reminderMinutes = Reminder.defaultMinutes
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
+    @AppStorage(Settings.streakKey) private var streak = 0
+    @AppStorage(Settings.lastStudyKey) private var lastStudy = 0.0
+    @AppStorage(Settings.reminderMinutesKey) private var reminderMinutes = Settings.defaultReminderMinutes
     @AppStorage(Settings.newPerDayKey) private var newPerDay = Settings.defaultNewPerDay
     @AppStorage(Settings.reviewPerDayKey) private var reviewPerDay = Settings.defaultReviewPerDay
-    @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = true
-    @AppStorage("studyMode") private var mode = StudyMode.flip
+    @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = Settings.defaultRoadmapAuto
+    @AppStorage(Settings.studyModeKey) private var mode = StudyMode.flip
     @State private var studying = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize

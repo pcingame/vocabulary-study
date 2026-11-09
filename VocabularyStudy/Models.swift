@@ -181,8 +181,8 @@ enum Streak {
         return missed
     }
 
-    static var lastStudy: Date? { date("lastStudy") }
-    static var lastFreeze: Date? { date("streakFreeze") }
+    static var lastStudy: Date? { date(Settings.lastStudyKey) }
+    static var lastFreeze: Date? { date(Settings.streakFreezeKey) }
 
     private static func date(_ key: String) -> Date? {
         let t = UserDefaults.standard.double(forKey: key)
@@ -192,12 +192,12 @@ enum Streak {
     static func record(now: Date = .now) {
         if let last = lastStudy, Calendar.current.isDate(last, inSameDayAs: now) { return }
         let d = UserDefaults.standard
-        let streak = next(current: d.integer(forKey: "streak"), last: lastStudy, now: now)  // tính trước khi ghi ngày nghỉ
+        let streak = next(current: d.integer(forKey: Settings.streakKey), last: lastStudy, now: now)  // tính trước khi ghi ngày nghỉ
         if let last = lastStudy, let rest = restDay(last: last, freeze: lastFreeze, now: now) {
-            d.set(rest.timeIntervalSince1970, forKey: "streakFreeze")
+            d.set(rest.timeIntervalSince1970, forKey: Settings.streakFreezeKey)
         }
-        d.set(streak, forKey: "streak")
-        d.set(now.timeIntervalSince1970, forKey: "lastStudy")
+        d.set(streak, forKey: Settings.streakKey)
+        d.set(now.timeIntervalSince1970, forKey: Settings.lastStudyKey)
         Task { await Reminder.schedule() }
     }
 }
@@ -222,7 +222,6 @@ enum StudyLog {
 }
 
 enum Reminder {
-    static let defaultMinutes = 20 * 60
     static let days = 60  // iOS cho tối đa 64 thông báo chờ
 
     /// Thời điểm nhắc cho `days` ngày tới. Bỏ hôm nay nếu đã học hoặc đã qua giờ nhắc.
@@ -263,9 +262,8 @@ enum Reminder {
         guard await center.notificationSettings().authorizationStatus == .authorized else { return }
         if let dueToday { try? await center.setBadgeCount(dueToday) }
         center.removeAllPendingNotificationRequests()
-        let minutes = UserDefaults.standard.object(forKey: "reminderMinutes") as? Int ?? defaultMinutes
         let studiedToday = Streak.lastStudy.map { Calendar.current.isDateInToday($0) } ?? false
-        let all = triggers(now: .now, minutes: minutes, studiedToday: studiedToday)
+        let all = triggers(now: .now, minutes: Settings.reminderMinutes, studiedToday: studiedToday)
         // Gửi cả loạt song song, không chờ từng cái, để iOS không kịp treo app giữa chừng.
         await withTaskGroup { group in
             for (i, when) in all.enumerated() {

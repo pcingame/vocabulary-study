@@ -4,14 +4,14 @@ import SwiftData
 @main
 struct VocabularyStudyApp: App {
     private let container: ModelContainer
-    @AppStorage("onboarded") private var onboarded = false
+    @AppStorage(Settings.onboardedKey) private var onboarded = false
     @State private var today = Calendar.current.startOfDay(for: .now)
 
     init() {
         if LaunchFlags.uiTesting {
             UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
             UIView.setAnimationsEnabled(false)
-            UserDefaults.standard.set(!LaunchFlags.showOnboarding, forKey: "onboarded")
+            UserDefaults.standard.set(!LaunchFlags.showOnboarding, forKey: Settings.onboardedKey)
         }
         container = try! ModelContainer(for: Topic.self, Word.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: LaunchFlags.uiTesting))
@@ -45,7 +45,7 @@ struct VocabularyStudyApp: App {
         for word in topic.words { word.answer(.easy) }
         var scores = GrammarScores()
         scores.record(stage.grammar, score: 8, of: 8)
-        UserDefaults.standard.set(scores.rawValue, forKey: "grammarScores")
+        UserDefaults.standard.set(scores.rawValue, forKey: Settings.grammarScoresKey)
     }
 
     /// 50 chủ đề × 200 từ để đo hiệu năng. Tiến độ trộn đều: 1/3 chưa học, 1/3 đến hạn ôn, 1/3 chưa đến hạn.

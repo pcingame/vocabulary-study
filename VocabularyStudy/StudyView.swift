@@ -11,7 +11,7 @@ struct StudyView: View {
     @State private var loaded = false
     @State private var flipped = false
     @State private var answeredCount = 0  // đổi id thẻ gõ để reset ô nhập, kể cả khi gặp lại đúng từ vừa quên
-    @AppStorage("studyMode") private var mode = StudyMode.flip
+    @AppStorage(Settings.studyModeKey) private var mode = StudyMode.flip
     @State private var drag = 0.0  // độ kéo ngang của thẻ
     @State private var summary = SessionSummary()
     @State private var streakBefore = 0
@@ -61,7 +61,7 @@ struct StudyView: View {
                 var some = FetchDescriptor<Word>()
                 some.fetchLimit = 50
                 fallback = (try? context.fetch(some)) ?? []
-                streakBefore = Streak.display(current: UserDefaults.standard.integer(forKey: "streak"), last: Streak.lastStudy)
+                streakBefore = Streak.display(current: UserDefaults.standard.integer(forKey: Settings.streakKey), last: Streak.lastStudy)
                 loaded = true
             }
         }
@@ -161,7 +161,7 @@ struct SessionSummary {
 struct SummaryView: View {
     let summary: SessionSummary
     let streakBefore: Int
-    @AppStorage("streak") private var streak = 0
+    @AppStorage(Settings.streakKey) private var streak = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {

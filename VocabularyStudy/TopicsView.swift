@@ -13,8 +13,8 @@ struct TopicsView: View {
     @State private var query = ""
     @State private var status: Word.Status?
     @State private var searching = false
-    @AppStorage("grammarScores") private var scores = GrammarScores()
-    @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = true
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
+    @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = Settings.defaultRoadmapAuto
 
     var body: some View {
         NavigationStack {

@@ -54,7 +54,7 @@ struct GrammarView: View {
 
 struct BestScore: View {
     let topic: GrammarTopic
-    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
 
     var body: some View {
         if let best = scores.best[topic.id] {
@@ -66,7 +66,7 @@ struct BestScore: View {
 
 struct GrammarLessonView: View {
     let topic: GrammarTopic
-    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
     @State private var quiz: QuizKind?
 
     enum QuizKind: Identifiable { case random, mistakes; var id: Self { self } }
@@ -145,7 +145,7 @@ struct QuizView: View {
     @State private var picked: Int?
     @State private var score = 0
     @State private var shakes = 0  // tăng mỗi lần chọn sai để chạy hiệu ứng rung
-    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var count: Int { questions.count }

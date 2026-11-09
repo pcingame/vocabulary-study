@@ -3,9 +3,9 @@ import UserNotifications
 
 /// Màn giới thiệu lần đầu: chọn số từ mới, giờ nhắc, rồi mới xin quyền thông báo.
 struct OnboardingView: View {
-    @AppStorage("onboarded") private var onboarded = false
+    @AppStorage(Settings.onboardedKey) private var onboarded = false
     @AppStorage(Settings.newPerDayKey) private var newPerDay = Settings.defaultNewPerDay
-    @AppStorage("reminderMinutes") private var reminderMinutes = Reminder.defaultMinutes
+    @AppStorage(Settings.reminderMinutesKey) private var reminderMinutes = Settings.defaultReminderMinutes
     @State private var page = 0
 
     var body: some View {

@@ -97,8 +97,8 @@ struct RoadmapSection: View {
 
 struct RoadmapView: View {
     @Query private var topics: [Topic]
-    @AppStorage("grammarScores") private var scores = GrammarScores()
-    @AppStorage("lastSeenStage") private var lastSeenStage = 1
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
+    @AppStorage(Settings.lastSeenStageKey) private var lastSeenStage = 1
     @State private var unlocked: Int?  // chặng vừa mở khoá, để chạy animation 1 lần
 
     var body: some View {
@@ -199,7 +199,7 @@ struct StageNode: View {
 struct StageDetailView: View {
     let stage: Stage
     @Query private var topics: [Topic]
-    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @AppStorage(Settings.grammarScoresKey) private var scores = GrammarScores()
 
     var body: some View {
         let p = Roadmap.vocabProgress(stage, topics: topics)
