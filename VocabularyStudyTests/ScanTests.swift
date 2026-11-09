@@ -73,3 +73,25 @@ import Testing
     #expect(drafts[12] == Draft(term: "chaim reimbusse ment", pos: "a", meaning: "yeu cầu loàn tẻ"))
     #expect(drafts[14] == Draft(term: "eligible fon", pos: "", meaning: "đủ điều hiệm"))
 }
+
+@Test func deckSuggestsCloseWord() {
+    let s = VocabSuggester.fromDeck(Draft(term: "accom modations", pos: "m", meaning: "chỗ ở"))
+    #expect(s?.term == "accommodation" && s?.pos == "n" && s?.source == .deck)
+    #expect(VocabSuggester.fromDeck(Draft(term: "promotion", pos: "n", meaning: "Sự thăng chứa"))?.meaning == "sự thăng chức")
+    #expect(VocabSuggester.fromDeck(Draft(term: "re im bur sement", pos: "n", meaning: "hoàn tra")) == nil)  // không ép về "reimburse"
+    #expect(VocabSuggester.fromDeck(Draft(term: "accommodation", pos: "n", meaning: "chỗ ở")) == nil)  // đã đúng
+}
+
+@MainActor @Test func spellingJoinsAndFixes() {
+    #expect(VocabSuggester.spelling(Draft(term: "repre sentative", pos: "n", meaning: ""))?.term == "representative")
+    #expect(VocabSuggester.spelling(Draft(term: "Exceding", pos: "", meaning: ""))?.term == "exceeding")
+    #expect(VocabSuggester.spelling(Draft(term: "busimess - nelated costs", pos: "", meaning: "")) == nil)
+    #expect(VocabSuggester.spelling(Draft(term: "promotion", pos: "n", meaning: "")) == nil)
+}
+
+@Test func applySuggestionKeepsPosWhenMissing() {
+    var d = Draft(term: "Exceding", pos: "v", meaning: "vượt quó")
+    d.suggestion = Suggestion(term: "exceeding", pos: "", meaning: "vượt quá", source: .ai)
+    d.apply(d.suggestion!)
+    #expect(d == Draft(term: "exceeding", pos: "v", meaning: "vượt quá") && d.suggestion == nil)
+}

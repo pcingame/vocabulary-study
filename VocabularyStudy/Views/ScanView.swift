@@ -9,6 +9,7 @@ struct ScanView: View {
     @State private var showCamera = false
     @State private var drafts: [Draft] = []
     @State private var busy = false
+    @State private var suggesting = false
     @State private var message: String?
 
     var body: some View {
@@ -21,7 +22,8 @@ struct ScanView: View {
                         Label("Chọn ảnh có sẵn", systemImage: "photo")
                     }
                 } footer: {
-                    Text(busy ? "Đang đọc chữ…" : message ?? "Có thể quét nhiều trang, từ sẽ được cộng dồn.")
+                    Text(busy ? "Đang đọc chữ…" : suggesting ? "Đang nhờ AI trên máy gợi ý sửa…"
+                         : message ?? "Có thể quét nhiều trang, từ sẽ được cộng dồn.")
                 }
                 if !drafts.isEmpty {
                     Section("Kiểm tra lại — vuốt để xoá dòng sai") {
@@ -32,6 +34,16 @@ struct ScanView: View {
                                 HStack {
                                     TextField("loại", text: $d.pos).frame(width: 50).foregroundStyle(.secondary)
                                     TextField("Nghĩa", text: $d.meaning)
+                                }
+                                if let s = d.suggestion {
+                                    Button { d.apply(s) } label: {
+                                        Label("Gợi ý: \(s.term)\(s.pos.isEmpty ? "" : " (\(s.pos))") – \(s.meaning)",
+                                              systemImage: s.source == .ai ? "sparkles" : "lightbulb")
+                                            .font(.callout)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .accessibilityHint("Chạm để dùng gợi ý")
+                                    .accessibilityIdentifier("applySuggestion")
                                 }
                             }
                         }
@@ -65,12 +77,24 @@ struct ScanView: View {
         do {
             let found = try await OCR.words(from: data)
             let (kept, skipped) = Draft.dedupe(found, existing: topic.words.map(\.term) + drafts.map(\.term))
-            drafts += kept
+            drafts += kept.map { d in
+                var d = d
+                d.suggestion = VocabSuggester.fromDeck(d) ?? VocabSuggester.spelling(d)
+                return d
+            }
             message = found.isEmpty ? "Không tìm thấy từ nào, thử chụp thẳng và rõ hơn."
                 : "Tìm thấy \(kept.count) từ mới." + (skipped > 0 ? " Đã bỏ qua \(skipped) từ trùng." : "")
         } catch {
             message = "Không đọc được ảnh: \(error.localizedDescription)"
+            return
         }
+        // AI sửa được cả nghĩa tiếng Việt nên gợi ý của AI thay cho gợi ý bộ từ / chính tả.
+        guard VocabSuggester.aiAvailable else { return }
+        busy = false
+        suggesting = true
+        let fixes = await VocabSuggester.ai(drafts.filter { $0.suggestion?.source != .ai })
+        for i in drafts.indices { if let s = fixes[drafts[i].id] { drafts[i].suggestion = s } }
+        suggesting = false
     }
 
     private func save() {

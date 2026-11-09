@@ -6,8 +6,16 @@ struct Draft: Identifiable, Equatable {
     var term: String
     var pos: String
     var meaning: String
+    var suggestion: Suggestion?  // gợi ý sửa khi dòng bị đọc sai
 
     static func == (a: Draft, b: Draft) -> Bool { (a.term, a.pos, a.meaning) == (b.term, b.pos, b.meaning) }
+
+    mutating func apply(_ s: Suggestion) {
+        term = s.term
+        if !s.pos.isEmpty { pos = s.pos }
+        meaning = s.meaning
+        suggestion = nil
+    }
 
     /// Bỏ từ đã có (trong chủ đề hoặc đã quét trước đó) và từ trùng trong chính lần quét, không phân biệt hoa thường.
     static func dedupe(_ found: [Draft], existing: [String]) -> (kept: [Draft], skipped: Int) {
