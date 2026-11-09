@@ -17,9 +17,10 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 
 ## Trạng thái (cập nhật 2026-11-09)
 
-- ✅ Đã xong: cấu hình dự án (mục 2), web Privacy/Support (mục 3), đăng ký Bundle ID và tạo app trên App Store Connect (mục 1), ảnh 6.9" + 6.3" (mục 4), metadata soạn sẵn trong `docs/APP_STORE_METADATA.md`.
-- ⏳ Đang làm: dán metadata và upload ảnh vào trang phiên bản 1.0.
-- ⬜ Còn lại: ghi tên app/Apple ID vào mục 1, App Privacy (5), Age rating (6), kiểm thử trước khi nộp (7), Archive & upload build (8), Submit (9).
+- ✅ **Đã gửi review** ngày 2026-11-09, phiên bản 1.0 (build 1). Đang chờ Apple phản hồi.
+- Nếu Apple hỏi thêm (**Guideline 2.1 — Information Needed**, Hangul Study từng bị): xem mục 9, chuẩn bị video quay trên máy thật < 10 MB.
+- Mục 7 (kiểm thử trước khi nộp) **chưa làm đủ** — làm trước khi nộp bản cập nhật tiếp theo, hoặc ngay nếu bị từ chối.
+- Còn trống: tên app và Apple ID ở mục 1.
 
 ## 1. Tài khoản & bản ghi app
 
@@ -69,7 +70,7 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
 - [x] **Promotional Text** (149/170): soạn sẵn trong `APP_STORE_METADATA.md`
 - [x] **Ghi chú nhãn hiệu** (đã có ở cuối Description): TOEIC là nhãn hiệu của ETS. Không để "TOEIC" làm tên chính; nếu nhắc trong mô tả thì thêm dòng *"TOEIC is a registered trademark of ETS. This app is not endorsed or approved by ETS."* (tránh bị từ chối theo Guideline 5.2.1)
 - [x] Support URL, Marketing URL: soạn sẵn trong `APP_STORE_METADATA.md`
-- [ ] Privacy Policy URL: điền ở **App Privacy ▸ Edit** → `https://pcingame.github.io/vocabulary-study-web/privacy.html`
+- [x] Privacy Policy URL: điền ở **App Privacy ▸ Edit** → `https://pcingame.github.io/vocabulary-study-web/privacy.html`
 - [ ] Copyright: `2026 Phuong Doan Thanh`
 
 ### Screenshots (bắt buộc)
@@ -83,17 +84,17 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
     -only-testing:VocabularyStudyUITests/VocabularyStudyUITests/testAppStoreScreenshots
   ```
   (cờ `-screenshots` tạo dữ liệu mẫu: qua chặng 1, đang học chặng 2, chuỗi 12 ngày, 2 tuần lịch sử)
-- [ ] Upload lên App Store Connect: ô **6.9" bắt buộc** chỉ nhận 1320×2868 → dùng `docs/screenshots/6.9/` (ảnh 6.3" thả vào ô 6.9" sẽ báo "File dimensions are invalid")
+- [x] Upload lên App Store Connect: ô **6.9" bắt buộc** chỉ nhận 1320×2868 → dùng `docs/screenshots/6.9/` (ảnh 6.3" thả vào ô 6.9" sẽ báo "File dimensions are invalid")
 - [x] Không cần ảnh iPad (đã tắt iPad)
 
 ## 5. App Privacy (nhãn dinh dưỡng)
 
-- [ ] Data Collection: **"No, we do not collect data from this app"** → Publish
+- [x] Data Collection: **"No, we do not collect data from this app"** → Publish
   (không mạng, ảnh quét xử lý bằng Vision/FoundationModels ngay trên máy, dữ liệu học lưu bằng SwiftData/UserDefaults)
 
 ## 6. Age rating
 
-- [ ] Tất cả None / No → **4+**
+- [x] Tất cả None / No → **4+**
 
 ## 7. Kiểm thử trước khi nộp
 
@@ -110,19 +111,19 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
 
 ## 8. Archive & upload
 
-- [ ] Xcode: destination **Any iOS Device (arm64)** ▸ Product ▸ **Archive**
+- [x] Archive bản Release 1.0 (1). Lệnh dòng lệnh: `xcodebuild archive -scheme VocabularyStudy -configuration Release -destination 'generic/platform=iOS' -archivePath build/Mam.xcarchive -allowProvisioningUpdates`, rồi `open build/Mam.xcarchive` để mở Organizer (export bằng `xcodebuild -exportArchive` báo "No Accounts" vì terminal không dùng được tài khoản Apple trong Xcode → phải Distribute trong Organizer)
 - [ ] Organizer ▸ **Validate App** → không lỗi
-- [ ] **Distribute App ▸ App Store Connect ▸ Upload**
+- [x] **Distribute App ▸ App Store Connect ▸ Upload**
 - [ ] (Tuỳ chọn) TestFlight nội bộ cài thử trước khi nộp review
 
 ## 9. Submit for Review
 
-- [ ] Gán build vào version 1.0
+- [x] Gán build vào version 1.0
 - [ ] App Review Information: không cần đăng nhập; liên hệ như Hangul Study
 - [ ] Notes cho reviewer (gợi ý):
   > Ứng dụng học từ vựng và ngữ pháp tiếng Anh, không cần tài khoản, không kết nối mạng; dữ liệu lưu trên máy. Tính năng "Quét ảnh sách" dùng camera hoặc ảnh có sẵn, đọc chữ bằng Vision ngay trên máy; gợi ý sửa chữ bằng AI chỉ có trên iOS 26 với Apple Intelligence, máy khác vẫn dùng được mà không có gợi ý. Nhắc học là thông báo cục bộ.
 - [ ] Chuẩn bị sẵn câu trả lời cho **Guideline 2.1 — Information Needed** (Hangul Study đã bị hỏi, xem mục 11.1 bên korea_study): mục đích/đối tượng, cách dùng, không có dịch vụ ngoài, giống nhau ở mọi khu vực, không dùng nội dung bên thứ ba được bảo hộ (bộ từ và câu hỏi tự soạn) + **video quay trên máy thật** (< 10 MB)
-- [ ] Add for Review → Submit
+- [x] Add for Review → Submit (2026-11-09)
 
 ## 10. Sau khi duyệt
 
