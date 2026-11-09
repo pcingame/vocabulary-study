@@ -63,11 +63,13 @@ Web nằm ở repo riêng **`pcingame/vocabulary-study-web`** (để repo code g
 - [ ] Copyright: `2026 Phuong Doan Thanh`
 
 ### Screenshots (bắt buộc)
-- [x] iPhone 6.3" (1206×2622) — 10 ảnh trong `docs/screenshots/` (Hôm nay, lật thẻ, chọn nghĩa, gõ từ, lộ trình, chủ đề, bài Thì, bài tập, thống kê, Hôm nay bản tối). Chụp lại bằng:
+- [x] 10 ảnh mỗi cỡ (Hôm nay, lật thẻ, chọn nghĩa, gõ từ, lộ trình, chủ đề, bài Thì, bài tập, thống kê, Hôm nay bản tối):
+  - **iPhone 6.9" (bắt buộc)** 1320×2868 → `docs/screenshots/6.9/` (Simulator iPhone 17 Pro Max `63E9258D-E487-466D-9DE4-999AEC894C42`)
+  - iPhone 6.3" 1206×2622 → `docs/screenshots/6.3/` (Simulator `8D060894-CC2B-4CE2-A4A6-52F02EB42E44`). Không bắt buộc: thiếu thì Apple tự thu nhỏ từ bản 6.9"
+- Chụp lại (thay `<SIM>` và `<DIR>`):
   ```bash
-  xcrun simctl status_bar 8D060894-CC2B-4CE2-A4A6-52F02EB42E44 override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
-  TEST_RUNNER_SNAPSHOT_DIR=docs/screenshots xcodebuild test -scheme VocabularyStudy \
-    -destination id=8D060894-CC2B-4CE2-A4A6-52F02EB42E44 \
+  xcrun simctl status_bar <SIM> override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+  TEST_RUNNER_SNAPSHOT_DIR=<DIR> xcodebuild test -scheme VocabularyStudy -destination id=<SIM> \
     -only-testing:VocabularyStudyUITests/VocabularyStudyUITests/testAppStoreScreenshots
   ```
   (cờ `-screenshots` tạo dữ liệu mẫu: qua chặng 1, đang học chặng 2, chuỗi 12 ngày, 2 tuần lịch sử)
