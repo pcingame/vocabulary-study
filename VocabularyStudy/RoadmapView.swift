@@ -59,12 +59,13 @@ enum Roadmap {
 
 /// Ô lộ trình trên tab Hôm nay.
 struct RoadmapSection: View {
+    let stage: Stage?  // chặng đang học, nil = xong lộ trình
     let topics: [Topic]
     let scores: GrammarScores
 
     var body: some View {
         Section("Lộ trình TOEIC") {
-            if let stage = Roadmap.current(topics: topics, scores: scores) {
+            if let stage {
                 let p = Roadmap.vocabProgress(stage, topics: topics)
                 let passed = scores.passed(stage.grammar)
                 NavigationLink { RoadmapView() } label: {

@@ -32,6 +32,7 @@ struct TodayView: View {
         let newCount = queue.filter { $0.learnedAt == nil }.count
         let days = Streak.display(current: streak, last: Streak.lastStudy)
         let done = StudyLog.counts[StudyLog.day(.now)] ?? 0
+        let stage = Roadmap.current(topics: topics, scores: scores)  // tính 1 lần, mỗi lần duyệt từ của các chặng
         NavigationStack {
             List {
                 Section {
@@ -82,7 +83,7 @@ struct TodayView: View {
                 } footer: {
                     Text("Tổng cộng \((try? context.fetchCount(FetchDescriptor<Word>())) ?? 0) từ.")
                 }
-                RoadmapSection(topics: topics, scores: scores)
+                RoadmapSection(stage: stage, topics: topics, scores: scores)
             }
             .navigationTitle("Hôm nay")
             .toolbar {
@@ -94,7 +95,7 @@ struct TodayView: View {
             .sheet(isPresented: $showingSettings) { SettingsView() }
             .fullScreenCover(isPresented: $studying) { StudyView(topic: nil) }
             .task(id: "\(reminderMinutes)-\(lastStudy)-\(queue.count)") { await Reminder.schedule(dueToday: queue.count) }
-            .task(id: "\(Roadmap.current(topics: topics, scores: scores)?.number ?? 0)-\(roadmapAuto)") {
+            .task(id: "\(stage?.number ?? 0)-\(roadmapAuto)") {
                 Roadmap.prepare(topics: topics, scores: scores, context: context, enabled: roadmapAuto)
             }
         }

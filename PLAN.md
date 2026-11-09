@@ -426,7 +426,7 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Với `-seed-large`, tab Hôm nay mở dưới 0,5 giây. Đo bằng Instruments (SwiftUI + Time Profiler).
 
-### 4.3 Tính lộ trình 1 lần mỗi lần vẽ · P1 · S
+### 4.3 Tính lộ trình 1 lần mỗi lần vẽ · P1 · S ✅
 - **Vấn đề**: `Roadmap.current` bị gọi 2 lần mỗi lần render tab Hôm nay, mỗi lần duyệt hết từ của mọi chủ đề.
 - **Các bước**: tính một `RoadmapState` duy nhất trong `TodayView`, rồi truyền xuống `RoadmapSection` và `.task(id:)`.
 - **Test tự động**: các test `roadmap` vẫn xanh.
