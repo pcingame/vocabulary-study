@@ -138,6 +138,19 @@ private func day(_ n: Int, from base: Date = cal.date(from: DateComponents(year:
     #expect(topics.count == 1 && topics[0].words.count == 20)
 }
 
+@MainActor @Test func readdsOnlyCurrentStageWhenEnabled() throws {
+    let container = try memoryContainer()
+    let context = container.mainContext
+    Roadmap.prepare(topics: [], scores: GrammarScores(), context: context, enabled: true)
+    let stageTopic = try context.fetch(FetchDescriptor<Topic>())[0]
+    let mine = Topic(name: "Của tôi")
+    context.insert(mine)
+    let topics = [stageTopic, mine]
+    #expect(Roadmap.readdsAfterDelete(stageTopic, topics: topics, scores: GrammarScores(), enabled: true))
+    #expect(!Roadmap.readdsAfterDelete(stageTopic, topics: topics, scores: GrammarScores(), enabled: false))
+    #expect(!Roadmap.readdsAfterDelete(mine, topics: topics, scores: GrammarScores(), enabled: true))
+}
+
 /// Container in-memory; phải giữ biến container còn sống trong suốt test, context không tự giữ container.
 @MainActor private func memoryContainer() throws -> ModelContainer {
     try ModelContainer(for: Topic.self, Word.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))

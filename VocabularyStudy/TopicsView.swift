@@ -13,6 +13,8 @@ struct TopicsView: View {
     @State private var query = ""
     @State private var status: Word.Status?
     @State private var searching = false
+    @AppStorage("grammarScores") private var scores = GrammarScores()
+    @AppStorage(Settings.roadmapAutoKey) private var roadmapAuto = true
 
     var body: some View {
         NavigationStack {
@@ -51,7 +53,9 @@ struct TopicsView: View {
                     .accessibilityIdentifier("confirmDeleteTopic")
                 Button("Huỷ", role: .cancel) {}
             } message: { topic in
-                Text("Xoá \"\(topic.name)\" và \(topic.words.count) từ bên trong. Không thể hoàn tác.")
+                let readds = Roadmap.readdsAfterDelete(topic, topics: topics, scores: scores, enabled: roadmapAuto)
+                Text("Xoá \"\(topic.name)\" và \(topic.words.count) từ bên trong. Không thể hoàn tác."
+                     + (readds ? "\n\nĐây là bộ từ của chặng đang học: app sẽ tự thêm lại bộ này và tiến độ cũ bị mất. Muốn bỏ hẳn thì tắt \"Tự thêm bộ từ của chặng\" trong Cài đặt." : ""))
             }
             .overlay {
                 if topics.isEmpty {

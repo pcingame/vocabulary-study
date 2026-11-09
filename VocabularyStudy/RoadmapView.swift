@@ -55,6 +55,11 @@ enum Roadmap {
             Content.add(stage.deck, to: context)
         }
     }
+
+    /// Xoá chủ đề này thì `prepare` sẽ tự thêm lại (bộ từ của chặng hiện tại, lộ trình đang bật).
+    static func readdsAfterDelete(_ topic: Topic, topics: [Topic], scores: GrammarScores, enabled: Bool) -> Bool {
+        enabled && current(topics: topics, scores: scores)?.deck.name == topic.name
+    }
 }
 
 /// Ô lộ trình trên tab Hôm nay.

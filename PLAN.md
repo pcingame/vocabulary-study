@@ -122,7 +122,7 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   2. Vuốt xoá lần nữa → bấm Xoá → chủ đề mất.
 - **Test tay**:
   - [ ] Xoá một chủ đề TOEIC đang học trên lộ trình: app tự thêm lại bộ từ (đúng thiết kế), tiến độ cũ mất.
-  - [x] Ghi chú hành vi này ở chân mục "Lộ trình TOEIC" trong Cài đặt (app chưa có màn trợ giúp riêng).
+  - [x] Ghi chú hành vi này ở chân mục "Lộ trình TOEIC" trong Cài đặt (app chưa có màn trợ giúp riêng), và cảnh báo thêm trong hộp xác nhận xoá khi đó là bộ từ của chặng đang học (unit `readdsOnlyCurrentStageWhenEnabled`).
 
 ### 1.3 Màn hình Cài đặt · P0 · L ✅
 - **File**: tạo `SettingsView.swift`, sửa `Models.swift`, `TodayView.swift`, `StudyView.swift` (`Speaker`), `RoadmapView.swift`.
