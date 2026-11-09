@@ -450,6 +450,12 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Test tay**:
   - [ ] Trên iPhone: thêm 1 bộ mới, học vài thẻ; nhấn giữ để xoá từ và chủ đề.
 
+### 3.11 Ngữ pháp đầy đủ hơn · P1 · S ✅
+- Bài **Thì**: đủ 9 thì hay gặp (thêm hiện tại hoàn thành tiếp diễn, quá khứ tiếp diễn, quá khứ hoàn thành, tương lai tiếp diễn, tương lai hoàn thành, be going to), mỗi thì có công thức + dấu hiệu + ví dụ; 24 câu bài tập.
+- Bài mới (16 câu mỗi bài): Hoà hợp chủ ngữ – động từ, Lượng từ & mạo từ, Phân từ (V-ing / V3). Chưa đưa vào lộ trình.
+- **Test tự động**: [x] unit `bundledContentIsValid`, [x] UI `testGrammarQuizTracksMistakes`, `testAccessibilityAudit`.
+- **Test tay**: [ ] Trên iPhone đọc bài Thì và làm thử 1 bài mới.
+
 **Kết thúc Phase 3** → quay video màn hình các luồng chính và gửi người dùng xem trước khi phát hành.
 
 ---
