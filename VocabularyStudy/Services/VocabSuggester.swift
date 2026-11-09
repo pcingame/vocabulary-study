@@ -19,7 +19,7 @@ enum VocabSuggester {
         guard key.count >= 4 else { return nil }  // từ quá ngắn dễ khớp nhầm
         let limit = max(2, key.count / 4)  // số ký tự thêm/bớt cho phép (đổi 1 chữ = 2)
         let best = rows.lazy
-            .map { (row: $0, changes: Array(key).difference(from: Array(letters($0.term))).count) }
+            .map { (row: $0, changes: changes(key, $0.term)) }
             .filter { $0.changes <= limit }
             .min { $0.changes < $1.changes }
         guard let row = best?.row else { return nil }
@@ -49,6 +49,19 @@ enum VocabSuggester {
 
     private static func letters(_ s: String) -> String { Answer.normalize(s).filter(\.isLetter) }
 
+    /// Số ký tự phải thêm/bớt để biến a thành b, chỉ tính chữ cái (đổi 1 chữ = 2).
+    static func changes(_ a: String, _ b: String) -> Int { Array(letters(a)).difference(from: Array(letters(b))).count }
+
+    /// Từ AI đề xuất còn giống một trong các cách đọc (không quá 40% ký tự khác), để chặn AI đổi sang từ khác hẳn.
+    static func isClose(_ term: String, to readings: [String]) -> Bool {
+        readings.contains { r in Double(changes(term, r)) <= 0.4 * Double(max(letters(term).count, letters(r).count)) }
+    }
+
+    /// Các cách viết của từ trong một dòng quét: chữ chính và từ trong các cách đọc khác.
+    static func termReadings(_ d: Draft) -> [String] {
+        [d.term] + d.readings.compactMap { OCR.parse([(text: $0, x: 0)]).first?.term }
+    }
+
     /// Máy có AI của Apple (iOS 26+, Apple Intelligence đang bật và đã tải xong mô hình).
     static var aiAvailable: Bool {
         #if canImport(FoundationModels)
@@ -57,8 +70,15 @@ enum VocabSuggester {
         return false
     }
 
+    /// Nạp sẵn mô hình khi mở màn quét, để lúc chụp xong AI trả lời nhanh hơn.
+    @MainActor static func prewarm() {
+        #if canImport(FoundationModels)
+        if #available(iOS 26, *), aiAvailable { PageFixer.prewarm() }
+        #endif
+    }
+
     /// Gửi cả trang cho AI trên máy sửa một lần (có ngữ cảnh chung nên sửa tốt hơn từng dòng). Trả về gợi ý theo id dòng.
-    static func ai(_ drafts: [Draft]) async -> [UUID: Suggestion] {
+    @MainActor static func ai(_ drafts: [Draft]) async -> [UUID: Suggestion] {
         #if canImport(FoundationModels)
         if #available(iOS 26, *), aiAvailable, !drafts.isEmpty {
             return await PageFixer.fix(drafts)
@@ -70,7 +90,7 @@ enum VocabSuggester {
 
 #if canImport(FoundationModels)
 @available(iOS 26, *)
-private enum PageFixer {
+@MainActor private enum PageFixer {
     @Generable struct Fix {
         @Guide(description: "Số thứ tự dòng gốc") var line: Int
         @Guide(description: "Từ hoặc cụm từ tiếng Anh đúng chính tả, chữ thường") var term: String
@@ -84,18 +104,36 @@ private enum PageFixer {
         - Chữ bị tách bởi dấu cách thường là 1 từ: "re im bur sement" là "reimbursement".
         - Máy hay đọc nhầm: n↔m, r↔n, f↔p, l↔h, cl↔ch, o↔a.
         - Nghĩa tiếng Việt thường thiếu hoặc sai dấu, sửa thành tiếng Việt đúng và khớp với từ tiếng Anh.
+        - Một số dòng kèm các cách máy đọc khác cho dòng đó; dùng chúng để đoán chữ đúng.
         - Không đổi sang từ khác. Không viết lại nghĩa bằng từ khác.
         """
 
+    private static var warm: LanguageModelSession?
+
+    static func prewarm() {
+        guard warm == nil else { return }
+        warm = LanguageModelSession(instructions: instructions)
+        warm?.prewarm()
+    }
+
+    static func line(_ i: Int, _ d: Draft) -> String {
+        let others = d.readings.map { "«\($0)»" }.joined(separator: "; ")
+        return "\(i + 1). \(d.term): \(d.meaning)" + (others.isEmpty ? "" : " (máy còn đọc ra: \(others))")
+    }
+
     static func fix(_ drafts: [Draft]) async -> [UUID: Suggestion] {
-        let prompt = drafts.enumerated().map { "\($0.offset + 1). \($0.element.term): \($0.element.meaning)" }.joined(separator: "\n")
-        guard let page = try? await LanguageModelSession(instructions: instructions).respond(to: prompt, generating: Page.self) else { return [:] }
+        let prompt = drafts.enumerated().map { line($0.offset, $0.element) }.joined(separator: "\n")
+        let session = warm ?? LanguageModelSession(instructions: instructions)
+        warm = nil  // mỗi phiên chỉ dùng 1 lần, không mang ngữ cảnh trang trước
+        // greedy: cùng một trang luôn ra cùng gợi ý (mặc định có ngẫu nhiên, đúng 7–11/15 tuỳ lần)
+        guard let page = try? await session.respond(to: prompt, generating: Page.self, options: GenerationOptions(sampling: .greedy))
+        else { return [:] }
         var out: [UUID: Suggestion] = [:]
         for f in page.content.fixes where drafts.indices.contains(f.line - 1) {
             let d = drafts[f.line - 1]
             let s = Suggestion(term: f.term.trimmingCharacters(in: .whitespaces), pos: d.pos,
                                meaning: f.meaning.trimmingCharacters(in: .whitespaces), source: .ai)
-            if !s.term.isEmpty, s.differs(from: d) { out[d.id] = s }
+            if !s.term.isEmpty, s.differs(from: d), VocabSuggester.isClose(s.term, to: VocabSuggester.termReadings(d)) { out[d.id] = s }
         }
         return out
     }

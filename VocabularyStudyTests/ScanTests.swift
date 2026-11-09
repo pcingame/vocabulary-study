@@ -95,3 +95,28 @@ import Testing
     d.apply(d.suggestion!)
     #expect(d == Draft(term: "exceeding", pos: "v", meaning: "vượt quá") && d.suggestion == nil)
 }
+
+@Test func attachReadingsFromSameLine() {
+    let drafts = [Draft(term: "Proop of payment", pos: "n", meaning: "dang từ theanh toar")]
+    let lines = [(text: "- Exceding : vượt quó", others: ["- Exceding : vượt quá"]),
+                 (text: "- Proop of payment (m): dang từ theanh toar.", others: ["- Proof of payment (m): dang từ theanh toar."])]
+    let out = OCR.attachReadings(drafts, lines: lines)
+    #expect(out[0].readings == ["- Proof of payment (m): dang từ theanh toar."])
+    #expect(VocabSuggester.termReadings(out[0]) == ["Proop of payment", "Proof of payment"])
+}
+
+/// Gợi ý AI phải còn giống chữ đọc được: sửa lỗi đọc thì nhận, đổi sang từ khác hẳn thì bỏ.
+@Test func aiSuggestionMustStayClose() {
+    #expect(VocabSuggester.isClose("refund policy", to: ["repund policy"]))
+    #expect(VocabSuggester.isClose("environmental regulations", to: ["en vinam mentab regu la tioms"]))
+    #expect(VocabSuggester.isClose("reimbursement", to: ["re im bur sement"]))
+    #expect(VocabSuggester.isClose("business-related costs", to: ["busimess - nelated costs"]))
+    #expect(!VocabSuggester.isClose("customer service", to: ["repund policy"]))
+    #expect(!VocabSuggester.isClose("remittance", to: ["re im bur sement"]))
+    // Câu trả lời sai thật của AI trên trang sổ mẫu
+    #expect(!VocabSuggester.isClose("repayment policy", to: ["repund policy"]))
+    #expect(!VocabSuggester.isClose("related costs", to: ["busimess - nelated costs"]))
+    #expect(!VocabSuggester.isClose("reimbursement request", to: ["chaim reimbusse ment"]))
+    // Cách đọc thứ 2 của Vision giúp nhận "proof"
+    #expect(VocabSuggester.isClose("proof of payment", to: ["Proop of payment", "Proof of payment"]))
+}

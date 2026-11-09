@@ -26,7 +26,7 @@ struct ScanView: View {
                          : message ?? "Có thể quét nhiều trang, từ sẽ được cộng dồn.")
                 }
                 if !drafts.isEmpty {
-                    Section("Kiểm tra lại — vuốt để xoá dòng sai") {
+                    Section {
                         ForEach($drafts) { $d in
                             VStack(alignment: .leading) {
                                 TextField("Từ", text: $d.term).bold()
@@ -48,10 +48,22 @@ struct ScanView: View {
                             }
                         }
                         .onDelete { drafts.remove(atOffsets: $0) }
+                    } header: {
+                        Text("Kiểm tra lại — vuốt để xoá dòng sai")
+                    } footer: {
+                        let count = drafts.filter { $0.suggestion != nil }.count
+                        if count > 0 {
+                            Button("Dùng tất cả \(count) gợi ý", systemImage: "wand.and.stars") {
+                                for i in drafts.indices { if let s = drafts[i].suggestion { drafts[i].apply(s) } }
+                            }
+                            .font(.callout)
+                            .accessibilityIdentifier("applyAllSuggestions")
+                        }
                     }
                 }
             }
             .navigationTitle("Quét từ vựng")
+            .onAppear { VocabSuggester.prewarm() }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Huỷ") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {

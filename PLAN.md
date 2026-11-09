@@ -330,9 +330,11 @@ Mục tiêu: đưa app cho người dùng thật dùng hằng ngày mà không m
   2. Gợi ý từ bộ TOEIC khi từ đọc được gần giống một từ trong bộ.
   3. Gợi ý chính tả tiếng Anh (`UITextChecker`): ghép mảnh bị tách, sửa từ đơn.
   4. Máy có AI của Apple (iOS 26+): gửi cả trang cho AI trên máy sửa cả từ lẫn nghĩa tiếng Việt; gợi ý của AI ưu tiên hơn 2 và 3. Máy không có AI vẫn có 1–3.
-  5. Gợi ý hiện dưới mỗi dòng ở màn "Kiểm tra lại", chạm để dùng. Không tự thay.
+  5. Gợi ý hiện dưới mỗi dòng ở màn "Kiểm tra lại", chạm để dùng, hoặc "Dùng tất cả gợi ý". Không tự thay.
+  6. Tối ưu AI: gửi kèm 2 cách đọc khác của Vision; sampling `greedy` (ổn định, không đổi giữa các lần); bỏ gợi ý AI khác quá 40% ký tự so với chữ đọc được; nạp sẵn mô hình khi mở màn quét.
 - **Test tự động**:
-  - [x] Unit `parseHandwrittenNotes` (dòng Vision đọc thật từ ảnh sổ), `deckSuggestsCloseWord`, `spellingJoinsAndFixes`, `applySuggestionKeepsPosWhenMissing`.
+  - [x] Unit `parseHandwrittenNotes` (dòng Vision đọc thật từ ảnh sổ), `deckSuggestsCloseWord`, `spellingJoinsAndFixes`, `applySuggestionKeepsPosWhenMissing`, `attachReadingsFromSameLine`, `aiSuggestionMustStayClose` (dùng câu trả lời sai thật của AI).
+  - [x] Đo trên Mac với trang sổ mẫu: 10/15 gợi ý đúng từ, 3 gợi ý sai bị chặn, 1 gợi ý sai còn hiện ("eligible funds"). Trước khi tối ưu: 7–11/15 tuỳ lần, 3–4 gợi ý sai đều hiện.
   - [x] `FoundationModels` liên kết kiểu weak (`LC_LOAD_WEAK_DYLIB`), máy iOS 18 vẫn mở được app.
 - **Test tay**:
   - [ ] Trên iPhone: chụp trang sổ chép tay → thấy gợi ý ✨ của AI, chạm để dùng. Thử trên Mac cho kết quả đúng khoảng 12/15 dòng.

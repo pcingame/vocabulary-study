@@ -7,6 +7,7 @@ struct Draft: Identifiable, Equatable {
     var pos: String
     var meaning: String
     var suggestion: Suggestion?  // gợi ý sửa khi dòng bị đọc sai
+    var readings: [String] = []  // các cách đọc khác của Vision cho dòng này, gửi kèm cho AI
 
     static func == (a: Draft, b: Draft) -> Bool { (a.term, a.pos, a.meaning) == (b.term, b.pos, b.meaning) }
 
@@ -54,9 +55,20 @@ enum OCR {
         var request = RecognizeTextRequest()
         request.recognitionLanguages = [Locale.Language(identifier: "vi-VN"), Locale.Language(identifier: "en-US")]
         let observations = try await request.perform(on: image)
-        return parse(observations.compactMap { o in
-            o.topCandidates(1).first.map { (text: $0.string, x: Double(o.boundingBox.cgRect.minX)) }
-        })
+        let lines = observations.compactMap { o -> (text: String, x: Double, others: [String])? in
+            let c = o.topCandidates(3).map(\.string)
+            return c.first.map { (text: $0, x: Double(o.boundingBox.cgRect.minX), others: Array(c.dropFirst())) }
+        }
+        return attachReadings(parse(lines.map { ($0.text, $0.x) }), lines: lines.map { ($0.text, $0.others) })
+    }
+
+    /// Gắn các cách đọc khác của dòng chứa từ đó (chữ viết tay khó, cách đọc thứ 2–3 hay đúng hơn).
+    static func attachReadings(_ drafts: [Draft], lines: [(text: String, others: [String])]) -> [Draft] {
+        drafts.map { d in
+            var d = d
+            d.readings = lines.first { $0.text.contains(d.term) }?.others ?? []
+            return d
+        }
     }
 
     /// Tách các dòng dạng `generous /ˈdʒɛnərəs/ (adj) – hào phóng` (sách) hoặc `- refund policy (n): chính sách hoàn trả` (chép tay, có thể thiếu loại từ).
