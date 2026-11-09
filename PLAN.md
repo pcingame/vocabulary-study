@@ -411,9 +411,9 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 
 ## Phase 4 — Tối ưu (P1, làm khi dữ liệu lớn hoặc khi thấy chậm)
 
-### 4.1 Dữ liệu lớn để đo hiệu năng · P1 · S
+### 4.1 Dữ liệu lớn để đo hiệu năng · P1 · S ✅
 - **Các bước**: thêm launch argument `-seed-large` tạo 50 chủ đề × 200 từ = 10.000 từ, với tiến độ ngẫu nhiên.
-- **Test tự động**: unit performance `measure { todayQueue(10_000 từ) }` để lấy mốc trước khi tối ưu.
+- **Test tự động**: unit performance `measure { todayQueue(10_000 từ) }` để lấy mốc trước khi tối ưu. Mốc: 0,179 s (fetch hết + lọc). Chạy app: `-ui-testing -seed-large`.
 
 ### 4.2 Fetch theo điều kiện thay vì lọc cả bảng · P1 · M
 - **Vấn đề**: `todayQueue` lọc toàn bộ từ mỗi lần vẽ lại `TodayView` và `TopicDetailView`.

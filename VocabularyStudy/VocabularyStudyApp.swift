@@ -15,6 +15,7 @@ struct VocabularyStudyApp: App {
         container = try! ModelContainer(for: Topic.self, Word.self,
                                         configurations: ModelConfiguration(isStoredInMemoryOnly: LaunchFlags.uiTesting))
         if LaunchFlags.seed { Self.seed(container.mainContext) }
+        if LaunchFlags.seedLarge { Self.seedLarge(container.mainContext) }
         if LaunchFlags.stage1Done { Self.finishStage1(container.mainContext) }
         Content.sync((try? container.mainContext.fetch(FetchDescriptor<Topic>())) ?? [])
     }
@@ -42,6 +43,25 @@ struct VocabularyStudyApp: App {
         UserDefaults.standard.set(scores.rawValue, forKey: "grammarScores")
     }
 
+    /// 50 chủ đề × 200 từ để đo hiệu năng. Tiến độ trộn đều: 1/3 chưa học, 1/3 đến hạn ôn, 1/3 chưa đến hạn.
+    static func seedLarge(_ context: ModelContext, topics: Int = 50, perTopic: Int = 200, now: Date = .now) {
+        for t in 0..<topics {
+            let topic = Topic(name: "Lớn \(t + 1)")
+            context.insert(topic)
+            for i in 0..<perTopic {
+                let w = Word(term: "word\(t)-\(i)", pos: "n", meaning: "nghĩa \(t)-\(i)",
+                             createdAt: now.addingTimeInterval(Double(t * perTopic + i) - 1e6))
+                if i % 3 != 0 {
+                    w.learnedAt = now.addingTimeInterval(-86_400 * 30)
+                    w.interval = i % 30 + 1
+                    w.due = now.addingTimeInterval(86_400 * Double(i % 3 == 1 ? -(i % 7 + 1) : i % 20 + 1))
+                }
+                topic.words.append(w)
+            }
+        }
+        try? context.save()
+    }
+
     /// Dữ liệu mẫu cho UI test.
     private static func seed(_ context: ModelContext) {
         let topic = Topic(name: "Test")
@@ -58,10 +78,11 @@ struct VocabularyStudyApp: App {
     }
 }
 
-/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu; `-stage1-done` = chặng 1 đã xong.
+/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu; `-stage1-done` = chặng 1 đã xong; `-seed-large` = 10.000 từ để đo hiệu năng.
 enum LaunchFlags {
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("-ui-testing")
     static let seed = ProcessInfo.processInfo.arguments.contains("-seed")
     static let showOnboarding = ProcessInfo.processInfo.arguments.contains("-show-onboarding")
     static let stage1Done = ProcessInfo.processInfo.arguments.contains("-stage1-done")
+    static let seedLarge = ProcessInfo.processInfo.arguments.contains("-seed-large")
 }
