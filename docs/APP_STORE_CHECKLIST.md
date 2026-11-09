@@ -15,11 +15,17 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 
 ---
 
+## Trạng thái (cập nhật 2026-11-09)
+
+- ✅ Đã xong: cấu hình dự án (mục 2), web Privacy/Support (mục 3), đăng ký Bundle ID và tạo app trên App Store Connect (mục 1), ảnh 6.9" + 6.3" (mục 4), metadata soạn sẵn trong `docs/APP_STORE_METADATA.md`.
+- ⏳ Đang làm: dán metadata và upload ảnh vào trang phiên bản 1.0.
+- ⬜ Còn lại: ghi tên app/Apple ID vào mục 1, App Privacy (5), Age rating (6), kiểm thử trước khi nộp (7), Archive & upload build (8), Submit (9).
+
 ## 1. Tài khoản & bản ghi app
 
 - [x] Apple Developer Program Active (Team `P3MPHWPJ62`, dùng chung với Hangul Study)
-- [ ] Certificates, Identifiers & Profiles ▸ Identifiers: đăng ký Bundle ID `com.doanthanhphuong.VocabularyStudy` (có thể Xcode đã tự tạo khi build lên máy thật — kiểm tra trước)
-- [ ] App Store Connect ▸ My Apps ▸ **+ New App**:
+- [x] Certificates, Identifiers & Profiles ▸ Identifiers: đăng ký Bundle ID `com.doanthanhphuong.VocabularyStudy` (có thể Xcode đã tự tạo khi build lên máy thật — kiểm tra trước)
+- [x] App Store Connect ▸ My Apps ▸ **+ New App** (tên đã chọn và Apple ID: _chưa ghi — điền vào đây_):
   - Platform: iOS · Primary language: Vietnamese
   - Name: xem mục 6 (tên `Mầm` có thể đã có người dùng — App Store bắt tên duy nhất)
   - Bundle ID: như trên · SKU: `mam-001`
@@ -58,10 +64,12 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
 - [ ] **Tên** (≤ 30 ký tự, phải duy nhất), ví dụ: `Mầm – Từ vựng & Ngữ pháp`
 - [ ] **Subtitle** (≤ 30): ví dụ `Luyện thi TOEIC mỗi ngày`
 - [ ] **Category**: Education (phụ: Reference)
-- [ ] **Description**: lộ trình 10 chặng, lặp lại ngắt quãng, 4 chế độ học (lật thẻ / gõ từ / nghe – gõ / chọn nghĩa), 16 bộ từ (320 từ), 13 bài ngữ pháp (312 câu), quét sổ tay/sách, streak, nhắc học, sáng/tối
-- [ ] **Keywords** (≤ 100 ký tự), ví dụ: `toeic,từ vựng,tiếng anh,ngữ pháp,flashcard,học từ,ôn thi,english,vocabulary`
-- [ ] **Ghi chú nhãn hiệu**: TOEIC là nhãn hiệu của ETS. Không để "TOEIC" làm tên chính; nếu nhắc trong mô tả thì thêm dòng *"TOEIC is a registered trademark of ETS. This app is not endorsed or approved by ETS."* (tránh bị từ chối theo Guideline 5.2.1)
-- [ ] Privacy Policy URL, Support URL, Marketing URL (từ mục 3)
+- [x] **Description** (2519/4000, soạn sẵn trong `APP_STORE_METADATA.md`): lộ trình 10 chặng, lặp lại ngắt quãng, 4 chế độ học (lật thẻ / gõ từ / nghe – gõ / chọn nghĩa), 16 bộ từ (320 từ), 13 bài ngữ pháp (312 câu), quét sổ tay/sách, streak, nhắc học, sáng/tối
+- [x] **Keywords** (93/100): `toeic,từ vựng,tiếng anh,ngữ pháp,flashcard,học từ,ôn thi,vocabulary,english,grammar,luyện thi`
+- [x] **Promotional Text** (149/170): soạn sẵn trong `APP_STORE_METADATA.md`
+- [x] **Ghi chú nhãn hiệu** (đã có ở cuối Description): TOEIC là nhãn hiệu của ETS. Không để "TOEIC" làm tên chính; nếu nhắc trong mô tả thì thêm dòng *"TOEIC is a registered trademark of ETS. This app is not endorsed or approved by ETS."* (tránh bị từ chối theo Guideline 5.2.1)
+- [x] Support URL, Marketing URL: soạn sẵn trong `APP_STORE_METADATA.md`
+- [ ] Privacy Policy URL: điền ở **App Privacy ▸ Edit** → `https://pcingame.github.io/vocabulary-study-web/privacy.html`
 - [ ] Copyright: `2026 Phuong Doan Thanh`
 
 ### Screenshots (bắt buộc)
@@ -75,8 +83,8 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
     -only-testing:VocabularyStudyUITests/VocabularyStudyUITests/testAppStoreScreenshots
   ```
   (cờ `-screenshots` tạo dữ liệu mẫu: qua chặng 1, đang học chặng 2, chuỗi 12 ngày, 2 tuần lịch sử)
-- [ ] Upload lên App Store Connect
-- [ ] Không cần ảnh iPad (đã tắt iPad)
+- [ ] Upload lên App Store Connect: ô **6.9" bắt buộc** chỉ nhận 1320×2868 → dùng `docs/screenshots/6.9/` (ảnh 6.3" thả vào ô 6.9" sẽ báo "File dimensions are invalid")
+- [x] Không cần ảnh iPad (đã tắt iPad)
 
 ## 5. App Privacy (nhãn dinh dưỡng)
 
