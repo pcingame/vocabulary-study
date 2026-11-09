@@ -515,6 +515,70 @@ final class VocabularyStudyUITests: XCTestCase {
         snapshot("topics-progress")
     }
 
+    // MARK: - Ảnh App Store
+
+    /// Chụp 10 ảnh cho App Store (1206×2622 trên iPhone 17 Pro). Chỉ có ý nghĩa khi chạy với TEST_RUNNER_SNAPSHOT_DIR.
+    func testAppStoreScreenshots() {
+        XCUIDevice.shared.appearance = .light
+        addTeardownBlock { @MainActor in XCUIDevice.shared.appearance = .light }
+        let app = launch(["-ui-testing", "-screenshots"])
+        XCTAssertTrue(app.buttons["startStudy"].waitForExistence(timeout: 5))
+        snapshot("01-today")
+
+        app.buttons["startStudy"].tap()
+        app.buttons["revealAnswer"].tap()
+        XCTAssertTrue(app.buttons["answerEasy"].waitForExistence(timeout: 5))
+        sleep(1)
+        snapshot("02-flashcard")
+        app.buttons["studyClose"].tap()
+
+        app.segmentedControls["studyModePicker"].buttons["Chọn nghĩa"].tap()
+        app.buttons["startStudy"].tap()
+        sleep(1)
+        snapshot("03-choice")
+        app.buttons["studyClose"].tap()
+
+        app.segmentedControls["studyModePicker"].buttons["Gõ từ"].tap()
+        app.buttons["startStudy"].tap()
+        XCTAssertTrue(app.textFields["typingField"].waitForExistence(timeout: 5))
+        sleep(1)
+        snapshot("04-typing")
+        app.buttons["studyClose"].tap()
+        app.segmentedControls["studyModePicker"].buttons["Lật thẻ"].tap()
+
+        let stage = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Chặng 2/10'")).firstMatch
+        XCTAssertTrue(stage.waitForExistence(timeout: 5))
+        stage.tap()
+        sleep(1)
+        snapshot("05-roadmap")
+        app.navigationBars.buttons.firstMatch.tap()
+
+        app.tabBars.buttons["Chủ đề"].tap()
+        sleep(1)
+        snapshot("06-topics")
+
+        app.tabBars.buttons["Ngữ pháp"].tap()
+        app.buttons["Thì động từ"].tap()
+        sleep(1)
+        snapshot("07-grammar-lesson")
+        app.buttons["startQuiz"].tap()
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'B. '")).firstMatch.tap()
+        sleep(1)
+        snapshot("08-grammar-quiz")
+        app.buttons["Đóng"].tap()
+
+        app.tabBars.buttons["Hôm nay"].tap()
+        app.buttons["statsButton"].tap()
+        XCTAssertTrue(app.otherElements["statsChart"].waitForExistence(timeout: 5))
+        sleep(1)
+        snapshot("09-stats")
+        app.navigationBars.buttons.firstMatch.tap()
+
+        XCUIDevice.shared.appearance = .dark
+        sleep(1)
+        snapshot("10-today-dark")
+    }
+
     // MARK: - Lộ trình
 
     func testRoadmapTimeline() {

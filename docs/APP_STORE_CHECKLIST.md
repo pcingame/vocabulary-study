@@ -63,8 +63,15 @@ Web nằm ở repo riêng **`pcingame/vocabulary-study-web`** (để repo code g
 - [ ] Copyright: `2026 Phuong Doan Thanh`
 
 ### Screenshots (bắt buộc)
-- [ ] iPhone 6.9" — chụp trên Simulator **iPhone 17 Pro Max** (1320×2868), 3–10 ảnh: Hôm nay, lật thẻ, chọn nghĩa, lộ trình, ngữ pháp, quét ảnh, thống kê; có cả bản tối
-- [ ] Seed dữ liệu cho đẹp (launch argument `-seed` đang dùng cho UI test là điểm bắt đầu)
+- [x] iPhone 6.3" (1206×2622) — 10 ảnh trong `docs/screenshots/` (Hôm nay, lật thẻ, chọn nghĩa, gõ từ, lộ trình, chủ đề, bài Thì, bài tập, thống kê, Hôm nay bản tối). Chụp lại bằng:
+  ```bash
+  xcrun simctl status_bar 8D060894-CC2B-4CE2-A4A6-52F02EB42E44 override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+  TEST_RUNNER_SNAPSHOT_DIR=docs/screenshots xcodebuild test -scheme VocabularyStudy \
+    -destination id=8D060894-CC2B-4CE2-A4A6-52F02EB42E44 \
+    -only-testing:VocabularyStudyUITests/VocabularyStudyUITests/testAppStoreScreenshots
+  ```
+  (cờ `-screenshots` tạo dữ liệu mẫu: qua chặng 1, đang học chặng 2, chuỗi 12 ngày, 2 tuần lịch sử)
+- [ ] Upload lên App Store Connect
 - [ ] Không cần ảnh iPad (đã tắt iPad)
 
 ## 5. App Privacy (nhãn dinh dưỡng)

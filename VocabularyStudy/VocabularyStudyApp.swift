@@ -19,6 +19,7 @@ struct VocabularyStudyApp: App {
         if LaunchFlags.seed { Self.seed(container.mainContext) }
         if LaunchFlags.seedLarge { Self.seedLarge(container.mainContext) }
         if LaunchFlags.stage1Done { Self.finishStage1(container.mainContext) }
+        if LaunchFlags.screenshots { Self.seedScreenshots(container.mainContext) }
         Content.sync((try? container.mainContext.fetch(FetchDescriptor<Topic>())) ?? [])
     }
 
@@ -48,6 +49,36 @@ struct VocabularyStudyApp: App {
         var scores = GrammarScores()
         scores.record(stage.grammar, score: 8, of: 8)
         UserDefaults.standard.set(scores.rawValue, forKey: Settings.grammarScoresKey)
+    }
+
+    /// Dữ liệu cho ảnh App Store: qua chặng 1, đang học chặng 2 và một bộ từ thêm, chuỗi 12 ngày, 2 tuần lịch sử học.
+    private static func seedScreenshots(_ context: ModelContext) {
+        finishStage1(context)
+        let now = Date.now
+        let decks = [(Roadmap.stages[1].deck.name, 9), ("TOEIC · Công nghệ & Máy tính", 12)]
+        for (name, _) in decks { Content.add(Content.vocab.first { $0.name == name }!, to: context) }
+        let topics = try! context.fetch(FetchDescriptor<Topic>())
+        for word in topics.first(where: { $0.name == Roadmap.stages[0].deck.name })!.words {  // chặng 1: đã thuộc từ trước
+            word.learnedAt = now.addingTimeInterval(-86_400 * 40)
+            word.interval = 30
+            word.due = now.addingTimeInterval(86_400 * 10)
+        }
+        for (name, learned) in decks {
+            let words = topics.first { $0.name == name }!.words.sorted { $0.createdAt < $1.createdAt }
+            for (i, w) in words.prefix(learned).enumerated() {
+                w.answer(.easy, now: now.addingTimeInterval(-86_400 * 5))
+                w.due = now.addingTimeInterval(i % 3 == 0 ? -3600 : 86_400 * 3)  // 1/3 đến hạn ôn hôm nay
+            }
+        }
+        let d = UserDefaults.standard
+        d.set(12, forKey: Settings.streakKey)
+        d.set(now.addingTimeInterval(-86_400).timeIntervalSince1970, forKey: Settings.lastStudyKey)
+        let perDay = [14, 18, 9, 22, 15, 17, 0, 20, 16, 25, 12, 19, 21, 6]  // phần tử cuối là hôm nay
+        var log: [String: Int] = [:]
+        for (i, n) in perDay.enumerated() where n > 0 {
+            log[StudyLog.day(now.addingTimeInterval(-86_400 * Double(perDay.count - 1 - i)))] = n
+        }
+        d.set(log, forKey: StudyLog.key)
     }
 
     /// 50 chủ đề × 200 từ để đo hiệu năng. Tiến độ trộn đều: 1/3 chưa học, 1/3 đến hạn ôn, 1/3 chưa đến hạn.
@@ -85,8 +116,9 @@ struct VocabularyStudyApp: App {
     }
 }
 
-/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu; `-stage1-done` = chặng 1 đã xong; `-seed-large` = 10.000 từ để đo hiệu năng.
+/// Cờ khởi động: `-ui-testing` = dữ liệu tạm trong bộ nhớ, không nhắc học; `-seed` = tạo chủ đề "Test"; `-show-onboarding` = hiện màn giới thiệu; `-stage1-done` = chặng 1 đã xong; `-seed-large` = 10.000 từ để đo hiệu năng; `-screenshots` = dữ liệu đẹp để chụp ảnh App Store.
 enum LaunchFlags {
+    static let screenshots = ProcessInfo.processInfo.arguments.contains("-screenshots")
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("-ui-testing")
     static let seed = ProcessInfo.processInfo.arguments.contains("-seed")
     static let showOnboarding = ProcessInfo.processInfo.arguments.contains("-show-onboarding")
