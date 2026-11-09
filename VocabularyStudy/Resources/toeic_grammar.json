@@ -29,7 +29,15 @@
       {"q": "The marketing team worked ------- to meet the deadline.", "options": ["tireless", "tirelessly", "tire", "tiredness"], "answer": 1, "explain": "Bổ nghĩa cho động từ \"worked\" cần trạng từ → tirelessly (không mệt mỏi)."},
       {"q": "Mr. Diaz gave a very ------- presentation on the new product.", "options": ["inform", "information", "informative", "informatively"], "answer": 2, "explain": "Sau \"very\" và trước danh từ cần tính từ → informative (nhiều thông tin)."},
       {"q": "Customer ------- is our top priority.", "options": ["satisfy", "satisfied", "satisfying", "satisfaction"], "answer": 3, "explain": "Ghép với \"Customer\" làm chủ ngữ cần danh từ → satisfaction (sự hài lòng)."},
-      {"q": "The two companies agreed to ------- their research departments.", "options": ["combination", "combine", "combined", "combining"], "answer": 1, "explain": "Sau \"agreed to\" cần động từ nguyên mẫu → combine (kết hợp)."}
+      {"q": "The two companies agreed to ------- their research departments.", "options": ["combination", "combine", "combined", "combining"], "answer": 1, "explain": "Sau \"agreed to\" cần động từ nguyên mẫu → combine (kết hợp)."},
+      {"q": "The ------- of the new model was delayed by two months.", "options": ["production", "produce", "productive", "productively"], "answer": 0, "explain": "Sau \"The\" cần danh từ → production."},
+      {"q": "Ms. Patel is ------- responsible for the company's finances.", "options": ["primary", "primarily", "primacy", "primaries"], "answer": 1, "explain": "Bổ nghĩa cho tính từ \"responsible\" → trạng từ primarily."},
+      {"q": "The new policy will be ------- from next month.", "options": ["effective", "effectiveness", "effectively", "effect"], "answer": 0, "explain": "Sau \"be\" cần tính từ → effective."},
+      {"q": "We received many ------- from customers about the new design.", "options": ["suggestive", "suggested", "suggestions", "suggest"], "answer": 2, "explain": "Sau \"many\" cần danh từ số nhiều → suggestions."},
+      {"q": "The training program was ------- designed for new managers.", "options": ["specific", "specification", "specifically", "specify"], "answer": 2, "explain": "Bổ nghĩa cho động từ \"designed\" → trạng từ specifically."},
+      {"q": "Mr. Okafor made an ------- decision to expand into Asia.", "options": ["importances", "importance", "importantly", "important"], "answer": 3, "explain": "Giữa \"an\" và danh từ \"decision\" cần tính từ → important."},
+      {"q": "Please ------- the attached form and return it by Friday.", "options": ["completion", "complete", "completely", "completed"], "answer": 1, "explain": "Sau \"Please\" cần động từ nguyên mẫu → complete."},
+      {"q": "The hotel offers ------- rooms at reasonable prices.", "options": ["comfort", "comforts", "comfortably", "comfortable"], "answer": 3, "explain": "Trước danh từ \"rooms\" cần tính từ → comfortable."}
     ]
   },
   {
@@ -125,7 +133,15 @@
       {"q": "The package should ------- to the reception desk.", "options": ["deliver", "delivering", "be delivered", "delivered"], "answer": 2, "explain": "Gói hàng \"được giao\", sau động từ khuyết thiếu \"should\" → be delivered."},
       {"q": "The museum ------- by thousands of tourists every year.", "options": ["visits", "is visited", "visited", "is visiting"], "answer": 1, "explain": "Bảo tàng \"được tham quan\" hằng năm → hiện tại đơn bị động \"is visited\"."},
       {"q": "The CEO ------- the merger at yesterday's press conference.", "options": ["announced", "was announced", "is announced", "has been announced"], "answer": 0, "explain": "CEO là người thông báo (chủ động), \"yesterday\" → announced."},
-      {"q": "The broken copier ------- yet.", "options": ["hasn't fixed", "hasn't been fixed", "didn't fix", "isn't fixing"], "answer": 1, "explain": "Máy photo \"chưa được sửa\", \"yet\" → hiện tại hoàn thành bị động \"hasn't been fixed\"."}
+      {"q": "The broken copier ------- yet.", "options": ["hasn't fixed", "hasn't been fixed", "didn't fix", "isn't fixing"], "answer": 1, "explain": "Máy photo \"chưa được sửa\", \"yet\" → hiện tại hoàn thành bị động \"hasn't been fixed\"."},
+      {"q": "The new product ------- at the trade show next month.", "options": ["will introduce", "introduced", "is introducing", "will be introduced"], "answer": 3, "explain": "Sản phẩm \"được giới thiệu\", \"next month\" → will be introduced."},
+      {"q": "Your order ------- yesterday and should arrive on Friday.", "options": ["has shipping", "was shipped", "ships", "was shipping"], "answer": 1, "explain": "Đơn hàng \"được gửi\", \"yesterday\" → was shipped."},
+      {"q": "All employees ------- to attend the safety meeting.", "options": ["are required", "are requiring", "require", "required"], "answer": 0, "explain": "Nhân viên \"được yêu cầu\" → are required."},
+      {"q": "The road ------- since last month, so traffic is slow.", "options": ["is closing", "has been closed", "closes", "has closed"], "answer": 1, "explain": "Con đường \"bị đóng\", \"since last month\" → has been closed."},
+      {"q": "The meeting room ------- right now, so please use Room B.", "options": ["has cleaned", "is being cleaned", "is cleaning", "cleans"], "answer": 1, "explain": "Phòng \"đang được dọn\", \"right now\" → is being cleaned."},
+      {"q": "Ms. Yamada ------- employee of the month last year.", "options": ["has named", "names", "named", "was named"], "answer": 3, "explain": "Cô ấy \"được bầu\" (bị động), \"last year\" → was named."},
+      {"q": "The documents had ------- before the manager arrived.", "options": ["signed", "been signed", "signing", "be signed"], "answer": 1, "explain": "Tài liệu \"đã được ký\" → had been signed."},
+      {"q": "Smoking ------- in any area of the building.", "options": ["has not permitted", "is not permitted", "does not permit", "not permitting"], "answer": 1, "explain": "Hút thuốc \"không được phép\" → is not permitted."}
     ]
   },
   {
@@ -157,7 +173,15 @@
       {"q": "The new mall is located ------- the bank and the post office.", "options": ["among", "between", "through", "along"], "answer": 1, "explain": "\"between A and B\" = ở giữa hai vật."},
       {"q": "Mr. Silva is responsible ------- training new staff.", "options": ["of", "to", "for", "with"], "answer": 2, "explain": "Cụm cố định \"be responsible for\"."},
       {"q": "------- the manager's absence, Ms. Cruz will lead the meeting.", "options": ["Because", "During", "Although", "While"], "answer": 1, "explain": "Trước cụm danh từ \"the manager's absence\" cần giới từ → During (trong lúc)."},
-      {"q": "The report must be submitted ------- noon tomorrow.", "options": ["until", "by", "in", "on"], "answer": 1, "explain": "\"by\" = trước/muộn nhất là (hạn chót); \"until\" dùng cho hành động kéo dài."}
+      {"q": "The report must be submitted ------- noon tomorrow.", "options": ["until", "by", "in", "on"], "answer": 1, "explain": "\"by\" = trước/muộn nhất là (hạn chót); \"until\" dùng cho hành động kéo dài."},
+      {"q": "The new manager will start work ------- May 1.", "options": ["in", "since", "on", "at"], "answer": 2, "explain": "Trước ngày cụ thể → on."},
+      {"q": "Ms. Clark has been on vacation ------- last Monday.", "options": ["from", "during", "for", "since"], "answer": 3, "explain": "Mốc thời gian + hiện tại hoàn thành → since."},
+      {"q": "Please leave the package ------- the front desk.", "options": ["during", "at", "in", "between"], "answer": 1, "explain": "Tại một địa điểm cụ thể → at."},
+      {"q": "The shuttle bus runs ------- the airport every 20 minutes.", "options": ["at", "on", "in", "to"], "answer": 3, "explain": "Chỉ hướng đi tới → to."},
+      {"q": "------- the new policy, all staff must work from the office on Mondays.", "options": ["Instead", "Although", "According to", "Because"], "answer": 2, "explain": "Đứng trước cụm danh từ, nghĩa \"theo\" → According to."},
+      {"q": "We chose this supplier ------- its low prices.", "options": ["because of", "although", "because", "despite"], "answer": 0, "explain": "Trước cụm danh từ, nghĩa \"vì\" → because of."},
+      {"q": "The museum is open daily ------- 10 A.M. and 6 P.M.", "options": ["from", "at", "between", "on"], "answer": 2, "explain": "between A and B → between."},
+      {"q": "Ms. Ali will be out of the office ------- the end of the week.", "options": ["within", "until", "by", "since"], "answer": 1, "explain": "Kéo dài đến một mốc → until."}
     ]
   },
   {
@@ -189,7 +213,15 @@
       {"q": "The project was delayed; -------, it was completed within budget.", "options": ["because", "however", "although", "so that"], "answer": 1, "explain": "Sau dấu chấm phẩy, nối hai câu tương phản dùng trạng từ liên kết → however."},
       {"q": "We extended the deadline ------- everyone could finish the survey.", "options": ["so that", "even though", "unless", "whether"], "answer": 0, "explain": "\"so that\" = để mà (chỉ mục đích)."},
       {"q": "------- you are late again, you may lose your bonus.", "options": ["If", "Despite", "Because of", "Whereas"], "answer": 0, "explain": "Điều kiện → If."},
-      {"q": "Sales rose in Asia, ------- they fell in Europe.", "options": ["whereas", "because", "so", "unless"], "answer": 0, "explain": "\"whereas\" = trong khi đó (so sánh đối lập hai vế)."}
+      {"q": "Sales rose in Asia, ------- they fell in Europe.", "options": ["whereas", "because", "so", "unless"], "answer": 0, "explain": "\"whereas\" = trong khi đó (so sánh đối lập hai vế)."},
+      {"q": "------- the meeting ended, everyone went back to work.", "options": ["Because of", "After", "Despite", "During"], "answer": 1, "explain": "Trước một mệnh đề, nghĩa \"sau khi\" → After."},
+      {"q": "The hotel is small ------- comfortable.", "options": ["or", "so", "but", "nor"], "answer": 2, "explain": "Hai ý trái ngược → but."},
+      {"q": "------- you register early, you will get a 10 percent discount.", "options": ["Whether", "If", "Although", "Unless"], "answer": 1, "explain": "Điều kiện \"nếu\" → If."},
+      {"q": "Mr. Kim couldn't attend the meeting ------- he was sick.", "options": ["unless", "although", "so", "because"], "answer": 3, "explain": "Chỉ lý do → because."},
+      {"q": "------- sales increased, profits remained the same.", "options": ["Because", "Since", "Even though", "Despite"], "answer": 2, "explain": "Hai vế trái ngược, có mệnh đề → Even though."},
+      {"q": "The store will stay open ------- the last customer leaves.", "options": ["by", "until", "since", "during"], "answer": 1, "explain": "\"cho đến khi\" + mệnh đề → until."},
+      {"q": "Ms. Reed speaks both English ------- Spanish.", "options": ["and", "nor", "but", "or"], "answer": 0, "explain": "both A and B → and."},
+      {"q": "The product is very popular; -------, it is often out of stock.", "options": ["unless", "although", "however", "therefore"], "answer": 3, "explain": "Chỉ kết quả → therefore."}
     ]
   },
   {
@@ -219,7 +251,15 @@
       {"q": "The laptop ------- I bought last month has stopped working.", "options": ["who", "which", "whose", "where"], "answer": 1, "explain": "Thay cho vật, làm tân ngữ → which."},
       {"q": "Anyone ------- needs assistance should speak to the staff.", "options": ["who", "which", "whose", "whom"], "answer": 0, "explain": "Thay cho người, làm chủ ngữ của \"needs\" → who."},
       {"q": "The training session, ------- lasted three hours, was very useful.", "options": ["that", "which", "who", "what"], "answer": 1, "explain": "Mệnh đề không xác định (có dấu phẩy) cho vật → which (\"that\" không dùng sau dấu phẩy)."},
-      {"q": "This is the reason ------- the meeting was postponed.", "options": ["which", "why", "where", "whose"], "answer": 1, "explain": "Sau \"the reason\" dùng why."}
+      {"q": "This is the reason ------- the meeting was postponed.", "options": ["which", "why", "where", "whose"], "answer": 1, "explain": "Sau \"the reason\" dùng why."},
+      {"q": "The candidate ------- we interviewed yesterday has accepted the offer.", "options": ["where", "which", "whom", "whose"], "answer": 2, "explain": "Chỉ người, làm tân ngữ của \"interviewed\" → whom."},
+      {"q": "The building ------- the conference took place was recently renovated.", "options": ["which", "who", "where", "whose"], "answer": 2, "explain": "Chỉ nơi chốn, sau đó là mệnh đề đầy đủ → where."},
+      {"q": "Ms. Lopez, ------- has worked here for ten years, will retire next month.", "options": ["which", "who", "whose", "whom"], "answer": 1, "explain": "Chỉ người, làm chủ ngữ của \"has worked\" → who."},
+      {"q": "The supplier ------- prices are the lowest will get the contract.", "options": ["who", "which", "whom", "whose"], "answer": 3, "explain": "Sở hữu (giá của nhà cung cấp) → whose."},
+      {"q": "This is the month ------- sales usually reach their peak.", "options": ["which", "when", "where", "who"], "answer": 1, "explain": "Chỉ thời gian → when."},
+      {"q": "Our new app, ------- was launched in May, has over a million users.", "options": ["which", "where", "that", "who"], "answer": 0, "explain": "Chỉ vật, sau dấu phẩy không dùng that → which."},
+      {"q": "Visitors ------- cars are parked in the red zone will be fined.", "options": ["who", "which", "whom", "whose"], "answer": 3, "explain": "Sở hữu (xe của khách) → whose."},
+      {"q": "The products ------- are on sale cannot be returned.", "options": ["what", "that", "whose", "who"], "answer": 1, "explain": "Chỉ vật, làm chủ ngữ → that."}
     ]
   },
   {
@@ -251,7 +291,15 @@
       {"q": "Each of the participants will receive ------- own certificate.", "options": ["their", "theirs", "them", "they"], "answer": 0, "explain": "Trước \"own\" + danh từ cần tính từ sở hữu → their."},
       {"q": "------- of the two proposals was accepted, so we must start over.", "options": ["Either", "Neither", "Both", "All"], "answer": 1, "explain": "\"phải làm lại từ đầu\" → không cái nào được chấp nhận → Neither."},
       {"q": "The CEO thanked everyone for ------- hard work.", "options": ["they", "their", "theirs", "them"], "answer": 1, "explain": "Trước danh từ \"hard work\" cần tính từ sở hữu → their."},
-      {"q": "If you have questions, please ask Mr. Hall or -------.", "options": ["I", "me", "mine", "myself"], "answer": 1, "explain": "Làm tân ngữ của \"ask\" → me."}
+      {"q": "If you have questions, please ask Mr. Hall or -------.", "options": ["I", "me", "mine", "myself"], "answer": 1, "explain": "Làm tân ngữ của \"ask\" → me."},
+      {"q": "Mr. Ward and ------- will present the results tomorrow.", "options": ["mine", "me", "my", "I"], "answer": 3, "explain": "Vị trí chủ ngữ → I."},
+      {"q": "The company provides ------- employees with free lunch.", "options": ["its", "it's", "itself", "it"], "answer": 0, "explain": "Tính từ sở hữu của \"company\" → its (it's = it is)."},
+      {"q": "Ms. Torres repaired the printer -------.", "options": ["herself", "she", "hers", "her"], "answer": 0, "explain": "Tự mình làm → đại từ phản thân herself."},
+      {"q": "This umbrella isn't mine. Is it -------?", "options": ["you", "yours", "yourself", "your"], "answer": 1, "explain": "Đứng một mình thay cho \"your umbrella\" → yours."},
+      {"q": "Please let ------- know if you need any help.", "options": ["our", "us", "ours", "we"], "answer": 1, "explain": "Sau động từ \"let\" cần tân ngữ → us."},
+      {"q": "Our design was rejected, but ------- was accepted.", "options": ["themselves", "theirs", "them", "their"], "answer": 1, "explain": "Thay cho \"their design\", làm chủ ngữ → theirs."},
+      {"q": "The two managers spoke to ------- before the meeting.", "options": ["one other", "each other", "its", "itself"], "answer": 1, "explain": "Hai người nói chuyện với nhau → each other."},
+      {"q": "Mr. Pratt wrote the speech by ------- without any help.", "options": ["his", "himself", "he", "him"], "answer": 1, "explain": "by + đại từ phản thân = tự mình → himself."}
     ]
   },
   {
@@ -284,7 +332,15 @@
       {"q": "Of the three suppliers, Delta offers the ------- prices.", "options": ["low", "lower", "lowest", "more low"], "answer": 2, "explain": "So sánh giữa ba bên trở lên, có \"the\" → lowest."},
       {"q": "Our sales were not as high ------- last year's.", "options": ["than", "as", "so", "like"], "answer": 1, "explain": "Cấu trúc \"not as … as\"."},
       {"q": "This year's conference was ------- successful than last year's.", "options": ["more", "most", "much", "very"], "answer": 0, "explain": "Tính từ dài so sánh hơn dùng \"more\"."},
-      {"q": "Mr. Jones arrived ------- than anyone else.", "options": ["early", "earlier", "earliest", "more early"], "answer": 1, "explain": "Có \"than\" → so sánh hơn \"earlier\"."}
+      {"q": "Mr. Jones arrived ------- than anyone else.", "options": ["early", "earlier", "earliest", "more early"], "answer": 1, "explain": "Có \"than\" → so sánh hơn \"earlier\"."},
+      {"q": "This year's profits were ------- than last year's.", "options": ["high", "highest", "higher", "more high"], "answer": 2, "explain": "Có \"than\" → so sánh hơn: higher."},
+      {"q": "Ms. Lee is the ------- of all the candidates.", "options": ["qualified", "more qualified", "qualifiedest", "most qualified"], "answer": 3, "explain": "the ... of all → so sánh nhất: most qualified."},
+      {"q": "The new printer works ------- than the old one.", "options": ["faster", "most fast", "fastest", "fast"], "answer": 0, "explain": "Có \"than\" → faster."},
+      {"q": "Our prices are as ------- as our competitors'.", "options": ["low", "lowly", "lower", "lowest"], "answer": 0, "explain": "as + tính từ nguyên mẫu + as → low."},
+      {"q": "This is by far the ------- hotel in the city.", "options": ["better", "best", "well", "good"], "answer": 1, "explain": "the ... in the city → so sánh nhất: best."},
+      {"q": "The more customers we have, the ------- our profits will be.", "options": ["high", "highest", "most high", "higher"], "answer": 3, "explain": "The + so sánh hơn ..., the + so sánh hơn → higher."},
+      {"q": "The second floor is ------- crowded than the first floor.", "options": ["least", "less", "fewer", "few"], "answer": 1, "explain": "less + tính từ + than → less."},
+      {"q": "This report is ------- longer than the previous one.", "options": ["considerable", "more", "considerably", "consider"], "answer": 2, "explain": "Nhấn mạnh so sánh hơn dùng trạng từ: considerably (much, far)."}
     ]
   },
   {
@@ -315,7 +371,15 @@
       {"q": "Mr. Lin is interested in ------- the marketing team.", "options": ["join", "to join", "joining", "joined"], "answer": 2, "explain": "Sau giới từ \"in\" dùng V-ing → joining."},
       {"q": "The manager asked us ------- the report by Friday.", "options": ["finish", "finishing", "to finish", "finished"], "answer": 2, "explain": "\"ask somebody + to V\" → to finish."},
       {"q": "We cannot afford ------- another delay.", "options": ["have", "having", "to have", "had"], "answer": 2, "explain": "\"afford + to V\" → to have."},
-      {"q": "Ms. Ross finished ------- the contract this morning.", "options": ["review", "reviewing", "to review", "reviewed"], "answer": 1, "explain": "\"finish + V-ing\" → reviewing."}
+      {"q": "Ms. Ross finished ------- the contract this morning.", "options": ["review", "reviewing", "to review", "reviewed"], "answer": 1, "explain": "\"finish + V-ing\" → reviewing."},
+      {"q": "Ms. Moore enjoys ------- with international clients.", "options": ["work", "to work", "worked", "working"], "answer": 3, "explain": "enjoy + V-ing → working."},
+      {"q": "The company wants ------- its customer base.", "options": ["expand", "to expand", "expanding", "expanded"], "answer": 1, "explain": "want + to V → to expand."},
+      {"q": "Mr. Hayes recommended ------- the contract carefully.", "options": ["to read", "read", "reads", "reading"], "answer": 3, "explain": "recommend + V-ing → reading."},
+      {"q": "We are planning ------- the office next year.", "options": ["renovated", "to renovate", "renovating", "renovate"], "answer": 1, "explain": "plan + to V → to renovate."},
+      {"q": "Ms. Ford is responsible for ------- new employees.", "options": ["to train", "trained", "train", "training"], "answer": 3, "explain": "Sau giới từ \"for\" → V-ing: training."},
+      {"q": "The manager refused ------- the deadline.", "options": ["extend", "to extend", "extending", "extended"], "answer": 1, "explain": "refuse + to V → to extend."},
+      {"q": "I would like ------- a table for four.", "options": ["reserve", "reserving", "reserved", "to reserve"], "answer": 3, "explain": "would like + to V → to reserve."},
+      {"q": "Mr. Cho is considering ------- to the Seoul office.", "options": ["transferring", "to transfer", "transferred", "transfer"], "answer": 0, "explain": "consider + V-ing → transferring."}
     ]
   },
   {
@@ -350,7 +414,15 @@
       {"q": "We will ship the order today ------- you pay by 3 P.M.", "options": ["unless", "provided that", "although", "otherwise"], "answer": 1, "explain": "\"provided that\" = với điều kiện là."},
       {"q": "------- I known about the sale, I would have bought more.", "options": ["If", "Had", "Should", "Were"], "answer": 1, "explain": "Đảo ngữ loại 3: \"Had I known…\" = \"If I had known…\"."},
       {"q": "If prices rise again, customers ------- to other brands.", "options": ["switch", "will switch", "would switch", "switched"], "answer": 1, "explain": "If + hiện tại đơn → loại 1 → will switch."},
-      {"q": "If the system were faster, we ------- more orders.", "options": ["process", "will process", "could process", "had processed"], "answer": 2, "explain": "If + \"were\" → loại 2 → could process."}
+      {"q": "If the system were faster, we ------- more orders.", "options": ["process", "will process", "could process", "had processed"], "answer": 2, "explain": "If + \"were\" → loại 2 → could process."},
+      {"q": "If you ------- any problems, please call technical support.", "options": ["will have", "had", "would have", "have"], "answer": 3, "explain": "Loại 1, vế If dùng hiện tại đơn → have."},
+      {"q": "If I ------- the answer, I would tell you.", "options": ["will know", "know", "knew", "had known"], "answer": 2, "explain": "Vế sau \"would tell\" → loại 2: knew."},
+      {"q": "If the train had been on time, we ------- the meeting.", "options": ["will not miss", "would not miss", "would not have missed", "did not miss"], "answer": 2, "explain": "If + had V3 → loại 3: would not have missed."},
+      {"q": "We will cancel the event ------- fewer than 20 people register.", "options": ["whether", "although", "unless", "if"], "answer": 3, "explain": "Hủy nếu ít người đăng ký → if."},
+      {"q": "------- the manager approve the plan, we will start next week.", "options": ["If", "Had", "Unless", "Should"], "answer": 3, "explain": "Động từ \"approve\" nguyên mẫu → đảo ngữ loại 1: Should."},
+      {"q": "If the company ------- more money, it would build a new factory.", "options": ["would have", "had", "has", "will have"], "answer": 1, "explain": "Vế sau \"would build\" → loại 2: had."},
+      {"q": "You can use the room ------- you clean it afterward.", "options": ["even if", "unless", "as long as", "so"], "answer": 2, "explain": "\"miễn là\" → as long as."},
+      {"q": "If Ms. Park had applied, she ------- the job.", "options": ["gets", "had gotten", "will get", "would have gotten"], "answer": 3, "explain": "If + had V3 → loại 3: would have gotten."}
     ]
   },
   {
@@ -387,7 +459,15 @@
       {"q": "The furniture in the lobby ------- replaced last week.", "options": ["was", "are", "were", "have been"], "answer": 0, "explain": "\"furniture\" không đếm được, \"last week\" → was."},
       {"q": "Several members of the committee ------- concerns about the budget.", "options": ["has", "have", "was", "is"], "answer": 1, "explain": "Several + N số nhiều → have."},
       {"q": "Not only the price but also the delivery times ------- important to our customers.", "options": ["has", "is", "was", "are"], "answer": 3, "explain": "Not only A but also B → chia theo B (the delivery times) → are."},
-      {"q": "The results of the survey ------- that customers want faster service.", "options": ["is showing", "show", "has shown", "shows"], "answer": 1, "explain": "Chủ ngữ chính \"The results\" (số nhiều) → show."}
+      {"q": "The results of the survey ------- that customers want faster service.", "options": ["is showing", "show", "has shown", "shows"], "answer": 1, "explain": "Chủ ngữ chính \"The results\" (số nhiều) → show."},
+      {"q": "The manager, along with her assistants, ------- attending the conference.", "options": ["were", "is", "are", "have"], "answer": 1, "explain": "\"along with...\" không tính, chủ ngữ là \"The manager\" → is."},
+      {"q": "There ------- several reasons for the delay.", "options": ["is", "was", "has", "are"], "answer": 3, "explain": "There + be chia theo danh từ sau: several reasons → are."},
+      {"q": "Most of the employees ------- to work by train.", "options": ["has come", "is coming", "comes", "come"], "answer": 3, "explain": "Most of + N số nhiều → come."},
+      {"q": "Most of the information ------- available online.", "options": ["is", "have", "are", "were"], "answer": 0, "explain": "Most of + N không đếm được → is."},
+      {"q": "Nobody ------- the answer to the question.", "options": ["are knowing", "knows", "know", "have known"], "answer": 1, "explain": "Nobody → số ít: knows."},
+      {"q": "The cost of the repairs ------- higher than expected.", "options": ["are", "have been", "were", "was"], "answer": 3, "explain": "Chủ ngữ chính \"The cost\" (số ít) → was."},
+      {"q": "Customers who ------- online receive a 5 percent discount.", "options": ["orders", "ordering", "order", "has ordered"], "answer": 2, "explain": "\"who\" thay cho \"Customers\" (số nhiều) → order."},
+      {"q": "Neither of the proposals ------- acceptable.", "options": ["have", "were", "are", "is"], "answer": 3, "explain": "Neither of + N số nhiều → động từ số ít: is."}
     ]
   },
   {
@@ -423,7 +503,15 @@
       {"q": "------- of our staff members work from home on Fridays.", "options": ["Many", "Every", "Much", "Each"], "answer": 0, "explain": "of + N số nhiều + động từ số nhiều (work) → Many."},
       {"q": "The company hired ------- new engineers last month.", "options": ["a great deal of", "an amount of", "much", "a number of"], "answer": 3, "explain": "\"engineers\" đếm được → a number of."},
       {"q": "There are ------- seats left for tonight's show, so book now.", "options": ["few", "little", "much", "a little"], "answer": 0, "explain": "\"seats\" đếm được, nghĩa \"rất ít\" → few."},
-      {"q": "Ms. Lee is ------- experienced accountant.", "options": ["an", "much", "many", "a"], "answer": 0, "explain": "\"experienced\" bắt đầu bằng âm nguyên âm → an."}
+      {"q": "Ms. Lee is ------- experienced accountant.", "options": ["an", "much", "many", "a"], "answer": 0, "explain": "\"experienced\" bắt đầu bằng âm nguyên âm → an."},
+      {"q": "We don't have ------- time left, so let's be quick.", "options": ["several", "many", "much", "a few"], "answer": 2, "explain": "\"time\" không đếm được → much."},
+      {"q": "------- of the employees attended the training.", "options": ["Every", "Much", "All", "Another"], "answer": 2, "explain": "of + N số nhiều → All."},
+      {"q": "Ms. Ito has ------- years of experience in sales.", "options": ["many", "a little", "an amount of", "much"], "answer": 0, "explain": "\"years\" đếm được → many."},
+      {"q": "Would you like ------- cup of coffee?", "options": ["others", "other", "another", "the others"], "answer": 2, "explain": "Thêm một cái nữa + N số ít → another."},
+      {"q": "There isn't ------- milk left in the fridge.", "options": ["any", "many", "few", "a few"], "answer": 0, "explain": "Câu phủ định, \"milk\" không đếm được → any."},
+      {"q": "The hotel has 200 rooms, and ------- room has a sea view.", "options": ["every", "both", "many", "all"], "answer": 0, "explain": "N số ít \"room\" → every."},
+      {"q": "A large ------- of money was spent on advertising.", "options": ["many", "few", "amount", "number"], "answer": 2, "explain": "a large amount of + N không đếm được → amount."},
+      {"q": "------- of the two applicants is suitable, so we will advertise the job again.", "options": ["Neither", "Every", "All", "Both"], "answer": 0, "explain": "Không ai trong hai người, động từ số ít \"is\" → Neither."}
     ]
   },
   {
@@ -459,7 +547,15 @@
       {"q": "All ------- items must be returned within 14 days.", "options": ["damage", "damaged", "damages", "damaging"], "answer": 1, "explain": "Hàng \"bị hư hỏng\" (bị động) → damaged."},
       {"q": "The documents ------- to this email contain the full proposal.", "options": ["attach", "attaches", "attaching", "attached"], "answer": 3, "explain": "Tài liệu \"được đính kèm\" (bị động) → attached."},
       {"q": "Visitors ------- the factory must wear safety glasses.", "options": ["toured", "tour", "tours", "touring"], "answer": 3, "explain": "Rút gọn \"who tour\" (chủ động) → touring."},
-      {"q": "While ------- in Paris, Ms. Dupont met several new clients.", "options": ["stay", "stays", "stayed", "staying"], "answer": 3, "explain": "Sau \"while\", cô ấy tự ở (chủ động) → staying."}
+      {"q": "While ------- in Paris, Ms. Dupont met several new clients.", "options": ["stay", "stays", "stayed", "staying"], "answer": 3, "explain": "Sau \"while\", cô ấy tự ở (chủ động) → staying."},
+      {"q": "The ------- products will be shipped tomorrow.", "options": ["order", "orders", "ordered", "ordering"], "answer": 2, "explain": "Sản phẩm \"được đặt\" (bị động) → ordered."},
+      {"q": "The audience was deeply ------- by the speaker's story.", "options": ["move", "moved", "moving", "moves"], "answer": 1, "explain": "Người cảm thấy xúc động → moved."},
+      {"q": "The new rules are -------, so please read them carefully.", "options": ["confuse", "confusion", "confused", "confusing"], "answer": 3, "explain": "Vật gây ra cảm giác → confusing."},
+      {"q": "Staff members ------- to the event should arrive by 6 P.M.", "options": ["invites", "invite", "inviting", "invited"], "answer": 3, "explain": "Nhân viên \"được mời\" (bị động) → invited."},
+      {"q": "After ------- the report, Mr. Lee sent it to the director.", "options": ["reviews", "reviewed", "reviewing", "review"], "answer": 2, "explain": "Sau \"After\", ông ấy tự xem (chủ động) → reviewing."},
+      {"q": "The ------- costs of the project worried the board.", "options": ["rising", "risen", "rise", "rises"], "answer": 0, "explain": "Chi phí tự tăng (chủ động) → rising."},
+      {"q": "Anyone ------- a parking permit should contact security.", "options": ["needing", "needed", "need", "needs"], "answer": 0, "explain": "Rút gọn \"who needs\" (chủ động) → needing."},
+      {"q": "Unless otherwise -------, all payments are due within 30 days.", "options": ["stating", "states", "stated", "state"], "answer": 2, "explain": "\"trừ khi được ghi khác\" (bị động) → stated."}
     ]
   }
 ]
