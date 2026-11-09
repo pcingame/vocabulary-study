@@ -5,6 +5,7 @@ import UserNotifications
 enum Settings {
     static let newPerDayKey = "newPerDay", defaultNewPerDay = 15
     static let reviewPerDayKey = "reviewPerDay", defaultReviewPerDay = 40
+    static let maxNewPerDay = 30, maxReviewPerDay = 100
     static let roadmapAutoKey = "roadmapAuto"
     static let voiceKey = "voice", defaultVoice = "en-US"
     static let speechRateKey = "speechRate", defaultSpeechRate = 0.5
@@ -30,9 +31,9 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Mỗi ngày") {
-                    Stepper("Từ mới: \(newPerDay)", value: $newPerDay, in: 5...30)
+                    Stepper("Từ mới: \(newPerDay)", value: $newPerDay, in: 5...Settings.maxNewPerDay)
                         .accessibilityIdentifier("newPerDayStepper")
-                    Stepper("Từ ôn tối đa: \(reviewPerDay)", value: $reviewPerDay, in: 10...100, step: 5)
+                    Stepper("Từ ôn tối đa: \(reviewPerDay)", value: $reviewPerDay, in: 10...Settings.maxReviewPerDay, step: 5)
                         .accessibilityIdentifier("reviewPerDayStepper")
                 }
                 Section {

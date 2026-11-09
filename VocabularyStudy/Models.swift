@@ -76,9 +76,44 @@ import UserNotifications
                            now: Date = .now) -> [Word] {
         let today = Calendar.current.startOfDay(for: now)
         let newToday = words.filter { ($0.learnedAt ?? .distantPast) >= today }.count
-        let reviews = words.filter { $0.learnedAt != nil && $0.due <= now }.sorted { $0.due < $1.due }
+        let reviews = words.filter { $0.learnedAt != nil && $0.due <= now }.sorted { ($0.due, $0.createdAt) < ($1.due, $1.createdAt) }
         let fresh = words.filter { $0.learnedAt == nil }.sorted { $0.createdAt < $1.createdAt }
         return Array(reviews.prefix(reviewLimit)) + Array(fresh.prefix(max(0, newLimit - newToday)))
+    }
+
+    // Bản fetch có điều kiện của `todayQueue`, cho toàn bộ từ (nhiều từ thì lọc trong bộ nhớ chậm).
+    // Hạn ôn luôn là đầu một ngày, hoặc lúc bấm Quên, nên "due < đầu ngày mai" giống "due <= now"
+    // và không bị cũ khi view giữ nguyên query cả ngày.
+
+    /// Từ đến hạn ôn, hạn sớm nhất trước (cùng hạn thì từ thêm trước lên trước).
+    static func dueReviews(today: Date, limit: Int) -> FetchDescriptor<Word> {
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        var d = FetchDescriptor<Word>(predicate: #Predicate { $0.learnedAt != nil && $0.due < tomorrow }, sortBy: [SortDescriptor(\.due), SortDescriptor(\.createdAt)])
+        d.fetchLimit = limit
+        return d
+    }
+
+    /// Từ chưa học, theo thứ tự thêm vào.
+    static func unlearned(limit: Int) -> FetchDescriptor<Word> {
+        var d = FetchDescriptor<Word>(predicate: #Predicate { $0.learnedAt == nil }, sortBy: [SortDescriptor(\.createdAt)])
+        d.fetchLimit = limit
+        return d
+    }
+
+    /// Từ mới đã học từ đầu ngày `today`.
+    static func learnedSince(_ today: Date) -> FetchDescriptor<Word> {
+        FetchDescriptor(predicate: #Predicate { w in if let d = w.learnedAt { d >= today } else { false } })
+    }
+
+    static func todayQueue(in context: ModelContext, newLimit: Int = Settings.newPerDay, reviewLimit: Int = Settings.reviewPerDay,
+                           now: Date = .now) -> [Word] {
+        // Fetch có fetchLimit cắt trên dữ liệu đã lưu rồi mới bỏ từ vừa đổi, nên lưu trước để không thiếu thẻ.
+        if context.hasChanges { try? context.save() }
+        let today = Calendar.current.startOfDay(for: now)
+        let remaining = newLimit - ((try? context.fetchCount(learnedSince(today))) ?? 0)
+        let reviews = (try? context.fetch(dueReviews(today: today, limit: reviewLimit))) ?? []
+        // fetchLimit 0 nghĩa là không giới hạn, nên hết suất từ mới thì không fetch.
+        return reviews + (remaining > 0 ? (try? context.fetch(unlearned(limit: remaining))) ?? [] : [])
     }
 }
 

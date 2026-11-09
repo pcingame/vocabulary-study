@@ -5,6 +5,7 @@ import SwiftData
 struct VocabularyStudyApp: App {
     private let container: ModelContainer
     @AppStorage("onboarded") private var onboarded = false
+    @State private var today = Calendar.current.startOfDay(for: .now)
 
     init() {
         if LaunchFlags.uiTesting {
@@ -23,11 +24,15 @@ struct VocabularyStudyApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Hôm nay", systemImage: "flame") { TodayView() }
+                Tab("Hôm nay", systemImage: "flame") { TodayView(today: today) }
                 Tab("Chủ đề", systemImage: "books.vertical") { TopicsView() }
                 Tab("Ngữ pháp", systemImage: "text.book.closed") { GrammarView() }
             }
             .fullScreenCover(isPresented: .constant(!onboarded)) { OnboardingView() }
+            // Qua nửa đêm (kể cả lúc app đang ở nền) thì tạo lại query của tab Hôm nay.
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.significantTimeChangeNotification)) { _ in
+                today = Calendar.current.startOfDay(for: .now)
+            }
         }
         .modelContainer(container)
     }

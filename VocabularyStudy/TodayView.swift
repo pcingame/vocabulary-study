@@ -3,7 +3,10 @@ import SwiftData
 
 struct TodayView: View {
     @Environment(\.modelContext) private var context
-    @Query private var words: [Word]
+    // Chỉ nạp những từ cần cho hôm nay (fetch theo mức trần, cắt theo cài đặt ở dưới), không nạp cả bảng.
+    @Query private var reviews: [Word]
+    @Query private var fresh: [Word]
+    @Query private var learnedToday: [Word]
     @Query private var topics: [Topic]
     @AppStorage("grammarScores") private var scores = GrammarScores()
     @AppStorage("streak") private var streak = 0
@@ -18,8 +21,14 @@ struct TodayView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showingSettings = false
 
+    init(today: Date = Calendar.current.startOfDay(for: .now)) {
+        _reviews = Query(Word.dueReviews(today: today, limit: Settings.maxReviewPerDay))
+        _fresh = Query(Word.unlearned(limit: Settings.maxNewPerDay))
+        _learnedToday = Query(Word.learnedSince(today))
+    }
+
     var body: some View {
-        let queue = Word.todayQueue(words, newLimit: newPerDay, reviewLimit: reviewPerDay)
+        let queue = Array(reviews.prefix(reviewPerDay)) + Array(fresh.prefix(max(0, newPerDay - learnedToday.count)))
         let newCount = queue.filter { $0.learnedAt == nil }.count
         let days = Streak.display(current: streak, last: Streak.lastStudy)
         let done = StudyLog.counts[StudyLog.day(.now)] ?? 0
@@ -71,7 +80,7 @@ struct TodayView: View {
                 } header: {
                     Text("Hôm nay")
                 } footer: {
-                    Text("Tổng cộng \(words.count) từ.")
+                    Text("Tổng cộng \((try? context.fetchCount(FetchDescriptor<Word>())) ?? 0) từ.")
                 }
                 RoadmapSection(topics: topics, scores: scores)
             }

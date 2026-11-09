@@ -5,7 +5,8 @@ import AVFoundation
 struct StudyView: View {
     let topic: Topic?
     @Environment(\.dismiss) private var dismiss
-    @Query private var allWords: [Word]
+    @Environment(\.modelContext) private var context
+    @State private var fallback: [Word] = []  // nghĩa nhiễu cho trắc nghiệm khi chủ đề quá ít từ
     @State private var queue: [Word] = []
     @State private var loaded = false
     @State private var flipped = false
@@ -35,7 +36,7 @@ struct StudyView: View {
                     case .typing, .listening:
                         TypingCard(word: word, listening: mode == .listening) { answer($0) }.id(answeredCount)
                     case .choice:
-                        if let choices = Answer.choices(for: word, pool: word.topic?.words ?? [], fallback: allWords) {
+                        if let choices = Answer.choices(for: word, pool: word.topic?.words ?? [], fallback: fallback) {
                             ChoiceCard(word: word, choices: choices) { answer($0) }.id(answeredCount)
                         } else {
                             card(word)  // chưa đủ 4 nghĩa khác nhau
@@ -53,9 +54,13 @@ struct StudyView: View {
             .navigationTitle(queue.isEmpty ? "" : "Còn \(queue.count) thẻ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() }.accessibilityIdentifier("studyClose") }
+            .onDisappear { try? context.save() }  // lưu ngay để tab Hôm nay fetch thấy đúng tiến độ
             .onAppear {
                 guard !loaded else { return }
-                queue = Word.todayQueue(topic?.words ?? allWords)
+                queue = topic.map { Word.todayQueue($0.words) } ?? Word.todayQueue(in: context)
+                var some = FetchDescriptor<Word>()
+                some.fetchLimit = 50
+                fallback = (try? context.fetch(some)) ?? []
                 streakBefore = Streak.display(current: UserDefaults.standard.integer(forKey: "streak"), last: Streak.lastStudy)
                 loaded = true
             }

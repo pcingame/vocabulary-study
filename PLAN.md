@@ -415,14 +415,14 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - **Các bước**: thêm launch argument `-seed-large` tạo 50 chủ đề × 200 từ = 10.000 từ, với tiến độ ngẫu nhiên.
 - **Test tự động**: unit performance `measure { todayQueue(10_000 từ) }` để lấy mốc trước khi tối ưu. Mốc: 0,179 s (fetch hết + lọc). Chạy app: `-ui-testing -seed-large`.
 
-### 4.2 Fetch theo điều kiện thay vì lọc cả bảng · P1 · M
+### 4.2 Fetch theo điều kiện thay vì lọc cả bảng · P1 · M ✅
 - **Vấn đề**: `todayQueue` lọc toàn bộ từ mỗi lần vẽ lại `TodayView` và `TopicDetailView`.
 - **Các bước**:
   1. Dùng `FetchDescriptor` với `#Predicate` (`learnedAt != nil && due <= now`), có `fetchLimit`.
   2. Các con số dùng `fetchCount`.
 - **Test tự động**:
-  - [ ] Unit: kết quả mới giống hệt kết quả cũ trên cùng dữ liệu mẫu.
-  - [ ] Performance test nhanh hơn mốc ở 4.1.
+  - [x] Unit: kết quả mới giống hệt kết quả cũ trên cùng dữ liệu mẫu (`fetchedQueueMatchesFiltered`).
+  - [x] Performance test nhanh hơn mốc ở 4.1: 0,004 s so với 0,18 s.
 - **Test tay**:
   - [ ] Với `-seed-large`, tab Hôm nay mở dưới 0,5 giây. Đo bằng Instruments (SwiftUI + Time Profiler).
 

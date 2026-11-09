@@ -329,3 +329,19 @@ private func at(_ hour: Int) -> Date { cal.date(bySettingHour: hour, minute: 0, 
     #expect(s.wordCount == 2 && s.forgotten.count == 1 && s.forgotten[0] === a)
     #expect(s.count(.forgot) == 1 && s.count(.easy) == 1 && s.count(.hard) == 0)  // theo lần trả lời đầu
 }
+
+@MainActor @Test func fetchedQueueMatchesFiltered() throws {
+    let container = try memoryContainer()
+    let context = container.mainContext
+    let now = Date.now
+    VocabularyStudyApp.seedLarge(context, topics: 3, perTopic: 60, now: now)
+    let words = try context.fetch(FetchDescriptor<Word>(sortBy: [SortDescriptor(\.createdAt)]))
+    words[0].answer(.easy, now: now)    // từ mới học hôm nay (chưa lưu), chiếm 1 suất
+    words[3].answer(.forgot, now: now)  // từ mới quên lúc nãy, đến hạn ngay
+    words[5].answer(.forgot, now: now)  // từ cũ quên
+    for (n, r) in [(15, 40), (5, 10), (1, 100)] {
+        let old = Word.todayQueue(words, newLimit: n, reviewLimit: r, now: now)
+        let new = Word.todayQueue(in: context, newLimit: n, reviewLimit: r, now: now)
+        #expect(old.map(\.term) == new.map(\.term))
+    }
+}
