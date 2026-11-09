@@ -22,6 +22,9 @@ struct TopicsView: View {
                 if query.isEmpty && status == nil {
                     ForEach(topics) { topic in
                         NavigationLink(value: topic) { TopicRow(topic: topic) }
+                            .contextMenu {  // nhấn giữ để xoá, ngoài cách vuốt sang trái
+                                Button("Xoá chủ đề", systemImage: "trash", role: .destructive) { pendingDelete = topic }
+                            }
                     }
                     .onDelete { pendingDelete = $0.first.map { topics[$0] } }
                 } else {
@@ -170,6 +173,9 @@ struct TopicDetailView: View {
                     }
                     .contentShape(.rect)
                     .onTapGesture { editing = word }  // chạm để sửa; nút nghe vẫn bấm riêng được
+                    .contextMenu {
+                        Button("Xoá từ", systemImage: "trash", role: .destructive) { context.delete(word) }
+                    }
                 }
                 .onDelete { for i in $0 { context.delete(words[i]) } }
             }
@@ -195,6 +201,8 @@ struct WordFormView: View {
     let topic: Topic
     let word: Word?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var confirmingDelete = false
     @State private var fields: WordFields
     @State private var added = 0
     @State private var confirmingDuplicate = false
@@ -232,6 +240,21 @@ struct WordFormView: View {
                     }
                     .disabled(!fields.isValid)
                 }
+                if word != nil {
+                    Section {
+                        Button("Xoá từ", role: .destructive) { confirmingDelete = true }
+                            .accessibilityIdentifier("deleteWord")
+                    }
+                }
+            }
+            .confirmationDialog("Xoá “\(word?.term ?? "")”?", isPresented: $confirmingDelete, titleVisibility: .visible) {
+                Button("Xoá", role: .destructive) {
+                    if let word { context.delete(word) }
+                    dismiss()
+                }
+                .accessibilityIdentifier("confirmDeleteWord")
+            } message: {
+                Text("Tiến độ học của từ này cũng bị xoá. Không thể hoàn tác.")
             }
             .navigationTitle(word != nil ? "Sửa từ" : added == 0 ? "Nhập từ" : "Đã thêm \(added) từ")
             .toolbar {

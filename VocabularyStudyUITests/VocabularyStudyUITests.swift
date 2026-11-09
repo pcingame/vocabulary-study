@@ -193,6 +193,25 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(topic.waitForNonExistence(timeout: 5))
     }
 
+    func testDeleteWordFromEditSheet() {
+        let app = launch(["-ui-testing", "-seed"])
+        openEditKind(app)
+        app.buttons["deleteWord"].tap()
+        app.buttons.matching(identifier: "confirmDeleteWord").firstMatch.tap()
+        XCTAssertTrue(kindRow(app).waitForNonExistence(timeout: 5))
+    }
+
+    func testDeleteTopicByLongPress() {
+        let app = launch(["-ui-testing", "-seed"])
+        app.tabBars.buttons["Chủ đề"].tap()
+        let topic = app.buttons["Test, 3 từ"]
+        XCTAssertTrue(topic.waitForExistence(timeout: 5))
+        topic.press(forDuration: 1)
+        app.buttons["Xoá chủ đề"].tap()
+        app.buttons.matching(identifier: "confirmDeleteTopic").firstMatch.tap()
+        XCTAssertTrue(topic.waitForNonExistence(timeout: 5))
+    }
+
     func testChangeNewWordLimit() {
         let app = launch(["-ui-testing", "-seed"])
         XCTAssertTrue(app.staticTexts["Từ mới, 15"].waitForExistence(timeout: 5))
