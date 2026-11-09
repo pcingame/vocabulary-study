@@ -4,7 +4,7 @@ import Testing
 @testable import VocabularyStudy
 
 @Test func bundledContentIsValid() {
-    #expect(Content.vocab.count == 10)
+    #expect(Content.vocab.count == 16)
     for deck in Content.vocab {
         for w in deck.words {
             #expect([w.term, w.ipa, w.pos, w.meaning, w.example, w.exampleMeaning].allSatisfy { !$0.isEmpty }, "\(deck.name): \(w)")
