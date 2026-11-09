@@ -136,8 +136,9 @@ import Testing
     #expect(VocabSuggester.accept(term: "reimbursement in", meaning: "hỗ trợ tài chính",
                                   for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) == nil)
     // Nghĩa khác hẳn → bỏ; nghĩa sửa dấu dù đọc sai nhiều → nhận
-    #expect(VocabSuggester.accept(term: "claim reimbursement", meaning: "hỗ trợ tài chính",
-                                  for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) == nil)
+    let c = VocabSuggester.accept(term: "claim reimbursement", meaning: "hỗ trợ tài chính",
+                                  for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể"))
+    #expect(c?.term == "claim reimbursement" && c?.meaning == "uo cầu loàn truể")
     #expect(VocabSuggester.accept(term: "claim reimbursement", meaning: "yêu cầu hoàn trả",
                                   for: Draft(term: "chaim reimburse ment", pos: "n", meaning: "uo cầu loàn truể")) != nil)
     #expect(VocabSuggester.accept(term: "environmental regulations", meaning: "quy định về môi trường",
@@ -147,4 +148,25 @@ import Testing
                                   for: Draft(term: "proof of pay ment", pos: "n", meaning: "dung từ thanh toan"))?.term == "proof of payment")
     #expect(VocabSuggester.accept(term: "exceeding", meaning: "vượt quá",
                                   for: Draft(term: "exceding", pos: "", meaning: "vượt quá"))?.term == "exceeding")
+}
+
+/// Câu trả lời AI thật trong scan-log.txt trên iPhone (2026-11-09 20:30).
+@Test func acceptAIAnswersFromScanLog() {
+    // Từ đúng, nghĩa bị viết lại bằng từ khác → lấy từ, giữ nghĩa người viết
+    let s = VocabSuggester.accept(term: "reimbursement", meaning: "trả lại tiền",
+                                  for: Draft(term: "re im bus sement", pos: "n", meaning: "hoàn tra"))
+    #expect(s?.term == "reimbursement" && s?.meaning == "hoàn tra")
+    // AI lặp "reimbursement" cho dòng không liên quan → bỏ
+    #expect(VocabSuggester.accept(term: "reimbursement", meaning: "trả lại tiền",
+                                  for: Draft(term: "resund poliay", pos: "n", meaning: "chinh sách hoàn trả")) == nil)
+    #expect(VocabSuggester.accept(term: "reimbursement", meaning: "trả lại tiền",
+                                  for: Draft(term: "repre sentative", pos: "n", meaning: "đạu diên")) == nil)
+    #expect(VocabSuggester.accept(term: "reimbursement", meaning: "trả lại tiền",
+                                  for: Draft(term: "chaim reim besse ment", pos: "n", meaning: "kê cầu loàn tra")) == nil)
+    // Nhận cả từ lẫn nghĩa
+    let t = VocabSuggester.accept(term: "environmental regulations", meaning: "quy định về môi trường",
+                                  for: Draft(term: "en vinom mentabre qu la tians", pos: "n", meaning: "quy đinh về môi trưởng",
+                                             readings: ["- en vinom mentabre qu la tions (m) : quy đinh về môi trưởng",
+                                                        "- en vinom mentabre qu la tioms (m) : quy đinh về môi trưởng"]))
+    #expect(t?.term == "environmental regulations" && t?.meaning == "quy định về môi trường")
 }

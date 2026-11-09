@@ -53,26 +53,25 @@ enum VocabSuggester {
     static func changes(_ a: String, _ b: String) -> Int { Array(letters(a)).difference(from: Array(letters(b))).count }
 
     /// Từ AI đề xuất còn giống một trong các cách đọc (không quá 40% ký tự khác), để chặn AI đổi sang từ khác hẳn.
-    /// Không ngắn hơn quá 20% (AI hay bỏ bớt chữ: "claim reimbursement" → "reimbursement").
+    /// Không ngắn hơn quá 10% (AI hay bỏ bớt chữ: "claim reimbursement" → "reimbursement").
     static func isClose(_ term: String, to readings: [String], ratio: Double = 0.4) -> Bool {
         readings.contains { r in
             let (a, b) = (letters(term).count, letters(r).count)
-            return Double(changes(term, r)) <= ratio * Double(max(a, b)) && a * 5 >= b * 4
+            return Double(changes(term, r)) <= ratio * Double(max(a, b)) && a * 10 >= b * 9
         }
     }
 
-    /// Lọc câu trả lời của AI cho một dòng.
-    /// - AI chỉ cắt bớt chữ ("be directly related to" → "directly related") thì giữ từ gốc, chỉ lấy nghĩa.
-    /// - Từ phải còn giống chữ đọc được; nghĩa lỏng hơn (nghĩa viết tay hay bị đọc sai nhiều) nhưng chặn nghĩa khác hẳn.
+    /// Lọc câu trả lời của AI cho một dòng: phần nào còn giống chữ đọc được thì lấy, phần nào khác hẳn thì giữ của người viết.
+    /// - Từ: phải gần giống chữ đọc được. AI chỉ cắt bớt chữ ("be directly related to" → "directly related") thì giữ từ gốc.
+    /// - Nghĩa: lỏng hơn (nghĩa viết tay hay bị đọc sai nhiều), nhưng AI viết lại bằng từ khác ("hoàn trả" → "trả lại tiền") thì giữ nghĩa gốc.
     static func accept(term: String, meaning: String, for d: Draft) -> Suggestion? {
         let aiTerm = term.trimmingCharacters(in: .whitespaces)
+        let aiMeaning = meaning.trimmingCharacters(in: .whitespaces)
         let trimmedByAI = letters(d.term).count > letters(aiTerm).count && letters(d.term).contains(letters(aiTerm))
-        let s = Suggestion(term: trimmedByAI ? d.term : aiTerm, pos: d.pos,
-                           meaning: meaning.trimmingCharacters(in: .whitespaces), source: .ai)
-        guard !s.term.isEmpty, !s.meaning.isEmpty, s.differs(from: d),
-              trimmedByAI || isClose(s.term, to: termReadings(d)),
-              isClose(s.meaning, to: meaningReadings(d), ratio: 0.75) else { return nil }
-        return s
+        let termOK = !aiTerm.isEmpty && !trimmedByAI && isClose(aiTerm, to: termReadings(d))
+        let meaningOK = !aiMeaning.isEmpty && isClose(aiMeaning, to: meaningReadings(d), ratio: 0.75)
+        let s = Suggestion(term: termOK ? aiTerm : d.term, pos: d.pos, meaning: meaningOK ? aiMeaning : d.meaning, source: .ai)
+        return (termOK || meaningOK) && s.differs(from: d) ? s : nil
     }
 
     /// Các cách viết của từ trong một dòng quét: chữ chính và từ trong các cách đọc khác.
