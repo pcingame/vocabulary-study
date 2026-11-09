@@ -440,6 +440,16 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
   - [ ] Trên iPhone: đổi Giao diện Sáng/Tối/Hệ thống, app đổi ngay.
   - [ ] Icon app vẫn là ngọn lửa cam — đổi sang mint nếu muốn.
 
+### 3.10 Nền trắng ngà, xoá dễ thấy hơn, thêm bộ từ · P1 · S ✅
+- Nền màn học/ngữ pháp/giới thiệu: `Color.paper` (sáng #FAF7F0, tối đen), `paperBackground()`. Danh sách giữ nền xám hệ thống.
+- Xoá: ngoài vuốt trái, nhấn giữ chủ đề/từ → "Xoá…"; màn sửa từ có nút "Xoá từ" (có xác nhận).
+- Thêm 6 bộ (120 từ, không trùng bộ cũ): Công nghệ & Máy tính, Y tế & Bảo hiểm, Nhà ở & Bất động sản, Chăm sóc khách hàng, Đào tạo & Phát triển, Cơ sở vật chất & Bảo trì. Chưa đưa vào lộ trình (lộ trình vẫn 10 chặng, cần thêm bài ngữ pháp nếu muốn mở rộng).
+- **Test tự động**:
+  - [x] Unit `bundledContentIsValid` (16 bộ).
+  - [x] UI `testDeleteWordFromEditSheet`, `testDeleteTopicByLongPress`, `testDeleteTopicAsksConfirmation`, `testEditWord`, `testCancelEditKeepsWord`, `testRegressionTopics`, `testOnboardingSavesChoice`, `testStudyOneCard`, `testGrammarQuizTracksMistakes`.
+- **Test tay**:
+  - [ ] Trên iPhone: thêm 1 bộ mới, học vài thẻ; nhấn giữ để xoá từ và chủ đề.
+
 **Kết thúc Phase 3** → quay video màn hình các luồng chính và gửi người dùng xem trước khi phát hành.
 
 ---
