@@ -128,18 +128,19 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
 
 ### 9.1 Guideline 2.1 — Information Needed (nhận 2026-11-10)
 
-- [ ] Quay màn hình trên **iPhone thật** (iOS mới nhất): bắt đầu từ lúc mở app ở màn hình chính → onboarding → Hôm nay ▸ Bắt đầu học (lật thẻ, chọn Quên/Khó/Dễ, các chế độ gõ / nghe / chọn nghĩa) → lộ trình → tab Ngữ pháp (bài giảng + bài tập) → tab Chủ đề ▸ Quét ảnh sách → thống kê / cài đặt nhắc học. Không có tài khoản, UGC hay nội dung trả phí nên không cần quay mấy phần đó.
-- [ ] Nén video < 10 MB: `ffmpeg -i in.MP4 -vf "scale=-2:1280" -c:v libx264 -crf 30 -preset slow -an mam-demo.mp4`
-- [ ] App Store Connect ▸ Mầm ▸ App Review ▸ mở submission ▸ **Reply to App Review**: dán nội dung dưới + đính kèm video
+- [x] Quay màn hình trên **iPhone thật** → `demo_mam_toeic.mp4` trên Google Drive (link công khai, trong nội dung trả lời) (iOS mới nhất): bắt đầu từ lúc mở app ở màn hình chính → onboarding → Hôm nay ▸ Bắt đầu học (lật thẻ, chọn Quên/Khó/Dễ, các chế độ gõ / nghe / chọn nghĩa) → lộ trình → tab Ngữ pháp (bài giảng + bài tập) → tab Chủ đề ▸ Quét ảnh sách → thống kê / cài đặt nhắc học. Không có tài khoản, UGC hay nội dung trả phí nên không cần quay mấy phần đó.
+- [x] (Không cần — gửi bằng link Drive) Nén video < 10 MB: `ffmpeg -i in.MP4 -vf "scale=-2:1280" -c:v libx264 -crf 30 -preset slow -an mam-demo.mp4`
+- [ ] App Store Connect ▸ Mầm ▸ App Review ▸ mở submission ▸ **Reply to App Review**: dán nội dung dưới (link video đã có trong nội dung)
 - [ ] Dán cùng nội dung vào ô **Notes** của App Review Information (nối sau ghi chú cũ)
 
 ```
 Hello App Review team,
 
-Thank you for reviewing Mầm. A screen recording captured on a physical iPhone running the latest iOS is attached. It starts from launching the app and shows the typical flow. The app has no account registration or login, no user-generated content shared with others, and no paid content or in-app purchases.
+Thank you for reviewing Mầm. A screen recording captured on a physical iPhone running the latest iOS is available at the link below. It starts from launching the app and shows the typical flow. The app has no account registration or login, no user-generated content shared with others, and no paid content or in-app purchases.
 
 1. Screen recording
-Attached to this reply.
+https://drive.google.com/file/d/1L9F0fpWeQqvoyKobEaO3C3-Y7fBuohix/view?usp=drive_link
+(Google Drive, viewable by anyone with the link, no sign-in required.)
 
 2. Purpose and target audience
 Mầm helps Vietnamese-speaking learners study English vocabulary and grammar for the TOEIC exam in short daily sessions of about 10 minutes. The target audience is students and working adults in Vietnam preparing for TOEIC. The app solves two common problems: not knowing what to study next, and forgetting words soon after learning them. It provides a 10-stage roadmap (16 topic decks with 320 words, 13 grammar lessons with 312 practice questions) and spaced repetition that schedules each word for review right before it is likely to be forgotten.
