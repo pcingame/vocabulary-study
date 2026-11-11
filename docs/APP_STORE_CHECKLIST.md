@@ -18,7 +18,7 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 ## Trạng thái (cập nhật 2026-11-09)
 
 - ✅ **Đã gửi review** ngày 2026-11-09, phiên bản 1.0 (build 1).
-- ⏳ 2026-11-10: Apple hỏi **Guideline 2.1 — Information Needed** → làm theo mục 9.1.
+- ✅ 2026-11-10: Apple hỏi **Guideline 2.1 — Information Needed** → đã Reply (2026-11-11, mục 9.1). Đang chờ Apple review lại.
 - Nếu Apple hỏi thêm (**Guideline 2.1 — Information Needed**, Hangul Study từng bị): xem mục 9, chuẩn bị video quay trên máy thật < 10 MB.
 - Mục 7 (kiểm thử trước khi nộp) **chưa làm đủ** — làm trước khi nộp bản cập nhật tiếp theo, hoặc ngay nếu bị từ chối.
 - Còn trống: tên app và Apple ID ở mục 1.
@@ -130,8 +130,8 @@ Nội dung soạn sẵn để dán: `docs/APP_STORE_METADATA.md` (Promotional Te
 
 - [x] Quay màn hình trên **iPhone thật** → `demo_mam_toeic.mp4` trên Google Drive (link công khai, trong nội dung trả lời) (iOS mới nhất): bắt đầu từ lúc mở app ở màn hình chính → onboarding → Hôm nay ▸ Bắt đầu học (lật thẻ, chọn Quên/Khó/Dễ, các chế độ gõ / nghe / chọn nghĩa) → lộ trình → tab Ngữ pháp (bài giảng + bài tập) → tab Chủ đề ▸ Quét ảnh sách → thống kê / cài đặt nhắc học. Không có tài khoản, UGC hay nội dung trả phí nên không cần quay mấy phần đó.
 - [x] (Không cần — gửi bằng link Drive) Nén video < 10 MB: `ffmpeg -i in.MP4 -vf "scale=-2:1280" -c:v libx264 -crf 30 -preset slow -an mam-demo.mp4`
-- [ ] App Store Connect ▸ Mầm ▸ App Review ▸ mở submission ▸ **Reply to App Review**: dán nội dung dưới (link video đã có trong nội dung)
-- [ ] Dán cùng nội dung vào ô **Notes** của App Review Information (nối sau ghi chú cũ)
+- [x] App Store Connect ▸ Mầm ▸ App Review ▸ mở submission ▸ **Reply to App Review**: dán nội dung dưới (link video đã có trong nội dung)
+- [x] Dán cùng nội dung vào ô **Notes** của App Review Information (nối sau ghi chú cũ)
 
 ```
 Hello App Review team,
