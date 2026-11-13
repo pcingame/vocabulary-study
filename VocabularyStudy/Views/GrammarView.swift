@@ -135,6 +135,8 @@ struct QuizView: View {
                 } else {
                     ContentUnavailableView {
                         Label("\(score)/\(count) câu đúng", systemImage: score == count ? "star.fill" : "checkmark.seal")
+                    } description: {
+                        if !reviewing && score < count { Text("Cần đúng hết \(count) câu để đạt.") }
                     } actions: {
                         if !reviewing { Button("Làm lại") { start() } }
                     }

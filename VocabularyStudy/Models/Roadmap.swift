@@ -10,7 +10,7 @@ struct Stage: Identifiable {
 }
 
 /// Lộ trình TOEIC: mỗi chặng = 1 chủ đề từ vựng + 1 bài ngữ pháp.
-/// Xong chặng khi đã học hết từ và bài ngữ pháp đạt từ 80%.
+/// Xong chặng khi đã học hết từ và bài ngữ pháp đúng hết.
 enum Roadmap {
     // Đi từ chủ đề quen thuộc + ngữ pháp nền tảng tới chủ đề khó + ngữ pháp nâng cao.
     static let stages: [Stage] = [

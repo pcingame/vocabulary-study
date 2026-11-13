@@ -44,7 +44,7 @@ struct RoadmapView: View {
         let current = Roadmap.current(topics: topics, scores: scores)?.number ?? Roadmap.stages.count + 1
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("Mỗi chặng gồm 1 chủ đề từ vựng và 1 bài ngữ pháp. Học hết từ của chặng (mỗi ngày tối đa \(Settings.newPerDay) từ mới, app tự xếp lịch ôn) và làm bài ngữ pháp đạt từ 80% để mở chặng tiếp theo.")
+                Text("Mỗi chặng gồm 1 chủ đề từ vựng và 1 bài ngữ pháp. Học hết từ của chặng (mỗi ngày tối đa \(Settings.newPerDay) từ mới, app tự xếp lịch ôn) và làm bài ngữ pháp đúng hết để mở chặng tiếp theo.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .padding(.bottom, 20)

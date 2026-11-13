@@ -545,6 +545,24 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 
 ---
 
+## Phase 6 — Phản hồi tester (2026-11-13)
+
+### 6.1 Ngữ pháp phải đúng hết mới đạt · P0 · S ✅
+- [x] `GrammarScores.passed` đổi ngưỡng 80% → 100%. Màn kết quả ghi rõ "Cần đúng hết N câu để đạt" khi chưa đủ.
+- [x] Sửa chữ "đạt từ 80%" ở Lộ trình và `docs/APP_STORE_METADATA.md`.
+- *Test*: unit `passed` (7/8 chưa đạt, 8/8 đạt).
+
+### 6.2 Luyện thêm sau buổi học · P0 · M
+Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp được, phải xoá từ thêm lại.
+- [ ] Nút "Luyện thêm" ở màn tổng kết và màn "Xong rồi": ôn lại các từ vừa học (chưa học gì trong buổi thì lấy từ đã học của chủ đề / 20 từ học gần nhất), bấm bao nhiêu lần cũng được.
+- [ ] Luyện thêm **không đổi lịch ôn** và không tính vào số thẻ hôm nay.
+- *Test*: unit `StudySession` chế độ luyện không đổi `interval`/`due`.
+
+### 6.3 Một từ, nhiều dạng bài khi luyện · P1 · M
+- [ ] Chế độ luyện thêm xoay vòng dạng bài (lật, chọn, gõ, nghe) cho cùng một từ thay vì theo 1 chế độ trong Cài đặt.
+
+---
+
 ## 6. Checklist hồi quy (chạy cuối mỗi phase)
 
 Chạy trên simulator sau khi đã xoá app và cài lại (giống lần cài đầu):

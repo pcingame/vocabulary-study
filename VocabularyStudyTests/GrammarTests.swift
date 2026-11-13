@@ -7,7 +7,8 @@ import Testing
     let topic = Content.grammar[0]
     var scores = GrammarScores()
     scores.record(topic, score: 6, of: 8); #expect(!scores.passed(topic))
-    scores.record(topic, score: 7, of: 8); #expect(scores.passed(topic))
+    scores.record(topic, score: 7, of: 8); #expect(!scores.passed(topic))  // phải đúng hết
+    scores.record(topic, score: 8, of: 8); #expect(scores.passed(topic))
     scores.record(topic, score: 2, of: 8); #expect(scores.passed(topic))  // giữ điểm cao nhất
     #expect(GrammarScores(rawValue: scores.rawValue)?.best == scores.best)
 }

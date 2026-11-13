@@ -33,7 +33,7 @@ Mầm giúp bạn học từ vựng và ngữ pháp tiếng Anh để thi TOEIC�
 
 LỘ TRÌNH RÕ RÀNG
 • 10 chặng, đi từ chủ đề quen thuộc đến chủ đề khó. Mỗi chặng gồm 1 bộ từ vựng và 1 bài ngữ pháp.
-• Học hết từ và làm bài ngữ pháp đạt từ 80% là mở chặng tiếp theo.
+• Học hết từ và làm bài ngữ pháp đúng hết là mở chặng tiếp theo.
 • Mỗi ngày chỉ cần bấm "Bắt đầu học": app tự chọn từ mới và từ cần ôn.
 
 NHỚ LÂU NHỜ LẶP LẠI NGẮT QUÃNG

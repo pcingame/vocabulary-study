@@ -17,8 +17,8 @@ struct GrammarScores: RawRepresentable {
     }
     var rawValue: String { String(decoding: try! JSONEncoder().encode(Stored(best: best, wrong: wrong)), as: UTF8.self) }
 
-    /// Đạt khi đúng từ 80% trở lên.
-    func passed(_ topic: GrammarTopic) -> Bool { (best[topic.id] ?? 0) >= 80 }
+    /// Đạt khi đúng hết: còn sai là còn phải học.
+    func passed(_ topic: GrammarTopic) -> Bool { (best[topic.id] ?? 0) >= 100 }
 
     mutating func record(_ topic: GrammarTopic, score: Int, of total: Int) {
         best[topic.id] = max(best[topic.id] ?? 0, score * 100 / max(1, total))
