@@ -7,7 +7,7 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: P3MPHWPJ62
-    MARKETING_VERSION: "1.1"  # app và widget phải cùng số phiên bản
+    MARKETING_VERSION: "1.0.1"  # app và widget phải cùng số phiên bản
     CURRENT_PROJECT_VERSION: "2"
 targets:
   VocabularyStudy:

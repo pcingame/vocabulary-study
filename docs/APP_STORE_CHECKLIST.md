@@ -7,8 +7,8 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 | Tên hiển thị | `Mầm` |
 | Bundle ID | `com.doanthanhphuong.VocabularyStudy` |
 | Team ID | `P3MPHWPJ62` (Automatic signing) |
-| Version / Build | `1.1` (2) — trong `project.yml`, mục `settings.base` chung cho app và widget (`MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`). Bản đã nộp trước: `1.0` (1) |
-| Widget (từ 1.1) | Extension `MamWidget`, bundle `com.doanthanhphuong.VocabularyStudy.Widget`, App Group `group.com.doanthanhphuong.VocabularyStudy` (app ghi, widget đọc) |
+| Version / Build | `1.0.1` (2) — trong `project.yml`, mục `settings.base` chung cho app và widget (`MARKETING_VERSION`, `CURRENT_PROJECT_VERSION`). Bản đã nộp trước: `1.0` (1). Bản cập nhật sau: `1.0.2` |
+| Widget (từ 1.0.1) | Extension `MamWidget`, bundle `com.doanthanhphuong.VocabularyStudy.Widget`, App Group `group.com.doanthanhphuong.VocabularyStudy` (app ghi, widget đọc) |
 | Deployment target | iOS 18.0 (AI gợi ý khi quét ảnh chỉ chạy từ iOS 26, máy cũ vẫn mở app được) |
 | Thiết bị | Chỉ iPhone (`TARGETED_DEVICE_FAMILY: "1"`) |
 | Frameworks | SwiftUI, SwiftData, Charts, AVFoundation (đọc), UserNotifications (nhắc học, local), Vision (đọc chữ trong ảnh, trên máy), FoundationModels (AI trên máy), PhotosUI. **Không SDK bên thứ ba, không mạng, không tài khoản, không tracking.** |
@@ -23,7 +23,7 @@ Làm theo khung của `korea_study/docs/APP_STORE_CHECKLIST.md` (Hangul Study đ
 - Nếu Apple hỏi thêm (**Guideline 2.1 — Information Needed**, Hangul Study từng bị): xem mục 9, chuẩn bị video quay trên máy thật < 10 MB.
 - Mục 7 (kiểm thử trước khi nộp) **chưa làm đủ** — làm trước khi nộp bản cập nhật tiếp theo, hoặc ngay nếu bị từ chối.
 - Còn trống: tên app và Apple ID ở mục 1.
-- 🟡 **Bản 1.1 (build 2)**: code xong và đã push (2026-11-14), chờ 1.0 được duyệt rồi nộp. Việc còn lại xem **mục 11**.
+- 🟡 **Bản 1.0.1 (build 2)**: code xong và đã push (2026-11-14), chờ 1.0 được duyệt rồi nộp. Việc còn lại xem **mục 11**.
 
 ## 1. Tài khoản & bản ghi app
 
@@ -172,13 +172,13 @@ Phuong Doan Thanh
 - [ ] Kiểm tra app trên App Store
 - [ ] `git tag v1.0 && git push --tags`
 
-## 11. Bản cập nhật 1.1 (build 2)
+## 11. Bản cập nhật 1.0.1 (build 2)
 
 Nội dung: PLAN Phase 6 (6.1 → 6.6). Ngữ pháp phải đúng hết mới qua, Luyện thêm, luyện xoay vòng dạng bài, thêm 4 bộ từ (400 từ), ngữ pháp 520 câu, widget.
 
 ### 11.1 Repo (đã làm)
 - [x] Code 6.1 → 6.6, các test liên quan đều pass, đã push `main` (2026-11-14)
-- [x] `MARKETING_VERSION 1.1`, `CURRENT_PROJECT_VERSION 2`. Info.plist của widget lấy version từ build setting nên luôn khớp với app (đã kiểm tra: app và widget đều 1.1 / 2)
+- [x] `MARKETING_VERSION 1.0.1`, `CURRENT_PROJECT_VERSION 2`. Info.plist của widget lấy version từ build setting nên luôn khớp với app (đã kiểm tra: app và widget đều 1.0.1 / 2)
 - [x] Widget ký được trên máy thật: `-allowProvisioningUpdates` tự đăng ký bundle `…VocabularyStudy.Widget` và App Group
 - [x] Privacy manifest: thêm lý do `1C8F.1` (đọc/ghi UserDefaults của App Group) cho app; widget có `PrivacyInfo.xcprivacy` riêng. Cả hai đều có trong bản Release
 - [x] Build Release sạch (lệnh ở mục 2)
@@ -193,19 +193,19 @@ Nội dung: PLAN Phase 6 (6.1 → 6.6). Ngữ pháp phải đúng hết mới qu
 
 ### 11.3 Upload & nộp
 - [ ] Chờ 1.0 được duyệt (đừng rút 1.0 ra khỏi hàng đợi)
-- [x] Archive (2026-11-14, `build/Mam-1.1.xcarchive`, 1.1 (2), có `MamWidget.appex`): `xcodebuild archive -scheme VocabularyStudy -configuration Release -destination 'generic/platform=iOS' -archivePath build/Mam-1.1.xcarchive -allowProvisioningUpdates` → `open build/Mam-1.1.xcarchive`
-- [x] Xuất IPA từ dòng lệnh (lần này chạy được, ký Apple Distribution, có App Group): `xcodebuild -exportArchive -archivePath build/Mam-1.1.xcarchive -exportPath build/ipa-1.1 -exportOptionsPlist docs/ExportOptions.plist -allowProvisioningUpdates` → `build/ipa-1.1/VocabularyStudy.ipa`. Upload bằng app **Transporter** (kéo file .ipa vào), hoặc làm bước dưới trong Organizer
+- [x] Archive (2026-11-14, `build/Mam-1.0.1.xcarchive`, 1.0.1 (2), có `MamWidget.appex`): `xcodebuild archive -scheme VocabularyStudy -configuration Release -destination 'generic/platform=iOS' -archivePath build/Mam-1.0.1.xcarchive -allowProvisioningUpdates` → `open build/Mam-1.0.1.xcarchive`
+- [x] Xuất IPA từ dòng lệnh (lần này chạy được, ký Apple Distribution, có App Group): `xcodebuild -exportArchive -archivePath build/Mam-1.0.1.xcarchive -exportPath build/ipa-1.0.1 -exportOptionsPlist docs/ExportOptions.plist -allowProvisioningUpdates` → `build/ipa-1.0.1/VocabularyStudy.ipa`. Upload bằng app **Transporter** (kéo file .ipa vào), hoặc làm bước dưới trong Organizer
 - [ ] Organizer ▸ **Validate App** (kiểm tra luôn widget và App Group) → **Distribute App ▸ App Store Connect ▸ Upload**
 - [ ] (Tuỳ chọn) TestFlight cho bạn tester thử lại đúng chỗ đã phàn nàn
-- [ ] App Store Connect ▸ Mầm ▸ **+ Version** `1.1`:
+- [ ] App Store Connect ▸ Mầm ▸ **+ Version** `1.0.1`:
   - What's New: dán từ `APP_STORE_METADATA.md`
   - Description: dán bản mới
-  - Gán build `1.1 (2)`
+  - Gán build `1.0.1 (2)`
 - [ ] App Privacy: giữ nguyên **"No, we do not collect data"** (widget chỉ đọc số liệu trên máy)
-- [ ] App Review Information ▸ Notes: sửa số liệu cho khớp bản 1.1 (ghi chú cũ vẫn là 16 bộ / 320 từ / 312 câu), thêm dòng:
-  > Version 1.1 adds a Home Screen and Lock Screen widget (WidgetKit) showing the daily streak and the number of cards due. It reads a small summary the app writes to its own App Group on the device; no network access. Content now has 20 topic decks with 400 words and 13 grammar lessons with 520 practice questions.
+- [ ] App Review Information ▸ Notes: sửa số liệu cho khớp bản 1.0.1 (ghi chú cũ vẫn là 16 bộ / 320 từ / 312 câu), thêm dòng:
+  > Version 1.0.1 adds a Home Screen and Lock Screen widget (WidgetKit) showing the daily streak and the number of cards due. It reads a small summary the app writes to its own App Group on the device; no network access. Content now has 20 topic decks with 400 words and 13 grammar lessons with 520 practice questions.
 - [ ] Add for Review → Submit
 
 ### 11.4 Sau khi duyệt
-- [ ] Kiểm tra bản 1.1 trên App Store, thêm widget từ bản cài trên store
-- [ ] `git tag v1.1 && git push --tags`
+- [ ] Kiểm tra bản 1.0.1 trên App Store, thêm widget từ bản cài trên store
+- [ ] `git tag v1.0.1 && git push --tags`

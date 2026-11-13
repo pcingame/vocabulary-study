@@ -76,7 +76,7 @@ TOEIC® là nhãn hiệu đã đăng ký của ETS. Ứng dụng này không đ�
 TOEIC® is a registered trademark of ETS. This app is not endorsed or approved by ETS.
 ```
 
-## What's New — 1.1
+## What's New — 1.0.1
 
 ```
 • Luyện thêm: học xong vẫn ôn tiếp được, bấm bao nhiêu lần cũng được, không làm lệch lịch ôn.
