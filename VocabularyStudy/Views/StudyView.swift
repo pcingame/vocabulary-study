@@ -41,15 +41,20 @@ struct StudyView: View {
                     }
                 } else if loaded {
                     if session.summary.wordCount == 0 {
-                        ContentUnavailableView("Xong rồi! 🎉", systemImage: "checkmark.seal.fill",
-                                               description: Text("Hẹn gặp lại ngày mai."))
+                        ContentUnavailableView {
+                            Label("Xong rồi! 🎉", systemImage: "checkmark.seal.fill")
+                        } description: {
+                            Text("Hẹn gặp lại ngày mai.")
+                        } actions: {
+                            if !practicePool.isEmpty { practiceButton }
+                        }
                     } else {
-                        SummaryView(summary: session.summary, streakBefore: streakBefore)
+                        SummaryView(summary: session.summary, streakBefore: streakBefore) { practiceButton }
                     }
                 }
             }
             .paperBackground()
-            .navigationTitle(session.queue.isEmpty ? "" : "Còn \(session.queue.count) thẻ")
+            .navigationTitle(session.queue.isEmpty ? "" : (session.practice ? "Luyện thêm · " : "") + "Còn \(session.queue.count) thẻ")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { Button("Đóng") { dismiss() }.accessibilityIdentifier("studyClose") }
             .onDisappear { try? context.save() }  // lưu ngay để tab Hôm nay fetch thấy đúng tiến độ
@@ -63,6 +68,25 @@ struct StudyView: View {
                 loaded = true
             }
         }
+    }
+
+    /// Từ để luyện thêm: các từ vừa gặp trong buổi; chưa gặp từ nào thì lấy từ đã học (của chủ đề, hoặc 20 từ học gần nhất).
+    private var practicePool: [Word] {
+        if !session.summary.words.isEmpty { return session.summary.words }
+        if let topic { return topic.words.filter { $0.learnedAt != nil } }
+        var d = FetchDescriptor<Word>(predicate: #Predicate { $0.learnedAt != nil }, sortBy: [SortDescriptor(\.learnedAt, order: .reverse)])
+        d.fetchLimit = 20
+        return (try? context.fetch(d)) ?? []
+    }
+
+    private var practiceButton: some View {
+        Button("Luyện thêm", systemImage: "arrow.clockwise") {
+            let words = practicePool
+            withAnimation { session = .practice(words) }
+        }
+        .pastelProminent()
+        .controlSize(.large)
+        .accessibilityIdentifier("practiceMore")
     }
 
     private func card(_ word: Word) -> some View {
@@ -125,13 +149,14 @@ struct StudyView: View {
             drag = 0
         }
         Streak.record()
-        StudyLog.record()
+        if !session.practice { StudyLog.record() }  // luyện thêm không tính vào số thẻ hôm nay
     }
 }
 
-struct SummaryView: View {
+struct SummaryView<Actions: View>: View {
     let summary: SessionSummary
     let streakBefore: Int
+    @ViewBuilder var actions: Actions
     @AppStorage(Settings.streakKey) private var streak = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -164,6 +189,7 @@ struct SummaryView: View {
                     .padding()
                     .background(.secondary.opacity(0.1), in: .rect(cornerRadius: 16))
                 }
+                actions
                 Text("Hẹn gặp lại ngày mai.").foregroundStyle(.secondary)
             }
             .padding()

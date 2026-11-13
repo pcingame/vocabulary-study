@@ -552,10 +552,10 @@ Quy tắc chung cho mọi animation: đọc `@Environment(\.accessibilityReduceM
 - [x] Sửa chữ "đạt từ 80%" ở Lộ trình và `docs/APP_STORE_METADATA.md`.
 - *Test*: unit `passed` (7/8 chưa đạt, 8/8 đạt).
 
-### 6.2 Luyện thêm sau buổi học · P0 · M
+### 6.2 Luyện thêm sau buổi học · P0 · M ✅
 Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp được, phải xoá từ thêm lại.
-- [ ] Nút "Luyện thêm" ở màn tổng kết và màn "Xong rồi": ôn lại các từ vừa học (chưa học gì trong buổi thì lấy từ đã học của chủ đề / 20 từ học gần nhất), bấm bao nhiêu lần cũng được.
-- [ ] Luyện thêm **không đổi lịch ôn** và không tính vào số thẻ hôm nay.
+- [x] Nút "Luyện thêm" ở màn tổng kết và màn "Xong rồi": ôn lại các từ vừa học (chưa học gì trong buổi thì lấy từ đã học của chủ đề / 20 từ học gần nhất), bấm bao nhiêu lần cũng được.
+- [x] Luyện thêm **không đổi lịch ôn** và không tính vào số thẻ hôm nay.
 - *Test*: unit `StudySession` chế độ luyện không đổi `interval`/`due`.
 
 ### 6.3 Một từ, nhiều dạng bài khi luyện · P1 · M

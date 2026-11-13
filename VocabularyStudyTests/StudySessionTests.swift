@@ -26,3 +26,14 @@ import Testing
     #expect(s.queue.isEmpty && s.answered == 4)
     #expect(s.summary.wordCount == 2 && s.summary.forgotten.count == 1)
 }
+
+@Test func practiceKeepsSchedule() {
+    let a = Word(term: "a", pos: "", meaning: "")
+    a.answer(.easy)
+    let (interval, due, learned) = (a.interval, a.due, a.learnedAt)
+    var s = StudySession.practice([a])
+    #expect(s.practice)
+    s.answer(.forgot); s.answer(.easy)  // quên vẫn xếp lại cuối hàng, nhưng không đổi lịch ôn
+    #expect(s.queue.isEmpty && s.summary.words.count == 1)
+    #expect(a.interval == interval && a.due == due && a.learnedAt == learned)
+}
