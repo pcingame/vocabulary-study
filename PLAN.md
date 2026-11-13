@@ -561,6 +561,10 @@ Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp 
 ### 6.3 Một từ, nhiều dạng bài khi luyện · P1 · M ✅
 - [x] Chế độ luyện thêm xoay vòng dạng bài (lật, chọn, gõ, nghe) cho cùng một từ thay vì theo 1 chế độ trong Cài đặt.
 
+### 6.4 Thêm 4 bộ từ vựng · P1 · S ✅
+- [x] Mô tả tranh (Part 1), Cụm động từ, Giao thông & Đi lại, Quản trị doanh nghiệp: mỗi bộ 20 từ, không trùng từ cũ → tổng 20 bộ / 400 từ. Cập nhật `APP_STORE_METADATA.md`.
+- *Test*: unit `bundledContentIsValid` (20 bộ), UI `testRegressionTopics`.
+
 ---
 
 ## 6. Checklist hồi quy (chạy cuối mỗi phase)

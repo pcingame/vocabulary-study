@@ -47,8 +47,8 @@ NHỚ LÂU NHỜ LẶP LẠI NGẮT QUÃNG
 • Nghe – gõ: nghe phát âm rồi gõ lại.
 • Chọn nghĩa: chọn 1 trong 4 đáp án.
 
-320 TỪ VỰNG THEO 16 CHỦ ĐỀ
-Văn phòng, Nhân sự & Tuyển dụng, Họp & Giao tiếp, Du lịch & Công tác, Nhà hàng & Sự kiện, Mua sắm & Đặt hàng, Marketing & Bán hàng, Tài chính & Ngân hàng, Sản xuất & Kho vận, Hợp đồng, Công nghệ & Máy tính, Y tế & Bảo hiểm, Nhà ở & Bất động sản, Chăm sóc khách hàng, Đào tạo & Phát triển, Cơ sở vật chất & Bảo trì.
+400 TỪ VỰNG THEO 20 CHỦ ĐỀ
+Văn phòng, Nhân sự & Tuyển dụng, Họp & Giao tiếp, Du lịch & Công tác, Nhà hàng & Sự kiện, Mua sắm & Đặt hàng, Marketing & Bán hàng, Tài chính & Ngân hàng, Sản xuất & Kho vận, Hợp đồng, Công nghệ & Máy tính, Y tế & Bảo hiểm, Nhà ở & Bất động sản, Chăm sóc khách hàng, Đào tạo & Phát triển, Cơ sở vật chất & Bảo trì, Mô tả tranh (Part 1), Cụm động từ, Giao thông & Đi lại, Quản trị doanh nghiệp.
 Mỗi từ có phiên âm, từ loại, nghĩa tiếng Việt, câu ví dụ kèm bản dịch và phát âm.
 
 13 BÀI NGỮ PHÁP, 312 CÂU BÀI TẬP
