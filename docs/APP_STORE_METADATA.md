@@ -75,3 +75,13 @@ GỌN GÀNG VÀ RIÊNG TƯ
 TOEIC® là nhãn hiệu đã đăng ký của ETS. Ứng dụng này không được ETS bảo trợ hay phê duyệt.
 TOEIC® is a registered trademark of ETS. This app is not endorsed or approved by ETS.
 ```
+
+## What's New — 1.1
+
+```
+• Luyện thêm: học xong vẫn ôn tiếp được, bấm bao nhiêu lần cũng được, không làm lệch lịch ôn.
+• Mỗi lượt luyện tự đổi dạng bài: lật thẻ, gõ từ, nghe – gõ, chọn nghĩa.
+• Thêm 4 chủ đề từ vựng: Mô tả tranh (Part 1), Cụm động từ, Giao thông & Đi lại, Quản trị doanh nghiệp (tổng 400 từ).
+• Ngữ pháp: mỗi bài 40 câu (tổng 520 câu). Phải đúng hết mới qua bài.
+• Widget: xem chuỗi ngày học và số thẻ cần học ngay trên màn hình chính và màn hình khoá.
+```
