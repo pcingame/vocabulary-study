@@ -34,3 +34,13 @@ import Testing
     #expect(log[StudyLog.day(at(9).addingTimeInterval(86_400))] == 1)
     #expect(StudyLog.day(at(23)) == StudyLog.day(at(0)))  // cùng ngày theo giờ máy
 }
+
+@Test func widgetSnapshotPicksCurrentDay() {
+    let cal = Calendar.current
+    let today = cal.startOfDay(for: .now), tomorrow = cal.date(byAdding: .day, value: 1, to: today)!
+    let s = WidgetSnapshot(days: [.init(start: today, streak: 3, due: 5), .init(start: tomorrow, streak: 3, due: 9)])
+    #expect(s.day(at: today.addingTimeInterval(3600))?.due == 5)
+    #expect(s.day(at: tomorrow.addingTimeInterval(3600))?.due == 9)
+    #expect(s.day(at: tomorrow.addingTimeInterval(86_400 * 3))?.due == 9)  // lâu không mở app: giữ số ngày mai
+    #expect(s.day(at: today.addingTimeInterval(-60)) == nil)
+}

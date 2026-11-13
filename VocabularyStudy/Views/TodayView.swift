@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct TodayView: View {
     @Environment(\.modelContext) private var context
@@ -96,13 +97,29 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showingSettings) { SettingsView() }
             .fullScreenCover(isPresented: $studying) { StudyView(topic: nil) }
-            .task(id: "\(reminderMinutes)-\(lastStudy)-\(queue.count)") { await Reminder.schedule(dueToday: queue.count) }
+            .task(id: "\(reminderMinutes)-\(lastStudy)-\(queue.count)") {
+                await Reminder.schedule(dueToday: queue.count)
+                updateWidget(due: queue.count)
+            }
             .task(id: "\(stage?.number ?? 0)-\(roadmapAuto)") {
                 Roadmap.prepare(topics: topics, scores: scores, context: context, enabled: roadmapAuto)
             }
         }
     }
 
+    /// Gửi số liệu hôm nay và ngày mai cho widget; chỉ reload khi có thay đổi.
+    private func updateWidget(due: Int) {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: .now), tomorrow = cal.date(byAdding: .day, value: 1, to: today)!
+        let snapshot = WidgetSnapshot(days: [
+            .init(start: today, streak: Streak.display(current: streak, last: Streak.lastStudy), due: due),
+            .init(start: tomorrow, streak: Streak.display(current: streak, last: Streak.lastStudy, now: tomorrow),
+                  due: Word.todayQueue(in: context, now: tomorrow).count),
+        ])
+        guard snapshot != WidgetSnapshot.load() else { return }
+        snapshot.save()
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 }
 
 /// Vòng tiến độ học hôm nay: đã học / tổng thẻ.

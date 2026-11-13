@@ -570,7 +570,10 @@ Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp 
 - *Test*: unit `bundledContentIsValid`, UI `testGrammarQuizTracksMistakes`.
 
 ### 6.6 Widget màn hình chính · P1 · L
-- [ ] Widget hiện chuỗi ngày và số từ cần ôn hôm nay; cập nhật sau khi học.
+- [x] Widget "Mầm" (nhỏ trên màn hình chính + chữ nhật trên màn hình khoá): chuỗi ngày và số thẻ cần học hôm nay. App ghi số liệu hôm nay + ngày mai vào App Group `group.com.doanthanhphuong.VocabularyStudy` (`Shared/WidgetSnapshot.swift`) mỗi khi tab Hôm nay đổi số; widget tự đổi sang số ngày mai lúc nửa đêm.
+- [x] Build máy thật ký được App Group + bundle `…VocabularyStudy.Widget`.
+- [ ] Test tay: thêm widget trên iPhone, học vài thẻ → số trên widget giảm; qua nửa đêm → số ngày mới.
+- *Test*: unit `widgetSnapshotPicksCurrentDay`; kiểm tra App Group trên simulator có `widgetSnapshot`.
 
 ---
 

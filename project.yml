@@ -7,11 +7,13 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: P3MPHWPJ62
+    MARKETING_VERSION: "1.0"  # app và widget phải cùng số phiên bản
+    CURRENT_PROJECT_VERSION: "1"
 targets:
   VocabularyStudy:
     type: application
     platform: iOS
-    sources: [VocabularyStudy]
+    sources: [VocabularyStudy, Shared]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.doanthanhphuong.VocabularyStudy
@@ -24,10 +26,35 @@ targets:
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO  # chỉ dùng mã hoá của hệ thống, khỏi bị hỏi mỗi lần upload
         TARGETED_DEVICE_FAMILY: "1"  # chỉ iPhone
         OTHER_LDFLAGS: ["-weak_framework", "FoundationModels"]  # AI chỉ có từ iOS 26, máy iOS 18 vẫn mở được app
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
+    entitlements:
+      path: VocabularyStudy/VocabularyStudy.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.doanthanhphuong.VocabularyStudy]
+    dependencies:
+      - target: MamWidget
     scheme:
       testTargets: [VocabularyStudyTests, VocabularyStudyUITests]
+  MamWidget:
+    type: app-extension
+    platform: iOS
+    sources: [Widget, Shared]
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Mầm
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widget/MamWidget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.doanthanhphuong.VocabularyStudy]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.doanthanhphuong.VocabularyStudy.Widget
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"
   VocabularyStudyTests:
     type: bundle.unit-test
     platform: iOS
