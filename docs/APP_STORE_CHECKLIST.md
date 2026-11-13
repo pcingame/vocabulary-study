@@ -193,7 +193,7 @@ Nội dung: PLAN Phase 6 (6.1 → 6.6). Ngữ pháp phải đúng hết mới qu
 
 ### 11.3 Upload & nộp
 - [ ] Chờ 1.0 được duyệt (đừng rút 1.0 ra khỏi hàng đợi)
-- [ ] Archive: `xcodebuild archive -scheme VocabularyStudy -configuration Release -destination 'generic/platform=iOS' -archivePath build/Mam-1.1.xcarchive -allowProvisioningUpdates` → `open build/Mam-1.1.xcarchive`
+- [x] Archive (2026-11-14, `build/Mam-1.1.xcarchive`, 1.1 (2), có `MamWidget.appex`): `xcodebuild archive -scheme VocabularyStudy -configuration Release -destination 'generic/platform=iOS' -archivePath build/Mam-1.1.xcarchive -allowProvisioningUpdates` → `open build/Mam-1.1.xcarchive`
 - [ ] Organizer ▸ **Validate App** (kiểm tra luôn widget và App Group) → **Distribute App ▸ App Store Connect ▸ Upload**
 - [ ] (Tuỳ chọn) TestFlight cho bạn tester thử lại đúng chỗ đã phàn nàn
 - [ ] App Store Connect ▸ Mầm ▸ **+ Version** `1.1`:
