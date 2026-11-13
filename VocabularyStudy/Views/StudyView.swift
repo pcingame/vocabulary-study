@@ -28,6 +28,7 @@ struct StudyView: View {
                     ProgressView(value: Double(session.answered), total: Double(session.answered + session.queue.count))
                         .frame(maxHeight: .infinity, alignment: .top)
                         .padding(.horizontal)
+                    let mode = session.mode(default: mode)
                     switch mode {
                     case .flip: card(word)
                     case .typing, .listening:

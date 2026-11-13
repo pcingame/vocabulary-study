@@ -15,6 +15,11 @@ struct StudySession {
         answered += 1
     }
 
+    /// Dạng bài cho thẻ hiện tại. Luyện thêm thì mỗi thẻ đổi dạng (lật → gõ → nghe → chọn) để 1 từ gặp nhiều dạng.
+    func mode(default mode: StudyMode) -> StudyMode {
+        practice ? StudyMode.allCases[answered % StudyMode.allCases.count] : mode
+    }
+
     /// Luyện lại các từ (xáo trộn), học bao nhiêu lần cũng được mà không đổi lịch ôn.
     static func practice(_ words: [Word]) -> StudySession {
         StudySession(queue: words.shuffled(), practice: true)

@@ -37,3 +37,14 @@ import Testing
     #expect(s.queue.isEmpty && s.summary.words.count == 1)
     #expect(a.interval == interval && a.due == due && a.learnedAt == learned)
 }
+
+@Test func practiceRotatesModes() {
+    let words = (0..<5).map { Word(term: "\($0)", pos: "", meaning: "") }
+    var normal = StudySession(queue: words)
+    normal.answer(.easy)
+    #expect(normal.mode(default: .choice) == .choice)  // học thường: theo Cài đặt
+    var s = StudySession.practice(words)
+    var modes: [StudyMode] = []
+    while !s.queue.isEmpty { modes.append(s.mode(default: .choice)); s.answer(.easy) }
+    #expect(modes == [.flip, .typing, .listening, .choice, .flip])
+}

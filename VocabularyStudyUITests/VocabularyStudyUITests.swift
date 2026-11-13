@@ -497,16 +497,13 @@ final class VocabularyStudyUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Từ cần chú ý"].exists)
         snapshot("summary")
 
-        // Luyện thêm: học lại 3 từ vừa học, xong lại có nút luyện tiếp.
-        for _ in 0..<2 {
-            app.buttons["practiceMore"].tap()
-            for _ in 0..<3 {
-                XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
-                app.buttons["revealAnswer"].tap()
-                app.buttons["answerEasy"].tap()
-            }
-            XCTAssertTrue(app.staticTexts["Đã học 3 từ"].waitForExistence(timeout: 5))
-        }
+        // Luyện thêm: thẻ đầu lật, thẻ sau đổi sang gõ từ.
+        app.buttons["practiceMore"].tap()
+        XCTAssertTrue(app.buttons["revealAnswer"].waitForExistence(timeout: 5))
+        app.buttons["revealAnswer"].tap()
+        app.buttons["answerEasy"].tap()
+        XCTAssertTrue(app.textFields["typingField"].waitForExistence(timeout: 5))
+        snapshot("practice-typing")
     }
 
     func testTopicProgressUpdates() {

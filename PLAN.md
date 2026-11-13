@@ -558,8 +558,8 @@ Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp 
 - [x] Luyện thêm **không đổi lịch ôn** và không tính vào số thẻ hôm nay.
 - *Test*: unit `StudySession` chế độ luyện không đổi `interval`/`due`.
 
-### 6.3 Một từ, nhiều dạng bài khi luyện · P1 · M
-- [ ] Chế độ luyện thêm xoay vòng dạng bài (lật, chọn, gõ, nghe) cho cùng một từ thay vì theo 1 chế độ trong Cài đặt.
+### 6.3 Một từ, nhiều dạng bài khi luyện · P1 · M ✅
+- [x] Chế độ luyện thêm xoay vòng dạng bài (lật, chọn, gõ, nghe) cho cùng một từ thay vì theo 1 chế độ trong Cài đặt.
 
 ---
 
