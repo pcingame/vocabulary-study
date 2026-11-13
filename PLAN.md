@@ -565,6 +565,13 @@ Tester học hết hàng đợi trong ngày (~16 thẻ) là không học tiếp 
 - [x] Mô tả tranh (Part 1), Cụm động từ, Giao thông & Đi lại, Quản trị doanh nghiệp: mỗi bộ 20 từ, không trùng từ cũ → tổng 20 bộ / 400 từ. Cập nhật `APP_STORE_METADATA.md`.
 - *Test*: unit `bundledContentIsValid` (20 bộ), UI `testRegressionTopics`.
 
+### 6.5 Thêm câu ngữ pháp · P1 · S ✅
+- [x] Mỗi bài từ 24 lên 40 câu (thêm 16 câu/bài, tổng 520 câu) để đúng 8/8 không phải nhờ thuộc đáp án. Cập nhật `APP_STORE_METADATA.md`.
+- *Test*: unit `bundledContentIsValid`, UI `testGrammarQuizTracksMistakes`.
+
+### 6.6 Widget màn hình chính · P1 · L
+- [ ] Widget hiện chuỗi ngày và số từ cần ôn hôm nay; cập nhật sau khi học.
+
 ---
 
 ## 6. Checklist hồi quy (chạy cuối mỗi phase)

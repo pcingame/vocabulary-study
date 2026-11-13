@@ -51,7 +51,7 @@ NHỚ LÂU NHỜ LẶP LẠI NGẮT QUÃNG
 Văn phòng, Nhân sự & Tuyển dụng, Họp & Giao tiếp, Du lịch & Công tác, Nhà hàng & Sự kiện, Mua sắm & Đặt hàng, Marketing & Bán hàng, Tài chính & Ngân hàng, Sản xuất & Kho vận, Hợp đồng, Công nghệ & Máy tính, Y tế & Bảo hiểm, Nhà ở & Bất động sản, Chăm sóc khách hàng, Đào tạo & Phát triển, Cơ sở vật chất & Bảo trì, Mô tả tranh (Part 1), Cụm động từ, Giao thông & Đi lại, Quản trị doanh nghiệp.
 Mỗi từ có phiên âm, từ loại, nghĩa tiếng Việt, câu ví dụ kèm bản dịch và phát âm.
 
-13 BÀI NGỮ PHÁP, 312 CÂU BÀI TẬP
+13 BÀI NGỮ PHÁP, 520 CÂU BÀI TẬP
 Từ loại, Thì động từ, Câu bị động, Giới từ, Liên từ, Mệnh đề quan hệ, Đại từ, So sánh, V-ing và to V, Câu điều kiện, Hoà hợp chủ ngữ – động từ, Lượng từ & mạo từ, Phân từ.
 • Bài giảng ngắn gọn có công thức, dấu hiệu nhận biết và ví dụ.
 • Bài tập kiểu Part 5 kèm giải thích tiếng Việt.
